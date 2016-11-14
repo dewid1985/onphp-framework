@@ -98,7 +98,7 @@ abstract class GenericDAO extends Singleton implements BaseDAO
 
     public function getSequence()
     {
-        return $this->getTable() . '_id';
+        return $this->getTable() . '_id_seq';
     }
 
     abstract public function getTable();

@@ -57,7 +57,7 @@ public function getObjectName()
 
 public function getSequence()
 {
-    return '{$class->getTableName()}_seq';
+    return '{$class->getSchema()}.{$class->getTableName()}_id_seq';
 }
 EOT;
         } elseif ($class->getWithInternalProperties()) {
