@@ -109,6 +109,7 @@ class PgSQL extends DB
         return $row['seq'];
     }
 
+
     /**
      * query methods
      *
