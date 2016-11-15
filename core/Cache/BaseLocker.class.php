@@ -8,32 +8,33 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Lockers
- **/
-abstract class BaseLocker extends Singleton
-{
-    protected $pool = [];
-
-    /// acquire lock
-    abstract public function get($key);
-
-    /// release lock
-    abstract public function free($key);
-
-    /// completely remove lock
-
-    public function clean()
+namespace OnPhp {
+    /**
+     * @ingroup Lockers
+     **/
+    abstract class BaseLocker extends Singleton
     {
-        foreach (array_keys($this->pool) as $key) {
-            $this->drop($key);
+        protected $pool = [];
+
+        /// acquire lock
+        abstract public function get($key);
+
+        /// release lock
+        abstract public function free($key);
+
+        /// completely remove lock
+
+        public function clean()
+        {
+            foreach (array_keys($this->pool) as $key) {
+                $this->drop($key);
+            }
+
+            return true;
         }
 
-        return true;
+        /// drop all acquired/released locks
+
+        abstract public function drop($key);
     }
-
-    /// drop all acquired/released locks
-
-    abstract public function drop($key);
 }

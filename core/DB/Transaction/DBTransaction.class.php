@@ -8,85 +8,86 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Database transaction implementation.
- *
- * @ingroup Transaction
- **/
-class DBTransaction extends BaseTransaction
-{
-    /** @var bool */
-    private $started = false;
-
+namespace OnPhp {
     /**
-     * @see destruct
-     */
-    public function __destruct()
+     * Database transaction implementation.
+     *
+     * @ingroup Transaction
+     **/
+    class DBTransaction extends BaseTransaction
     {
-        if ($this->isStarted()) {
-            $this->db->queryRaw("rollback;\n");
-        }
-    }
+        /** @var bool */
+        private $started = false;
 
-    /**
-     * @return bool
-     */
-    public function isStarted() : bool
-    {
-        return $this->started;
-    }
-
-    /**
-     * @param DB $db
-     * @return DBTransaction
-     * @throws WrongStateException
-     */
-    public function setDB(DB $db) : DBTransaction
-    {
-        if ($this->isStarted()) {
-            throw new WrongStateException(
-                'transaction already started, can not switch to another db'
-            );
+        /**
+         * @see destruct
+         */
+        public function __destruct()
+        {
+            if ($this->isStarted()) {
+                $this->db->queryRaw("rollback;\n");
+            }
         }
 
-        parent::setDB($db);
-
-        return $this;
-    }
-
-    /**
-     * @param Query $query
-     * @return DBTransaction
-     * @throws WrongArgumentException
-     */
-    public function add(Query $query) : DBTransaction
-    {
-        if (!$this->isStarted()) {
-            $this->db->queryRaw($this->getBeginString());
-            $this->started = true;
+        /**
+         * @return bool
+         */
+        public function isStarted() : bool
+        {
+            return $this->started;
         }
 
-        $this->db->queryNull($query);
+        /**
+         * @param DB $db
+         * @return DBTransaction
+         * @throws WrongStateException
+         */
+        public function setDB(DB $db) : DBTransaction
+        {
+            if ($this->isStarted()) {
+                throw new WrongStateException(
+                    'transaction already started, can not switch to another db'
+                );
+            }
 
-        return $this;
-    }
+            parent::setDB($db);
 
-    /**
-     * @return DBTransaction
-     * @throws DatabaseException
-     */
-    public function flush() : DBTransaction
-    {
-        $this->started = false;
-
-        try {
-            $this->db->queryRaw("commit;\n");
-        } catch (DatabaseException $e) {
-            $this->db->queryRaw("rollback;\n");
-            throw $e;
+            return $this;
         }
 
-        return $this;
+        /**
+         * @param Query $query
+         * @return DBTransaction
+         * @throws WrongArgumentException
+         */
+        public function add(Query $query) : DBTransaction
+        {
+            if (!$this->isStarted()) {
+                $this->db->queryRaw($this->getBeginString());
+                $this->started = true;
+            }
+
+            $this->db->queryNull($query);
+
+            return $this;
+        }
+
+        /**
+         * @return DBTransaction
+         * @throws DatabaseException
+         */
+        public function flush() : DBTransaction
+        {
+            $this->started = false;
+
+            try {
+                $this->db->queryRaw("commit;\n");
+            } catch (DatabaseException $e) {
+                $this->db->queryRaw("rollback;\n");
+                throw $e;
+            }
+
+            return $this;
+        }
     }
 }

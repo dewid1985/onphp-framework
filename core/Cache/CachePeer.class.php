@@ -8,256 +8,257 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
+namespace OnPhp {
+    /*
+        CachePeer:
 
-/*
-	CachePeer:
-	
-		get from cache:
-		
-			abstract public function get($key)
-		
-		multi-get from cache:
-		
-			abstract public function getList($keys)
-		
-		increment integer value:
-		
-			abstract public function increment($key, $value)
-		
-		decrement integer value:
-		
-			abstract public function decrement($key, $value)
-		
-		uncache:
-		
-			abstract public function delete($key)
-		
-		drop everything from cache:
-		
-			abstract public function clean()
-		
-		store this data:
-		
-			public function set(
-				$key, $value, $expires = Cache::EXPIRES_MEDIUM
-			)
-		
-		store this data, but only if peer *doesn't* already
-		hold data for this key:
-		
-			public function add(
-				$key, $value, $expires = Cache::EXPIRES_MEDIUM
-			)
-		
-		store this data, but only if the server *does* already
-		hold data for this key:
-		
-			public function replace(
-				$key, $value, $expires = Cache::EXPIRES_MEDIUM
-			)
-		
-		add this data to an existing key after existing data:
-		
-			public function append($key, $data)
-		
-		drop object from cache:
-		
-			abstract public function delete($key)
-		
-		check if cache alive:
-		
-			abstract public function isAlive()
-	
-	SocketMemcached <- CachePeer:
-	
-		public function __construct(
-			$host = Memcached::DEFAULT_PORT,
-			$port = Memcached::DEFAULT_HOST,
-			$buffer = Memcached::DEFAULT_BUFFER
-		)
-	
-	PeclMemcached <- CachePeer
-	
-		public function __construct(
-			$host = Memcached::DEFAULT_PORT,
-			$port = Memcached::DEFAULT_HOST
-		)
-	
-	RubberFileSystem <- CachePeer:
-	
-		very simple fileSystem cache
-	
-		public function __construct(
-			$directory = '/tmp/onPHP/'
-		)
-	
-	RuntimeMemory <- CachePeer:
-	
-		useful for cache fallback, when all other's peers are dead
-		
-		public function __construct()
-	
-	SharedMemory <- CachePeer:
-	
-		Sys-V shared memory, for memcachedless installations.
-		
-		public function __construct(
-			$defaultSize = self::DEFAULT_SEGMENT_SIZE,
-			$customSized = array() // 'className' => sizeInBytes
-		)
-*/
+            get from cache:
 
-/**
- * Abstract cache peer base class.
- *
- * @ingroup Cache
- **/
-abstract class CachePeer
-{
-    const TIME_SWITCH = 2592000; // 60 * 60 * 24 * 30
+                abstract public function get($key)
 
-    protected $alive = false;
-    protected $compress = false;
+            multi-get from cache:
 
-    abstract public function delete($key);
+                abstract public function getList($keys)
 
-    abstract public function increment($key, $value);
+            increment integer value:
 
-    abstract public function decrement($key, $value);
+                abstract public function increment($key, $value)
 
-    abstract public function append($key, $data);
+            decrement integer value:
+
+                abstract public function decrement($key, $value)
+
+            uncache:
+
+                abstract public function delete($key)
+
+            drop everything from cache:
+
+                abstract public function clean()
+
+            store this data:
+
+                public function set(
+                    $key, $value, $expires = Cache::EXPIRES_MEDIUM
+                )
+
+            store this data, but only if peer *doesn't* already
+            hold data for this key:
+
+                public function add(
+                    $key, $value, $expires = Cache::EXPIRES_MEDIUM
+                )
+
+            store this data, but only if the server *does* already
+            hold data for this key:
+
+                public function replace(
+                    $key, $value, $expires = Cache::EXPIRES_MEDIUM
+                )
+
+            add this data to an existing key after existing data:
+
+                public function append($key, $data)
+
+            drop object from cache:
+
+                abstract public function delete($key)
+
+            check if cache alive:
+
+                abstract public function isAlive()
+
+        SocketMemcached <- CachePeer:
+
+            public function __construct(
+                $host = Memcached::DEFAULT_PORT,
+                $port = Memcached::DEFAULT_HOST,
+                $buffer = Memcached::DEFAULT_BUFFER
+            )
+
+        PeclMemcached <- CachePeer
+
+            public function __construct(
+                $host = Memcached::DEFAULT_PORT,
+                $port = Memcached::DEFAULT_HOST
+            )
+
+        RubberFileSystem <- CachePeer:
+
+            very simple fileSystem cache
+
+            public function __construct(
+                $directory = '/tmp/onPHP/'
+            )
+
+        RuntimeMemory <- CachePeer:
+
+            useful for cache fallback, when all other's peers are dead
+
+            public function __construct()
+
+        SharedMemory <- CachePeer:
+
+            Sys-V shared memory, for memcachedless installations.
+
+            public function __construct(
+                $defaultSize = self::DEFAULT_SEGMENT_SIZE,
+                $customSized = array() // 'className' => sizeInBytes
+            )
+    */
 
     /**
-     * @return CachePeer
+     * Abstract cache peer base class.
+     *
+     * @ingroup Cache
      **/
-    public function clean()
+    abstract class CachePeer
     {
-        foreach (Singleton::getAllInstances() as $object) {
-            if ($object instanceof GenericDAO) {
-                $object->dropIdentityMap();
+        const TIME_SWITCH = 2592000; // 60 * 60 * 24 * 30
+
+        protected $alive = false;
+        protected $compress = false;
+
+        abstract public function delete($key);
+
+        abstract public function increment($key, $value);
+
+        abstract public function decrement($key, $value);
+
+        abstract public function append($key, $data);
+
+        /**
+         * @return CachePeer
+         **/
+        public function clean()
+        {
+            foreach (Singleton::getAllInstances() as $object) {
+                if ($object instanceof GenericDAO) {
+                    $object->dropIdentityMap();
+                }
+            }
+
+            return $this;
+        }
+
+        /**
+         * @param $indexes
+         * @return null
+         */
+        public function getList($indexes)
+        {
+            // intentially not array
+            $out = null;
+
+            foreach ($indexes as $key) {
+                if (null !== ($value = $this->get($key))) {
+                    $out[$key] = $value;
+                }
+            }
+
+            return $out;
+        }
+
+        abstract public function get($key);
+
+        /**
+         * @param $key
+         * @param $value
+         * @param int $expires
+         * @return mixed
+         */
+        final public function set($key, $value, $expires = Cache::EXPIRES_MEDIUM)
+        {
+            return $this->store('set', $key, $value, $expires);
+        }
+
+        abstract protected function store($action, $key, $value, $expires = Cache::EXPIRES_MEDIUM);
+
+        /**
+         * @param $key
+         * @param $value
+         * @param int $expires
+         * @return mixed
+         */
+        final public function add($key, $value, $expires = Cache::EXPIRES_MEDIUM)
+        {
+            return $this->store('add', $key, $value, $expires);
+        }
+
+        /**
+         * @param $key
+         * @param $value
+         * @param int $expires
+         * @return mixed
+         */
+        final public function replace($key, $value, $expires = Cache::EXPIRES_MEDIUM)
+        {
+            return $this->store('replace', $key, $value, $expires);
+        }
+
+        public function isAlive()
+        {
+            return $this->alive;
+        }
+
+        /**
+         * @return CachePeer
+         **/
+        public function mark($className)
+        {
+            return $this;
+        }
+
+        /**
+         * @return CachePeer
+         **/
+        public function enableCompression()
+        {
+            $this->compress = true;
+            return $this;
+        }
+
+        /**
+         * @return CachePeer
+         **/
+        public function disableCompression()
+        {
+            $this->compress = false;
+            return $this;
+        }
+
+        /**
+         * @return CachePeer
+         */
+        public function getRuntimeCopy()
+        {
+            return new RuntimeMemory();
+        }
+
+        /**
+         * @param $value
+         * @return string
+         */
+        protected function prepareData($value)
+        {
+            if ($this->compress) {
+                return gzcompress(serialize($value));
+            } else {
+                return serialize($value);
             }
         }
 
-        return $this;
-    }
-
-    /**
-     * @param $indexes
-     * @return null
-     */
-    public function getList($indexes)
-    {
-        // intentially not array
-        $out = null;
-
-        foreach ($indexes as $key) {
-            if (null !== ($value = $this->get($key))) {
-                $out[$key] = $value;
+        /**
+         * @param $value
+         * @return mixed
+         */
+        protected function restoreData($value)
+        {
+            if ($this->compress) {
+                return unserialize(gzuncompress($value));
+            } else {
+                return unserialize($value);
             }
-        }
-
-        return $out;
-    }
-
-    abstract public function get($key);
-
-    /**
-     * @param $key
-     * @param $value
-     * @param int $expires
-     * @return mixed
-     */
-    final public function set($key, $value, $expires = Cache::EXPIRES_MEDIUM)
-    {
-        return $this->store('set', $key, $value, $expires);
-    }
-
-    abstract protected function store($action, $key, $value, $expires = Cache::EXPIRES_MEDIUM);
-
-    /**
-     * @param $key
-     * @param $value
-     * @param int $expires
-     * @return mixed
-     */
-    final public function add($key, $value, $expires = Cache::EXPIRES_MEDIUM)
-    {
-        return $this->store('add', $key, $value, $expires);
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     * @param int $expires
-     * @return mixed
-     */
-    final public function replace($key, $value, $expires = Cache::EXPIRES_MEDIUM)
-    {
-        return $this->store('replace', $key, $value, $expires);
-    }
-
-    public function isAlive()
-    {
-        return $this->alive;
-    }
-
-    /**
-     * @return CachePeer
-     **/
-    public function mark($className)
-    {
-        return $this;
-    }
-
-    /**
-     * @return CachePeer
-     **/
-    public function enableCompression()
-    {
-        $this->compress = true;
-        return $this;
-    }
-
-    /**
-     * @return CachePeer
-     **/
-    public function disableCompression()
-    {
-        $this->compress = false;
-        return $this;
-    }
-
-    /**
-     * @return CachePeer
-     */
-    public function getRuntimeCopy()
-    {
-        return new RuntimeMemory();
-    }
-
-    /**
-     * @param $value
-     * @return string
-     */
-    protected function prepareData($value)
-    {
-        if ($this->compress) {
-            return gzcompress(serialize($value));
-        } else {
-            return serialize($value);
-        }
-    }
-
-    /**
-     * @param $value
-     * @return mixed
-     */
-    protected function restoreData($value)
-    {
-        if ($this->compress) {
-            return unserialize(gzuncompress($value));
-        } else {
-            return unserialize($value);
         }
     }
 }

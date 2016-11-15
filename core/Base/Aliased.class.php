@@ -8,12 +8,14 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
 
-/**
- * @ingroup Base
- * @ingroup Module
- **/
-interface Aliased
-{
-    public function getAlias();
+    /**
+     * @ingroup Base
+     * @ingroup Module
+     **/
+    interface Aliased
+    {
+        public function getAlias();
+    }
 }

@@ -9,80 +9,82 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * Transaction-wrapped queries queue.
- *
- * @see Queue
- *
- * @ingroup Transaction
- **/
-class TransactionQueue extends BaseTransaction implements Query
-{
-    private $queue = null;
-
+namespace OnPhp {
     /**
-     * TransactionQueue constructor.
-     * @param DB $db
-     */
-    public function __construct(DB $db)
-    {
-        parent::__construct($db);
-        $this->queue = new Queue();
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return sha1(serialize($this));
-    }
-
-    /**
-     * @param $id
-     * @throws UnsupportedMethodException
-     */
-    public function setId($id)
-    {
-        throw new UnsupportedMethodException();
-    }
-
-    /**
-     * @return TransactionQueue
+     * Transaction-wrapped queries queue.
+     *
+     * @see Queue
+     *
+     * @ingroup Transaction
      **/
-    public function add(Query $query)
+    class TransactionQueue extends BaseTransaction implements Query
     {
-        $this->queue->add($query);
+        private $queue = null;
 
-        return $this;
-    }
-
-    /**
-     * @throws DatabaseException
-     * @return TransactionQueue
-     **/
-    public function flush() : TransactionQueue
-    {
-        try {
-            $this->db->queryRaw($this->getBeginString());
-            $this->queue->flush($this->db);
-            $this->db->queryRaw("commit;\n");
-        } catch (DatabaseException $e) {
-            $this->db->queryRaw("rollback;\n");
-            throw $e;
+        /**
+         * TransactionQueue constructor.
+         * @param DB $db
+         */
+        public function __construct(DB $db)
+        {
+            parent::__construct($db);
+            $this->queue = new Queue();
         }
 
-        return $this;
-    }
+        /**
+         * @return string
+         */
+        public function getId()
+        {
+            return sha1(serialize($this));
+        }
 
-    // to satisfy Query interface
-    public function toDialectString(Dialect $dialect)
-    {
-        return $this->queue->toDialectString($dialect);
-    }
+        /**
+         * @param $id
+         * @throws UnsupportedMethodException
+         */
+        public function setId($id)
+        {
+            throw new UnsupportedMethodException();
+        }
 
-    public function toString()
-    {
-        return $this->queue->toDialectString(ImaginaryDialect::me());
+        /**
+         * @return TransactionQueue
+         **/
+        public function add(Query $query)
+        {
+            $this->queue->add($query);
+
+            return $this;
+        }
+
+        /**
+         * @throws DatabaseException
+         * @return TransactionQueue
+         **/
+        public function flush() : TransactionQueue
+        {
+            try {
+                $this->db->queryRaw($this->getBeginString());
+                $this->queue->flush($this->db);
+                $this->db->queryRaw("commit;\n");
+            } catch (DatabaseException $e) {
+                $this->db->queryRaw("rollback;\n");
+                throw $e;
+            }
+
+            return $this;
+        }
+
+        // to satisfy Query interface
+        public function toDialectString(Dialect $dialect)
+        {
+            return $this->queue->toDialectString($dialect);
+        }
+
+        public function toString()
+        {
+            return $this->queue->toDialectString(ImaginaryDialect::me());
+        }
     }
 }

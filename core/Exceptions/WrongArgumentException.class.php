@@ -8,12 +8,13 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Exceptions
- * @ingroup Module
- **/
-class WrongArgumentException extends BaseException
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     * @ingroup Module
+     **/
+    class WrongArgumentException extends BaseException
+    {
+        /*_*/
+    }
 }

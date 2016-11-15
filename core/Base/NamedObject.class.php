@@ -9,52 +9,54 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @see Named
- *
- * @ingroup Base
- * @ingroup Module
- **/
-abstract class NamedObject extends IdentifiableObject implements Named, Stringable
-{
+namespace OnPhp {
     /**
-     * @var null
-     */
-    protected $name = null;
-
-    /**
-     * @param Named $left
-     * @param Named $right
-     * @return integer
-     */
-    public static function compareNames(Named $left, Named $right) : int
-    {
-        return strcasecmp($left->getName(), $right->getName());
-    }
-
-    /**
-     * @return null
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return NamedObject
+     * @see Named
+     *
+     * @ingroup Base
+     * @ingroup Module
      **/
-    public function setName($name)
+    abstract class NamedObject extends IdentifiableObject implements Named, Stringable
     {
-        $this->name = $name;
+        /**
+         * @var null
+         */
+        protected $name = null;
 
-        return $this;
-    }
+        /**
+         * @param Named $left
+         * @param Named $right
+         * @return integer
+         */
+        public static function compareNames(Named $left, Named $right) : int
+        {
+            return strcasecmp($left->getName(), $right->getName());
+        }
 
-    /**
-     * @return string
-     */
-    public function toString() : string
-    {
-        return "[{$this->id}] {$this->name}";
+        /**
+         * @return null
+         */
+        public function getName()
+        {
+            return $this->name;
+        }
+
+        /**
+         * @return NamedObject
+         **/
+        public function setName($name)
+        {
+            $this->name = $name;
+
+            return $this;
+        }
+
+        /**
+         * @return string
+         */
+        public function toString() : string
+        {
+            return "[{$this->id}] {$this->name}";
+        }
     }
 }

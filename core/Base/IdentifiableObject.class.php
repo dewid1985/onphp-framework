@@ -9,65 +9,66 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * Ideal Identifiable interface implementation. ;-)
- *
- * @see Identifiable
- *
- * @ingroup Base
- * @ingroup Module
- **/
-class /* spirit of */
-IdentifiableObject implements Identifiable, DialectString
-{
+namespace OnPhp {
     /**
-     * @var null
-     */
-    protected $id = null;
-
-    /**
-     * @param $id
-     * @return IdentifiableObject
-     */
-    public static function wrap($id)
-    {
-        $io = new self;
-
-        return $io->setId($id);
-    }
-
-    /**
-     * @param Dialect $dialect
-     * @return mixed
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        return $dialect->quoteValue($this->getId());
-    }
-
-    /**
-     * @return Identifier|null
-     */
-    public function getId()
-    {
-        if (
-            $this->id instanceof Identifier
-            && $this->id->isFinalized()
-        ) {
-            return $this->id->getId();
-        } else {
-            return $this->id;
-        }
-    }
-
-    /**
-     * @return IdentifiableObject
+     * Ideal Identifiable interface implementation. ;-)
+     *
+     * @see Identifiable
+     *
+     * @ingroup Base
+     * @ingroup Module
      **/
-    public function setId($id)
+    class IdentifiableObject implements Identifiable, DialectString
     {
-        $this->id = $id;
+        /**
+         * @var null
+         */
+        protected $id = null;
 
-        return $this;
+        /**
+         * @param $id
+         * @return IdentifiableObject
+         */
+        public static function wrap($id)
+        {
+            $io = new self;
+
+            return $io->setId($id);
+        }
+
+        /**
+         * @param Dialect $dialect
+         * @return mixed
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            return $dialect->quoteValue($this->getId());
+        }
+
+        /**
+         * @return Identifier|null
+         */
+        public function getId()
+        {
+            if (
+                $this->id instanceof Identifier
+                && $this->id->isFinalized()
+            ) {
+                return $this->id->getId();
+            } else {
+                return $this->id;
+            }
+        }
+
+        /**
+         * @return IdentifiableObject
+         **/
+        public function setId($id)
+        {
+            $this->id = $id;
+
+            return $this;
+        }
     }
 }
 

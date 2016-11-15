@@ -8,94 +8,94 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Single access point to application-wide locker implementation.
- *
- * @see SystemFiveLocker for default locker
- * @see FileLocker for 'universal' locker
- * @see DirectoryLocker for slow and dirty locker
- * @see eAcceleratorLocker for eA-based locker
- *
- * @ingroup Lockers
- **/
-class SemaphorePool extends BaseLocker implements Instantiatable
-{
-    /** @var string  */
-    private static $lockerName = 'DirectoryLocker';
-
-    /** @var  BaseLocker */
-    private static $locker;
-
+namespace OnPhp {
     /**
-     * SemaphorePool constructor.
-     */
-    protected function __construct()
-    {
-        self::$locker = Singleton::getInstance(self::$lockerName);
-    }
-
-    /**
-     * @param $name
-     * @throws WrongArgumentException
-     */
-    public static function setDefaultLocker($name)
-    {
-        Assert::classExists($name);
-
-        self::$lockerName = $name;
-        self::$locker = Singleton::getInstance($name);
-    }
-
-    /**
-     * @return SemaphorePool
+     * Single access point to application-wide locker implementation.
+     *
+     * @see SystemFiveLocker for default locker
+     * @see FileLocker for 'universal' locker
+     * @see DirectoryLocker for slow and dirty locker
+     * @see eAcceleratorLocker for eA-based locker
+     *
+     * @ingroup Lockers
      **/
-    public static function me()
+    class SemaphorePool extends BaseLocker implements Instantiatable
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /** @var string */
+        private static $lockerName = 'DirectoryLocker';
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public function get($key)
-    {
-        return self::$locker->get($key);
-    }
+        /** @var  BaseLocker */
+        private static $locker;
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public function free($key)
-    {
-        return self::$locker->free($key);
-    }
+        /**
+         * SemaphorePool constructor.
+         */
+        protected function __construct()
+        {
+            self::$locker = Singleton::getInstance(self::$lockerName);
+        }
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public function drop($key)
-    {
-        return self::$locker->drop($key);
-    }
+        /**
+         * @param $name
+         * @throws WrongArgumentException
+         */
+        public static function setDefaultLocker($name)
+        {
+            Assert::classExists($name);
 
-    /**
-     * @return mixed
-     */
-    public function clean()
-    {
-        return self::$locker->clean();
-    }
+            self::$lockerName = $name;
+            self::$locker = Singleton::getInstance($name);
+        }
 
-    /**
-     * @see __destruct
-     */
-    public function __destruct()
-    {
-        self::$locker->clean();
+        /**
+         * @return SemaphorePool
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
+
+        /**
+         * @param $key
+         * @return mixed
+         */
+        public function get($key)
+        {
+            return self::$locker->get($key);
+        }
+
+        /**
+         * @param $key
+         * @return mixed
+         */
+        public function free($key)
+        {
+            return self::$locker->free($key);
+        }
+
+        /**
+         * @param $key
+         * @return mixed
+         */
+        public function drop($key)
+        {
+            return self::$locker->drop($key);
+        }
+
+        /**
+         * @return mixed
+         */
+        public function clean()
+        {
+            return self::$locker->clean();
+        }
+
+        /**
+         * @see __destruct
+         */
+        public function __destruct()
+        {
+            self::$locker->clean();
+        }
     }
 }
-

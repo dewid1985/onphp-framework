@@ -7,112 +7,113 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * One more Aggregate cache.
- *
- * @ingroup Cache
- **/
-class CyclicAggregateCache extends BaseAggregateCache
-{
-    const DEFAULT_SUMMARY_WEIGHT = 1000;
-
-    private $summaryWeight = self::DEFAULT_SUMMARY_WEIGHT;
-    private $sorted = false;
-
-
+namespace OnPhp {
     /**
-     * @param array $first
-     * @param array $second
-     * @return int
-     */
-    private static function comparePeers(array $first, array $second) : int
+     * One more Aggregate cache.
+     *
+     * @ingroup Cache
+     **/
+    class CyclicAggregateCache extends BaseAggregateCache
     {
-        if ($first['mountPoint'] == $second['mountPoint']) {
-            return 0;
+        const DEFAULT_SUMMARY_WEIGHT = 1000;
+
+        private $summaryWeight = self::DEFAULT_SUMMARY_WEIGHT;
+        private $sorted = false;
+
+
+        /**
+         * @param array $first
+         * @param array $second
+         * @return int
+         */
+        private static function comparePeers(array $first, array $second) : int
+        {
+            if ($first['mountPoint'] == $second['mountPoint']) {
+                return 0;
+            }
+
+            return
+                ($first['mountPoint'] < $second['mountPoint']) ? -1 : 1;
         }
 
-        return
-            ($first['mountPoint'] < $second['mountPoint']) ? -1 : 1;
-    }
+        /**
+         * @param $weight
+         * @return CyclicAggregateCache
+         * @throws WrongArgumentException
+         */
+        public function setSummaryWeight($weight) : CyclicAggregateCache
+        {
+            Assert::isPositiveInteger($weight);
 
-    /**
-     * @param $weight
-     * @return CyclicAggregateCache
-     * @throws WrongArgumentException
-     */
-    public function setSummaryWeight($weight) : CyclicAggregateCache
-    {
-        Assert::isPositiveInteger($weight);
+            $this->summaryWeight = $weight;
+            $this->sorted = false;
 
-        $this->summaryWeight = $weight;
-        $this->sorted = false;
-
-        return $this;
-    }
-
-    /**
-     * @param $label
-     * @param CachePeer $peer
-     * @param $mountPoint
-     * @return CyclicAggregateCache
-     * @throws WrongArgumentException
-     */
-    public function addPeer($label, CachePeer $peer, $mountPoint) : CyclicAggregateCache
-    {
-        Assert::isLesserOrEqual($mountPoint, $this->summaryWeight);
-        Assert::isGreaterOrEqual($mountPoint, 0);
-
-        $this->doAddPeer($label, $peer);
-
-        $this->peers[$label]['mountPoint'] = $mountPoint;
-        $this->sorted = false;
-
-        return $this;
-    }
-
-    /**
-     * @param $key
-     * @return mixed
-     * @throws WrongArgumentException
-     */
-    protected function guessLabel($key)
-    {
-        if (!$this->sorted) {
-            $this->sortPeers();
+            return $this;
         }
 
-        $point = hexdec(substr(sha1($key), 0, 5)) % $this->summaryWeight;
+        /**
+         * @param $label
+         * @param CachePeer $peer
+         * @param $mountPoint
+         * @return CyclicAggregateCache
+         * @throws WrongArgumentException
+         */
+        public function addPeer($label, CachePeer $peer, $mountPoint) : CyclicAggregateCache
+        {
+            Assert::isLesserOrEqual($mountPoint, $this->summaryWeight);
+            Assert::isGreaterOrEqual($mountPoint, 0);
 
-        $firstPeer = reset($this->peers);
+            $this->doAddPeer($label, $peer);
 
-        while ($peer = current($this->peers)) {
+            $this->peers[$label]['mountPoint'] = $mountPoint;
+            $this->sorted = false;
 
-            if ($point <= $peer['mountPoint']) {
+            return $this;
+        }
+
+        /**
+         * @param $key
+         * @return mixed
+         * @throws WrongArgumentException
+         */
+        protected function guessLabel($key)
+        {
+            if (!$this->sorted) {
+                $this->sortPeers();
+            }
+
+            $point = hexdec(substr(sha1($key), 0, 5)) % $this->summaryWeight;
+
+            $firstPeer = reset($this->peers);
+
+            while ($peer = current($this->peers)) {
+
+                if ($point <= $peer['mountPoint']) {
+                    return key($this->peers);
+                }
+
+                next($this->peers);
+            }
+
+            if ($point <= ($firstPeer['mountPoint'] + $this->summaryWeight)) {
+                reset($this->peers);
+
                 return key($this->peers);
             }
 
-            next($this->peers);
+            Assert::isUnreachable();
         }
 
-        if ($point <= ($firstPeer['mountPoint'] + $this->summaryWeight)) {
-            reset($this->peers);
+        /**
+         * @return CyclicAggregateCache
+         */
+        private function sortPeers() : CyclicAggregateCache
+        {
+            uasort($this->peers, ['self', 'comparePeers']);
 
-            return key($this->peers);
+            $this->sorted = true;
+
+            return $this;
         }
-
-        Assert::isUnreachable();
-    }
-
-    /**
-     * @return CyclicAggregateCache
-     */
-    private function sortPeers() : CyclicAggregateCache
-    {
-        uasort($this->peers, ['self', 'comparePeers']);
-
-        $this->sorted = true;
-
-        return $this;
     }
 }

@@ -8,13 +8,14 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @param string $key
- *
- * @return Listable
- */
-interface ListGenerator
-{
-    public function fetchList($key);
+namespace OnPhp {
+    /**
+     * @param string $key
+     *
+     * @return Listable
+     */
+    interface ListGenerator
+    {
+        public function fetchList($key);
+    }
 }

@@ -8,119 +8,120 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * System-wide access to selected CachePeer and DaoWorker.
- *
- * @see CachePeer
- * @see http://onphp.org/examples.Cache.en.html
- *
- * @ingroup Cache
- *
- * @example cacheSettings.php
- **/
-class Cache extends StaticFactory implements Instantiatable
-{
-    const NOT_FOUND = 'nil';
-
-    const
-        EXPIRES_FOREVER = 60480, // 7 days
-        EXPIRES_MAXIMUM = 21600, // 6 hrs
-        EXPIRES_MEDIUM = 3600, // 1 hr
-        EXPIRES_MINIMUM = 300; // 5 mins
-
-    const
-        DO_NOT_CACHE = -2015;
-
-    /// map dao -> worker
-    private static $map = null;
-
-    /// selected peer
-    private static $peer = null;
-
-    /// default worker
-    private static $worker = null;
-
-    /// spawned workers
-    private static $instances = [];
-
+namespace OnPhp {
     /**
-     * @return CachePeer
+     * System-wide access to selected CachePeer and DaoWorker.
+     *
+     * @see CachePeer
+     * @see http://onphp.org/examples.Cache.en.html
+     *
+     * @ingroup Cache
+     *
+     * @example cacheSettings.php
      **/
-    public static function me()
+    class Cache extends StaticFactory implements Instantiatable
     {
-        if (!self::$peer || !self::$peer->isAlive()) {
-            self::$peer = new RuntimeMemory();
+        const NOT_FOUND = 'nil';
+
+        const
+            EXPIRES_FOREVER = 60480, // 7 days
+            EXPIRES_MAXIMUM = 21600, // 6 hrs
+            EXPIRES_MEDIUM = 3600, // 1 hr
+            EXPIRES_MINIMUM = 300; // 5 mins
+
+        const
+            DO_NOT_CACHE = -2015;
+
+        /// map dao -> worker
+        private static $map = null;
+
+        /// selected peer
+        private static $peer = null;
+
+        /// default worker
+        private static $worker = null;
+
+        /// spawned workers
+        private static $instances = [];
+
+        /**
+         * @return CachePeer
+         **/
+        public static function me()
+        {
+            if (!self::$peer || !self::$peer->isAlive()) {
+                self::$peer = new RuntimeMemory();
+            }
+
+            return self::$peer;
         }
 
-        return self::$peer;
-    }
-
-    /**
-     * @param CachePeer $peer
-     */
-    public static function setPeer(CachePeer $peer)
-    {
-        self::$peer = $peer;
-    }
-
-    /**
-     * @param $worker
-     * @throws WrongArgumentException
-     */
-    public static function setDefaultWorker($worker)
-    {
-        Assert::classExists($worker);
-
-        self::$worker = $worker;
-    }
-
-    /**
-     * @param $map
-     */
-    public static function appendDaoMap($map)
-    {
-        if (self::$map) {
-            self::$map = array_merge(self::$map, $map);
-        } else {
-            self::setDaoMap($map);
+        /**
+         * @param CachePeer $peer
+         */
+        public static function setPeer(CachePeer $peer)
+        {
+            self::$peer = $peer;
         }
-    }
 
-    /**
-     * associative array, className -> workerName
-     **/
-    public static function setDaoMap($map)
-    {
-        self::$map = $map;
-    }
+        /**
+         * @param $worker
+         * @throws WrongArgumentException
+         */
+        public static function setDefaultWorker($worker)
+        {
+            Assert::classExists($worker);
 
-    /**
-     * @return BaseDaoWorker
-     **/
-    public static function worker($dao)
-    {
-        $class = get_class($dao);
+            self::$worker = $worker;
+        }
 
-        if (!isset(self::$instances[$class])) {
-            if (isset(self::$map[$class])) {
-                $className = self::$map[$class];
-                self::$instances[$class] = new $className($dao);
-            } elseif ($worker = self::$worker) {
-                self::$instances[$class] = new $worker($dao);
+        /**
+         * @param $map
+         */
+        public static function appendDaoMap($map)
+        {
+            if (self::$map) {
+                self::$map = array_merge(self::$map, $map);
             } else {
-                self::$instances[$class] = new CommonDaoWorker($dao);
+                self::setDaoMap($map);
             }
         }
 
-        return self::$instances[$class];
-    }
+        /**
+         * associative array, className -> workerName
+         **/
+        public static function setDaoMap($map)
+        {
+            self::$map = $map;
+        }
 
-    /**
-     * drop workers
-     */
-    public static function dropWorkers()
-    {
-        self::$instances = [];
+        /**
+         * @return BaseDaoWorker
+         **/
+        public static function worker($dao)
+        {
+            $class = get_class($dao);
+
+            if (!isset(self::$instances[$class])) {
+                if (isset(self::$map[$class])) {
+                    $className = self::$map[$class];
+                    self::$instances[$class] = new $className($dao);
+                } elseif ($worker = self::$worker) {
+                    self::$instances[$class] = new $worker($dao);
+                } else {
+                    self::$instances[$class] = new CommonDaoWorker($dao);
+                }
+            }
+
+            return self::$instances[$class];
+        }
+
+        /**
+         * drop workers
+         */
+        public static function dropWorkers()
+        {
+            self::$instances = [];
+        }
     }
 }

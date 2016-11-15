@@ -8,17 +8,18 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Base
- * @ingroup Module
- **/
-interface Stringable
-{
+namespace OnPhp {
     /**
-     * toString
-     *
-     * @return string
-     */
-    public function toString() : string ;
+     * @ingroup Base
+     * @ingroup Module
+     **/
+    interface Stringable
+    {
+        /**
+         * toString
+         *
+         * @return string
+         */
+        public function toString() : string;
+    }
 }

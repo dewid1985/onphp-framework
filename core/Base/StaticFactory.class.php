@@ -8,17 +8,18 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Simple grouping class.
- *
- * @ingroup Base
- * @ingroup Module
- **/
-abstract class StaticFactory
-{
-    final private function __construct()
+namespace OnPhp {
+    /**
+     * Simple grouping class.
+     *
+     * @ingroup Base
+     * @ingroup Module
+     **/
+    abstract class StaticFactory
     {
-        /*_*/
+        final private function __construct()
+        {
+            /*_*/
+        }
     }
 }

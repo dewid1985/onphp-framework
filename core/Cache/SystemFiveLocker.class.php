@@ -9,66 +9,68 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * System-V semaphores based locking.
- *
- * @ingroup Lockers
- **/
-class SystemFiveLocker extends BaseLocker
-{
+namespace OnPhp {
     /**
-     * @param $key
-     * @return bool|null
-     * @throws WrongArgumentException
-     */
-    public function get($key)
+     * System-V semaphores based locking.
+     *
+     * @ingroup Lockers
+     **/
+    class SystemFiveLocker extends BaseLocker
     {
-        try {
-            if (!isset($this->pool[$key])) {
-                $this->pool[$key] = sem_get($key, 1, ONPHP_IPC_PERMS, false);
+        /**
+         * @param $key
+         * @return bool|null
+         * @throws WrongArgumentException
+         */
+        public function get($key)
+        {
+            try {
+                if (!isset($this->pool[$key])) {
+                    $this->pool[$key] = sem_get($key, 1, ONPHP_IPC_PERMS, false);
+                }
+
+                return sem_acquire($this->pool[$key]);
+            } catch (BaseException $e) {
+                return null;
             }
 
-            return sem_acquire($this->pool[$key]);
-        } catch (BaseException $e) {
+            Assert::isUnreachable();
+        }
+
+        /**
+         * @param $key
+         * @return bool|null
+         */
+        public function free($key)
+        {
+            if (isset($this->pool[$key])) {
+                try {
+                    return sem_release($this->pool[$key]);
+                } catch (BaseException $e) {
+                    // acquired by another process
+                    return false;
+                }
+            }
+
             return null;
         }
 
-        Assert::isUnreachable();
-    }
-
-    /**
-     * @param $key
-     * @return bool|null
-     */
-    public function free($key)
-    {
-        if (isset($this->pool[$key])) {
-            try {
-                return sem_release($this->pool[$key]);
-            } catch (BaseException $e) {
-                // acquired by another process
-                return false;
+        /**
+         * @param $key
+         * @return bool|null
+         */
+        public function drop($key)
+        {
+            if (isset($this->pool[$key])) {
+                try {
+                    return sem_remove($this->pool[$key]);
+                } catch (BaseException $e) {
+                    unset($this->pool[$key]); // already race-removed
+                    return false;
+                }
             }
+
+            return null;
         }
-
-        return null;
-    }
-
-    /**
-     * @param $key
-     * @return bool|null
-     */
-    public function drop($key)
-    {
-        if (isset($this->pool[$key])) {
-            try {
-                return sem_remove($this->pool[$key]);
-            } catch (BaseException $e) {
-                unset($this->pool[$key]); // already race-removed
-                return false;
-            }
-        }
-
-        return null;
     }
 }

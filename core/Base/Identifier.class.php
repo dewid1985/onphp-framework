@@ -8,61 +8,62 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see Identifiable
- *
- * @ingroup Base
- * @ingroup Module
- **/
-class Identifier implements Identifiable
-{
-    private $id = null;
-    private $final = false;
-
-
+namespace OnPhp {
     /**
-     * @param $id
-     * @return Identifier
-     */
-    public static function wrap($id) : Identifier
-    {
-        return (new Identifier())->setId($id);
-    }
-
-    /**
-     * @return null
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return Identifier
+     * @see Identifiable
+     *
+     * @ingroup Base
+     * @ingroup Module
      **/
-    public function setId($id) : Identifier
+    class Identifier implements Identifiable
     {
-        $this->id = $id;
+        private $id = null;
+        private $final = false;
 
-        return $this;
-    }
 
-    /**
-     * @return Identifier
-     **/
-    public function finalize() : Identifier
-    {
-        $this->final = true;
+        /**
+         * @param $id
+         * @return Identifier
+         */
+        public static function wrap($id) : Identifier
+        {
+            return (new Identifier())->setId($id);
+        }
 
-        return $this;
-    }
+        /**
+         * @return null
+         */
+        public function getId()
+        {
+            return $this->id;
+        }
 
-    /**
-     * @return bool
-     */
-    public function isFinalized()
-    {
-        return $this->final;
+        /**
+         * @return Identifier
+         **/
+        public function setId($id) : Identifier
+        {
+            $this->id = $id;
+
+            return $this;
+        }
+
+        /**
+         * @return Identifier
+         **/
+        public function finalize() : Identifier
+        {
+            $this->final = true;
+
+            return $this;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isFinalized()
+        {
+            return $this->final;
+        }
     }
 }

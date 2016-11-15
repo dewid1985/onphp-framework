@@ -9,14 +9,16 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Base
- * @ingroup Module
- **/
-interface Prototyped
-{
+namespace OnPhp {
     /**
-     * @return AbstractProtoClass
+     * @ingroup Base
+     * @ingroup Module
      **/
-    public static function proto();
+    interface Prototyped
+    {
+        /**
+         * @return AbstractProtoClass
+         **/
+        public static function proto();
+    }
 }

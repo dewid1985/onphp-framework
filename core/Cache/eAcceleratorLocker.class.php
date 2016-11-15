@@ -8,47 +8,48 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see http://eaccelerator.net/
- *
- * @ingroup Lockers
- **/
-class eAcceleratorLocker extends BaseLocker
-{
+namespace OnPhp {
     /**
-     * @param $key
-     * @return mixed
-     */
-    public function get($key)
+     * @see http://eaccelerator.net/
+     *
+     * @ingroup Lockers
+     **/
+    class eAcceleratorLocker extends BaseLocker
     {
-        return eaccelerator_lock($key);
-    }
+        /**
+         * @param $key
+         * @return mixed
+         */
+        public function get($key)
+        {
+            return eaccelerator_lock($key);
+        }
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public function free($key)
-    {
-        return eaccelerator_unlock($key);
-    }
+        /**
+         * @param $key
+         * @return mixed
+         */
+        public function free($key)
+        {
+            return eaccelerator_unlock($key);
+        }
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public function drop($key)
-    {
-        return $this->free($key);
-    }
+        /**
+         * @param $key
+         * @return mixed
+         */
+        public function drop($key)
+        {
+            return $this->free($key);
+        }
 
-    /**
-     * @return bool
-     */
-    public function clean()
-    {
-        // will be cleaned out upon script's shutdown
-        return true;
+        /**
+         * @return bool
+         */
+        public function clean()
+        {
+            // will be cleaned out upon script's shutdown
+            return true;
+        }
     }
 }

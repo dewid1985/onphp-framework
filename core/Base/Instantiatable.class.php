@@ -9,11 +9,13 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Base
- * @ingroup Module
- **/
-interface Instantiatable
-{
-    public static function me();
+namespace OnPhp {
+    /**
+     * @ingroup Base
+     * @ingroup Module
+     **/
+    interface Instantiatable
+    {
+        public static function me();
+    }
 }

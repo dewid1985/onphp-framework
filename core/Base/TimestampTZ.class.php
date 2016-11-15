@@ -7,57 +7,58 @@
  *   published by the Free Software Foundation; either version 3 of the    *
  *   License, or (at your option) any later version.                       *
  ***************************************************************************/
-
-/**
- * Timestamp with time zone
- */
-class TimestampTZ extends Timestamp
-{
+namespace OnPhp {
     /**
-     * @static
-     * @return string
+     * Timestamp with time zone
      */
-    protected static function getFormat() : string
+    class TimestampTZ extends Timestamp
     {
-        return 'Y-m-d H:i:sO';
-    }
-
-    /**
-     * @param null $zone
-     * @return Timestamp|static
-     */
-    public function toTimestamp($zone = null)
-    {
-        if ($zone) {
-
-            if (
-                !($zone instanceof DateTimeZone)
-                && is_scalar($zone)
-            ) {
-                $zone = new DateTimeZone($zone);
-            }
-
-            return new static($this->toStamp(), $zone);
+        /**
+         * @static
+         * @return string
+         */
+        protected static function getFormat() : string
+        {
+            return 'Y-m-d H:i:sO';
         }
 
-        return parent::toTimestamp();
-    }
+        /**
+         * @param null $zone
+         * @return Timestamp|static
+         */
+        public function toTimestamp($zone = null)
+        {
+            if ($zone) {
 
-    /**
-     * @param Date $left
-     * @param Date $right
-     * @return int
-     * @throws WrongArgumentException
-     */
-    public static function compare(Date $left, Date $right) : int
-    {
-        Assert::isTrue(
-            (
-                $left instanceof TimestampTZ
-                && $right instanceof TimestampTZ
-            )
-        );
+                if (
+                    !($zone instanceof DateTimeZone)
+                    && is_scalar($zone)
+                ) {
+                    $zone = new DateTimeZone($zone);
+                }
 
-        return parent::compare($left, $right);
+                return new static($this->toStamp(), $zone);
+            }
+
+            return parent::toTimestamp();
+        }
+
+        /**
+         * @param Date $left
+         * @param Date $right
+         * @return int
+         * @throws WrongArgumentException
+         */
+        public static function compare(Date $left, Date $right) : int
+        {
+            Assert::isTrue(
+                (
+                    $left instanceof TimestampTZ
+                    && $right instanceof TimestampTZ
+                )
+            );
+
+            return parent::compare($left, $right);
+        }
     }
 }

@@ -9,11 +9,13 @@
  *                                                                          *
  ****************************************************************************/
 
-/**
- * @ingroup Exceptions
- * @ingroup Module
- **/
-class ClassNotFoundException extends BaseException
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     * @ingroup Module
+     **/
+    class ClassNotFoundException extends BaseException
+    {
+        /*_*/
+    }
 }

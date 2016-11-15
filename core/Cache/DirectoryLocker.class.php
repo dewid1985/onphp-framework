@@ -8,76 +8,77 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Directories based locker.
- *
- * @ingroup Lockers
- **/
-class DirectoryLocker extends BaseLocker
-{
-    private $directory = null;
-
+namespace OnPhp {
     /**
-     * DirectoryLocker constructor.
-     * @param string $directory
-     * @throws WrongArgumentException
-     */
-    protected function __construct($directory = 'dir-locking/')
+     * Directories based locker.
+     *
+     * @ingroup Lockers
+     **/
+    class DirectoryLocker extends BaseLocker
     {
-        $this->directory = ONPHP_TEMP_PATH . $directory;
+        private $directory = null;
 
-        if (!is_writable($this->directory)) {
-            if (!mkdir($this->directory, 0700, true)) {
-                throw new WrongArgumentException(
-                    "can not write to '{$directory}'"
-                );
-            }
-        }
-    }
+        /**
+         * DirectoryLocker constructor.
+         * @param string $directory
+         * @throws WrongArgumentException
+         */
+        protected function __construct($directory = 'dir-locking/')
+        {
+            $this->directory = ONPHP_TEMP_PATH . $directory;
 
-    /**
-     * @param $key
-     * @return bool
-     */
-    public function get($key)
-    {
-        $mseconds = 0;
-
-        while ($mseconds < 10000) {
-            try {
-                mkdir($this->directory . $key, 0700, false);
-                return $this->pool[$key] = true;
-            } catch (BaseException $e) {
-                // still exist
-                unset($e);
-                $mseconds += 200;
-                usleep(200);
+            if (!is_writable($this->directory)) {
+                if (!mkdir($this->directory, 0700, true)) {
+                    throw new WrongArgumentException(
+                        "can not write to '{$directory}'"
+                    );
+                }
             }
         }
 
-        return false;
-    }
+        /**
+         * @param $key
+         * @return bool
+         */
+        public function get($key)
+        {
+            $mseconds = 0;
 
-    /**
-     * @param $key
-     * @return bool
-     */
-    public function drop($key)
-    {
-        return $this->free($key);
-    }
+            while ($mseconds < 10000) {
+                try {
+                    mkdir($this->directory . $key, 0700, false);
+                    return $this->pool[$key] = true;
+                } catch (BaseException $e) {
+                    // still exist
+                    unset($e);
+                    $mseconds += 200;
+                    usleep(200);
+                }
+            }
 
-    /**
-     * @param $key
-     * @return bool
-     */
-    public function free($key)
-    {
-        try {
-            return rmdir($this->directory . $key);
-        } catch (BaseException $e) {
             return false;
+        }
+
+        /**
+         * @param $key
+         * @return bool
+         */
+        public function drop($key)
+        {
+            return $this->free($key);
+        }
+
+        /**
+         * @param $key
+         * @return bool
+         */
+        public function free($key)
+        {
+            try {
+                return rmdir($this->directory . $key);
+            } catch (BaseException $e) {
+                return false;
+            }
         }
     }
 }

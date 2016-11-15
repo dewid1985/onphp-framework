@@ -8,16 +8,17 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * @see NamedObject
+     *
+     * @ingroup Base
+     * @ingroup Module
+     **/
+    interface Named extends Identifiable
+    {
+        public function getName();
 
-/**
- * @see NamedObject
- *
- * @ingroup Base
- * @ingroup Module
- **/
-interface Named extends Identifiable
-{
-    public function getName();
-
-    public function setName($name);
+        public function setName($name);
+    }
 }

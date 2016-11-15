@@ -8,22 +8,23 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * Transaction access modes.
+     *
+     * @see http://www.postgresql.org/docs/current/interactive/sql-start-transaction.html
+     *
+     * @ingroup Transaction
+     **/
+    class AccessMode extends Enumeration
+    {
+        const
+            READ_ONLY = 0x01,
+            READ_WRITE = 0x02;
 
-/**
- * Transaction access modes.
- *
- * @see http://www.postgresql.org/docs/current/interactive/sql-start-transaction.html
- *
- * @ingroup Transaction
- **/
-class AccessMode extends Enumeration
-{
-    const
-        READ_ONLY = 0x01,
-        READ_WRITE = 0x02;
-
-    protected $names = [
-        self::READ_ONLY => 'read only',
-        self::READ_WRITE => 'read write'
-    ];
+        protected $names = [
+            self::READ_ONLY => 'read only',
+            self::READ_WRITE => 'read write'
+        ];
+    }
 }

@@ -9,37 +9,39 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Cache
- **/
-abstract class SelectivePeer extends CachePeer
-{
-    const MARGINAL_VALUE = 'i_am_declassed_element'; // Yanka R.I.P.
-
-    protected $className = null;
-
+namespace OnPhp {
     /**
-     * @param $className
-     * @return $this
-     */
-    public function mark($className)
+     * @ingroup Cache
+     **/
+    abstract class SelectivePeer extends CachePeer
     {
-        $this->className = $className;
-        return $this;
-    }
+        const MARGINAL_VALUE = 'i_am_declassed_element'; // Yanka R.I.P.
 
-    /**
-     * @return null|string
-     */
-    protected function getClassName()
-    {
-        if (!$this->className)
-            $class = self::MARGINAL_VALUE;
-        else
-            $class = $this->className;
+        protected $className = null;
 
-        $this->className = null; // eat it after use
+        /**
+         * @param $className
+         * @return $this
+         */
+        public function mark($className)
+        {
+            $this->className = $className;
+            return $this;
+        }
 
-        return $class;
+        /**
+         * @return null|string
+         */
+        protected function getClassName()
+        {
+            if (!$this->className)
+                $class = self::MARGINAL_VALUE;
+            else
+                $class = $this->className;
+
+            $this->className = null; // eat it after use
+
+            return $class;
+        }
     }
 }

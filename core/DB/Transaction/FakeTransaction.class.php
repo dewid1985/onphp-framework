@@ -8,32 +8,33 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Transaction-like wrapper around DB's queryNull.
- *
- * @ingroup Transaction
- **/
-class FakeTransaction extends BaseTransaction
-{
-
+namespace OnPhp {
     /**
-     * @param Query $query
-     * @return FakeTransaction
-     * @throws WrongArgumentException
-     */
-    public function add(Query $query) : FakeTransaction
-    {
-        $this->db->queryNull($query);
-
-        return $this;
-    }
-
-    /**
-     * @return FakeTransaction
+     * Transaction-like wrapper around DB's queryNull.
+     *
+     * @ingroup Transaction
      **/
-    public function flush() : FakeTransaction
+    class FakeTransaction extends BaseTransaction
     {
-        return $this;
+
+        /**
+         * @param Query $query
+         * @return FakeTransaction
+         * @throws WrongArgumentException
+         */
+        public function add(Query $query) : FakeTransaction
+        {
+            $this->db->queryNull($query);
+
+            return $this;
+        }
+
+        /**
+         * @return FakeTransaction
+         **/
+        public function flush() : FakeTransaction
+        {
+            return $this;
+        }
     }
 }

@@ -9,195 +9,198 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class PriorityQueue
-{
-    /** @var array  */
-    private $heap = [0];
+namespace OnPhp {
 
-    /** @var integer */
-    private $heapSize = 0;
-
-    /** @var null|callable */
-    private $cmpFunction = null;
-
-    /**
-     * PriorityQueue constructor.
-     * @param array $unsortedData
-     */
-    public function __construct(array $unsortedData)
+    class PriorityQueue
     {
-        $this->heap = array_merge($this->heap, $unsortedData);
+        /** @var array */
+        private $heap = [0];
 
-        $this->heapSize = count($this->heap) - 1;
+        /** @var integer */
+        private $heapSize = 0;
 
-        $this->buildMaxHeap();
-    }
+        /** @var null|callable */
+        private $cmpFunction = null;
 
-    /**
-     * @see buildMaxHeap
-     */
-    public function buildMaxHeap()
-    {
-        for ($i = $this->heapSize / 2; $i > 0; $i--) {
-            $this->maxHeapify($i);
-        }
-    }
+        /**
+         * PriorityQueue constructor.
+         * @param array $unsortedData
+         */
+        public function __construct(array $unsortedData)
+        {
+            $this->heap = array_merge($this->heap, $unsortedData);
 
-    /**
-     * @param $index
-     */
-    public function maxHeapify($index)
-    {
-        $left = $this->left($index);
-        $right = $this->right($index);
+            $this->heapSize = count($this->heap) - 1;
 
-        $largest = null;
-
-        $cmp = $this->cmpFunction;
-
-        if ($left <= $this->heapSize && $cmp($this->heap[$left], $this->heap[$index]) == 1) {
-            $largest = $left;
-        } else {
-            $largest = $index;
+            $this->buildMaxHeap();
         }
 
-        if ($right <= $this->heapSize && $cmp($this->heap[$right], $this->heap[$largest]) == 1) {
-            $largest = $right;
+        /**
+         * @see buildMaxHeap
+         */
+        public function buildMaxHeap()
+        {
+            for ($i = $this->heapSize / 2; $i > 0; $i--) {
+                $this->maxHeapify($i);
+            }
         }
 
-        if ($largest != $index) {
-            $this->swapElts($index, $largest);
+        /**
+         * @param $index
+         */
+        public function maxHeapify($index)
+        {
+            $left = $this->left($index);
+            $right = $this->right($index);
 
-            $this->maxHeapify($largest);
-        }
-    }
+            $largest = null;
 
-    /**
-     * @param $index
-     * @return integer
-     */
-    public function left($index) : int
-    {
-        return $index << 1;
-    }
+            $cmp = $this->cmpFunction;
 
-    /**
-     * @param $index
-     * @return integer
-     */
-    public function right($index) : int
-    {
-        return 1 + ($index << 1);
-    }
+            if ($left <= $this->heapSize && $cmp($this->heap[$left], $this->heap[$index]) == 1) {
+                $largest = $left;
+            } else {
+                $largest = $index;
+            }
 
-    /**
-     * @param $index1
-     * @param $index2
-     */
-    private function swapElts($index1, $index2)
-    {
-        $tmp = $this->heap[$index2];
-        $this->heap[$index2] = $this->heap[$index1];
-        $this->heap[$index1] = $tmp;
-    }
+            if ($right <= $this->heapSize && $cmp($this->heap[$right], $this->heap[$largest]) == 1) {
+                $largest = $right;
+            }
 
+            if ($largest != $index) {
+                $this->swapElts($index, $largest);
 
-    /**
-     * @return integer
-     */
-    public function getLength() : int
-    {
-        return $this->heapSize;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function first()
-    {
-        return $this->heap[1];
-    }
-
-    /**
-     * @param $function
-     * @return PriorityQueue
-     */
-    public function setCmpFunction($function) : PriorityQueue
-    {
-        $this->cmpFunction = $function;
-
-        return $this;
-    }
-
-    /**
-     * @return null
-     */
-    public function pop()
-    {
-        if ($this->heapSize == 0) {
-            return null;
+                $this->maxHeapify($largest);
+            }
         }
 
-        $max = $this->heap[1];
-
-        $this->heap[1] = $this->heap[$this->heapSize--];
-
-        $this->maxHeapify(1);
-
-        return $max;
-    }
-
-    /**
-     * @param $elt
-     */
-    public function push($elt)
-    {
-        ++$this->heapSize;
-
-        $this->heap[$this->heapSize] = PrimitiveInteger::SIGNED_MIN;
-
-        $index = $this->heapSize;
-
-        $this->heap[$index] = $elt;
-
-        $cmp = $this->cmpFunction;
-
-        while (
-            $index > 1
-            &&
-            $cmp(
-                $this->heap[$this->parent($index)],
-                $this->heap[$index]
-            ) == -1
-        ) {
-            $this->swapElts($index, $this->parent($index));
-
-            $index = $this->parent($index);
+        /**
+         * @param $index
+         * @return integer
+         */
+        public function left($index) : int
+        {
+            return $index << 1;
         }
-    }
 
-    /**
-     * @param $index
-     * @return integer
-     */
-    public function parent($index) : int
-    {
-        return $index >> 1;
-    }
+        /**
+         * @param $index
+         * @return integer
+         */
+        public function right($index) : int
+        {
+            return 1 + ($index << 1);
+        }
 
-    /**
-     * delete by index
-     *
-     * @param $index
-     */
-    public function delete($index)
-    {
-        $this->heap[$index] = $this->heap[$this->heapSize];
+        /**
+         * @param $index1
+         * @param $index2
+         */
+        private function swapElts($index1, $index2)
+        {
+            $tmp = $this->heap[$index2];
+            $this->heap[$index2] = $this->heap[$index1];
+            $this->heap[$index1] = $tmp;
+        }
 
-        unset($this->heap[$this->heapSize]);
 
-        $this->heapSize--;
+        /**
+         * @return integer
+         */
+        public function getLength() : int
+        {
+            return $this->heapSize;
+        }
 
-        $this->maxHeapify($index);
+        /**
+         * @return mixed
+         */
+        public function first()
+        {
+            return $this->heap[1];
+        }
+
+        /**
+         * @param $function
+         * @return PriorityQueue
+         */
+        public function setCmpFunction($function) : PriorityQueue
+        {
+            $this->cmpFunction = $function;
+
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function pop()
+        {
+            if ($this->heapSize == 0) {
+                return null;
+            }
+
+            $max = $this->heap[1];
+
+            $this->heap[1] = $this->heap[$this->heapSize--];
+
+            $this->maxHeapify(1);
+
+            return $max;
+        }
+
+        /**
+         * @param $elt
+         */
+        public function push($elt)
+        {
+            ++$this->heapSize;
+
+            $this->heap[$this->heapSize] = PrimitiveInteger::SIGNED_MIN;
+
+            $index = $this->heapSize;
+
+            $this->heap[$index] = $elt;
+
+            $cmp = $this->cmpFunction;
+
+            while (
+                $index > 1
+                &&
+                $cmp(
+                    $this->heap[$this->parent($index)],
+                    $this->heap[$index]
+                ) == -1
+            ) {
+                $this->swapElts($index, $this->parent($index));
+
+                $index = $this->parent($index);
+            }
+        }
+
+        /**
+         * @param $index
+         * @return integer
+         */
+        public function parent($index) : int
+        {
+            return $index >> 1;
+        }
+
+        /**
+         * delete by index
+         *
+         * @param $index
+         */
+        public function delete($index)
+        {
+            $this->heap[$index] = $this->heap[$this->heapSize];
+
+            unset($this->heap[$this->heapSize]);
+
+            $this->heapSize--;
+
+            $this->maxHeapify($index);
+        }
     }
 }

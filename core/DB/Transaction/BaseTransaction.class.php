@@ -8,89 +8,90 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Transaction's basis.
- *
- * @ingroup Transaction
- **/
-abstract class BaseTransaction
-{
-    protected $db = null;
-
-    /** @var IsolationLevel */
-    protected $isoLevel = null;
-
-    /** @var AccessMode */
-    protected $mode = null;
-
+namespace OnPhp {
     /**
-     * BaseTransaction constructor.
-     * @param DB $db
-     */
-    public function __construct(DB $db)
-    {
-        $this->db = $db;
-    }
-
-    /**
-     * @return mixed
-     */
-    abstract public function flush();
-
-    /**
-     * @return DB
+     * Transaction's basis.
+     *
+     * @ingroup Transaction
      **/
-    public function getDB() : DB
+    abstract class BaseTransaction
     {
-        return $this->db;
-    }
+        protected $db = null;
 
-    /**
-     * @return BaseTransaction
-     **/
-    public function setDB(DB $db)
-    {
-        $this->db = $db;
+        /** @var IsolationLevel */
+        protected $isoLevel = null;
 
-        return $this;
-    }
+        /** @var AccessMode */
+        protected $mode = null;
 
-    /**
-     * @return BaseTransaction
-     **/
-    public function setIsolationLevel(IsolationLevel $level)
-    {
-        $this->isoLevel = $level;
-
-        return $this;
-    }
-
-    /**
-     * @return BaseTransaction
-     **/
-    public function setAccessMode(AccessMode $mode)
-    {
-        $this->mode = $mode;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getBeginString() : string
-    {
-        $begin = 'start transaction';
-
-        if ($this->isoLevel) {
-            $begin .= ' ' . $this->isoLevel->toString();
+        /**
+         * BaseTransaction constructor.
+         * @param DB $db
+         */
+        public function __construct(DB $db)
+        {
+            $this->db = $db;
         }
 
-        if ($this->mode) {
-            $begin .= ' ' . $this->mode->toString();
+        /**
+         * @return mixed
+         */
+        abstract public function flush();
+
+        /**
+         * @return DB
+         **/
+        public function getDB() : DB
+        {
+            return $this->db;
         }
 
-        return $begin . ";\n";
+        /**
+         * @return BaseTransaction
+         **/
+        public function setDB(DB $db)
+        {
+            $this->db = $db;
+
+            return $this;
+        }
+
+        /**
+         * @return BaseTransaction
+         **/
+        public function setIsolationLevel(IsolationLevel $level)
+        {
+            $this->isoLevel = $level;
+
+            return $this;
+        }
+
+        /**
+         * @return BaseTransaction
+         **/
+        public function setAccessMode(AccessMode $mode)
+        {
+            $this->mode = $mode;
+
+            return $this;
+        }
+
+        /**
+         * @return string
+         */
+        protected function getBeginString() : string
+        {
+            $begin = 'start transaction';
+
+            if ($this->isoLevel) {
+                $begin .= ' ' . $this->isoLevel->toString();
+            }
+
+            if ($this->mode) {
+                $begin .= ' ' . $this->mode->toString();
+            }
+
+            return $begin . ";\n";
+        }
     }
 }

@@ -8,288 +8,290 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * CachePeer for debugging and logging puproses.
- *
- * @ingroup Cache
- **/
-class DebugCachePeer extends SelectivePeer
-{
-    private $peer = null;
-    private $logger = null;
-    private $isWeb = true;
-    private $whiteListActions = [];
-    private $blackListActions = [];
-    private $actionFilter = false;
-
+namespace OnPhp {
     /**
-     * DebugCachePeer constructor.
-     * @param CachePeer $peer
-     * @param $logfile
-     * @param bool $isWeb
-     * @param bool $appendFile
-     */
-    public function __construct(CachePeer $peer, $logfile, $isWeb = true, $appendFile = true)
-    {
-        $this->peer = $peer;
-        $this->isWeb = $isWeb;
-        $this->logger =
-            (new StreamLogger)
-                ->setOutputStream(new FileOutputStream($logfile, $appendFile));
-    }
-
-    /**
-     * @param $actions
-     * @return DebugCachePeer
-     * @throws WrongStateException
-     */
-    public function setBlackListActions($actions) : DebugCachePeer
-    {
-        if (!empty($this->whiteListActions)) {
-            throw new WrongStateException('You already setup black list!');
-        }
-
-        $this->blackListActions = $actions;
-
-        $this->actionFilter = true;
-
-        return $this;
-    }
-
-    /**
-     * @return DebugCachePeer
-     */
-    public function dropBlackListActions() : DebugCachePeer
-    {
-        $this->blackListActions = [];
-
-        $this->actionFilter = false;
-
-        return $this;
-    }
-
-    /**
-     * @param $actions
-     * @return DebugCachePeer
-     * @throws WrongStateException
-     */
-    public function setWhiteListActions($actions) : DebugCachePeer
-    {
-        if (!empty($this->blackListActions)) {
-            throw new WrongStateException('You already setup white list!');
-        }
-
-        $this->whiteListActions = $actions;
-
-        $this->actionFilter = true;
-
-        return $this;
-    }
-
-    /**
-     * @return DebugCachePeer
-     */
-    public function dropWhiteListActions() : DebugCachePeer
-    {
-        $this->whiteListActions = [];
-
-        $this->actionFilter = false;
-
-        return $this;
-    }
-
-    /**
-     * @return CachePeer
-     * @param $className
-     * @return $this
-     */
-    public function mark($className)
-    {
-        return $this;
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     * @return mixed
-     */
-    public function increment($key, $value)
-    {
-        $beginTime = microtime(true);
-        $value = $this->peer->increment($key, $value);
-        $totalTime = microtime(true) - $beginTime;
-
-        $this->log('increment', $totalTime, $key);
-
-        return $value;
-    }
-
-    /**
-     * @param $action
-     * @param $totalTime
-     * @param null $key
-     * @return DebugCachePeer
-     */
-    private function log($action, $totalTime, $key = null) : DebugCachePeer
-    {
-        if ($this->actionFilter) {
-            if (
-                !empty($this->blackListActions)
-                && in_array($action, $this->blackListActions)
-            ) {
-                return $this;
-            }
-
-            if (
-                !empty($this->whiteListActions)
-                && !in_array($action, $this->whiteListActions)
-            ) {
-                return $this;
-            }
-        }
-
-        $record = null;
-
-        if ($this->isWeb) {
-            $record .= (
-                (isset($_SERVER['SSI_REQUEST_URI']))
-                    ? $_SERVER['SSI_REQUEST_URI']
-                    : $_SERVER['REQUEST_URI']
-                ) . "\t";
-        }
-
-        $record .= $action . "\t" . $key . "\t" . $totalTime;
-
-        $this->logger->info($record);
-
-        return $this;
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     * @return mixed
-     */
-    public function decrement($key, $value)
-    {
-        $beginTime = microtime(true);
-        $value = $this->peer->decrement($key, $value);
-        $totalTime = microtime(true) - $beginTime;
-
-        $this->log('decrement', $totalTime, $key);
-
-        return $value;
-    }
-
-    /**
-     * @param $indexes
-     * @return mixed
-     */
-    public function getList($indexes)
-    {
-        $beginTime = microtime(true);
-        $value = $this->peer->getList($indexes);
-        $totalTime = microtime(true) - $beginTime;
-
-        $this->log('getList', $totalTime, implode(',', $indexes));
-
-        return $value;
-    }
-
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public function get($key)
-    {
-        $beginTime = microtime(true);
-        $value = $this->peer->get($key);
-        $totalTime = microtime(true) - $beginTime;
-
-        $this->log('get', $totalTime, $key);
-
-        return $value;
-    }
-
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public function delete($key)
-    {
-        $beginTime = microtime(true);
-        $value = $this->peer->delete($key);
-        $totalTime = microtime(true) - $beginTime;
-
-        $this->log('delete', $totalTime, $key);
-
-        return $value;
-    }
-
-    /**
-     * @return CachePeer
+     * CachePeer for debugging and logging puproses.
+     *
+     * @ingroup Cache
      **/
-    public function clean()
+    class DebugCachePeer extends SelectivePeer
     {
-        $beginTime = microtime(true);
-        $value = $this->peer->clean();
-        $totalTime = microtime(true) - $beginTime;
+        private $peer = null;
+        private $logger = null;
+        private $isWeb = true;
+        private $whiteListActions = [];
+        private $blackListActions = [];
+        private $actionFilter = false;
 
-        $this->log('clean', $totalTime);
+        /**
+         * DebugCachePeer constructor.
+         * @param CachePeer $peer
+         * @param $logfile
+         * @param bool $isWeb
+         * @param bool $appendFile
+         */
+        public function __construct(CachePeer $peer, $logfile, $isWeb = true, $appendFile = true)
+        {
+            $this->peer = $peer;
+            $this->isWeb = $isWeb;
+            $this->logger =
+                (new StreamLogger)
+                    ->setOutputStream(new FileOutputStream($logfile, $appendFile));
+        }
 
-        return $value;
-    }
+        /**
+         * @param $actions
+         * @return DebugCachePeer
+         * @throws WrongStateException
+         */
+        public function setBlackListActions($actions) : DebugCachePeer
+        {
+            if (!empty($this->whiteListActions)) {
+                throw new WrongStateException('You already setup black list!');
+            }
 
-    /**
-     * @return bool
-     */
-    public function isAlive()
-    {
-        $beginTime = microtime(true);
-        $value = $this->peer->isAlive();
-        $totalTime = microtime(true) - $beginTime;
+            $this->blackListActions = $actions;
 
-        $this->log('isAlive', $totalTime);
+            $this->actionFilter = true;
 
-        return $value;
-    }
+            return $this;
+        }
 
-    /**
-     * @param $key
-     * @param $data
-     * @return mixed
-     */
-    public function append($key, $data)
-    {
-        $beginTime = microtime(true);
-        $value = $this->peer->append($key, $data);
-        $totalTime = microtime(true) - $beginTime;
+        /**
+         * @return DebugCachePeer
+         */
+        public function dropBlackListActions() : DebugCachePeer
+        {
+            $this->blackListActions = [];
 
-        $this->log('append', $totalTime, $key);
+            $this->actionFilter = false;
 
-        return $value;
-    }
+            return $this;
+        }
 
-    /**
-     * @param $action
-     * @param $key
-     * @param $value
-     * @param int $expires
-     * @return mixed
-     */
-    protected function store(
-        $action,
-        $key,
-        $value,
-        $expires = Cache::EXPIRES_MEDIUM
-    ) {
-        $beginTime = microtime(true);
-        $value = $this->peer->store($action, $key, $value, $expires);
-        $totalTime = microtime(true) - $beginTime;
+        /**
+         * @param $actions
+         * @return DebugCachePeer
+         * @throws WrongStateException
+         */
+        public function setWhiteListActions($actions) : DebugCachePeer
+        {
+            if (!empty($this->blackListActions)) {
+                throw new WrongStateException('You already setup white list!');
+            }
 
-        $this->log('store + ' . $action, $totalTime, $key);
+            $this->whiteListActions = $actions;
 
-        return $value;
+            $this->actionFilter = true;
+
+            return $this;
+        }
+
+        /**
+         * @return DebugCachePeer
+         */
+        public function dropWhiteListActions() : DebugCachePeer
+        {
+            $this->whiteListActions = [];
+
+            $this->actionFilter = false;
+
+            return $this;
+        }
+
+        /**
+         * @return CachePeer
+         * @param $className
+         * @return $this
+         */
+        public function mark($className)
+        {
+            return $this;
+        }
+
+        /**
+         * @param $key
+         * @param $value
+         * @return mixed
+         */
+        public function increment($key, $value)
+        {
+            $beginTime = microtime(true);
+            $value = $this->peer->increment($key, $value);
+            $totalTime = microtime(true) - $beginTime;
+
+            $this->log('increment', $totalTime, $key);
+
+            return $value;
+        }
+
+        /**
+         * @param $action
+         * @param $totalTime
+         * @param null $key
+         * @return DebugCachePeer
+         */
+        private function log($action, $totalTime, $key = null) : DebugCachePeer
+        {
+            if ($this->actionFilter) {
+                if (
+                    !empty($this->blackListActions)
+                    && in_array($action, $this->blackListActions)
+                ) {
+                    return $this;
+                }
+
+                if (
+                    !empty($this->whiteListActions)
+                    && !in_array($action, $this->whiteListActions)
+                ) {
+                    return $this;
+                }
+            }
+
+            $record = null;
+
+            if ($this->isWeb) {
+                $record .= (
+                    (isset($_SERVER['SSI_REQUEST_URI']))
+                        ? $_SERVER['SSI_REQUEST_URI']
+                        : $_SERVER['REQUEST_URI']
+                    ) . "\t";
+            }
+
+            $record .= $action . "\t" . $key . "\t" . $totalTime;
+
+            $this->logger->info($record);
+
+            return $this;
+        }
+
+        /**
+         * @param $key
+         * @param $value
+         * @return mixed
+         */
+        public function decrement($key, $value)
+        {
+            $beginTime = microtime(true);
+            $value = $this->peer->decrement($key, $value);
+            $totalTime = microtime(true) - $beginTime;
+
+            $this->log('decrement', $totalTime, $key);
+
+            return $value;
+        }
+
+        /**
+         * @param $indexes
+         * @return mixed
+         */
+        public function getList($indexes)
+        {
+            $beginTime = microtime(true);
+            $value = $this->peer->getList($indexes);
+            $totalTime = microtime(true) - $beginTime;
+
+            $this->log('getList', $totalTime, implode(',', $indexes));
+
+            return $value;
+        }
+
+        /**
+         * @param $key
+         * @return mixed
+         */
+        public function get($key)
+        {
+            $beginTime = microtime(true);
+            $value = $this->peer->get($key);
+            $totalTime = microtime(true) - $beginTime;
+
+            $this->log('get', $totalTime, $key);
+
+            return $value;
+        }
+
+        /**
+         * @param $key
+         * @return mixed
+         */
+        public function delete($key)
+        {
+            $beginTime = microtime(true);
+            $value = $this->peer->delete($key);
+            $totalTime = microtime(true) - $beginTime;
+
+            $this->log('delete', $totalTime, $key);
+
+            return $value;
+        }
+
+        /**
+         * @return CachePeer
+         **/
+        public function clean()
+        {
+            $beginTime = microtime(true);
+            $value = $this->peer->clean();
+            $totalTime = microtime(true) - $beginTime;
+
+            $this->log('clean', $totalTime);
+
+            return $value;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isAlive()
+        {
+            $beginTime = microtime(true);
+            $value = $this->peer->isAlive();
+            $totalTime = microtime(true) - $beginTime;
+
+            $this->log('isAlive', $totalTime);
+
+            return $value;
+        }
+
+        /**
+         * @param $key
+         * @param $data
+         * @return mixed
+         */
+        public function append($key, $data)
+        {
+            $beginTime = microtime(true);
+            $value = $this->peer->append($key, $data);
+            $totalTime = microtime(true) - $beginTime;
+
+            $this->log('append', $totalTime, $key);
+
+            return $value;
+        }
+
+        /**
+         * @param $action
+         * @param $key
+         * @param $value
+         * @param int $expires
+         * @return mixed
+         */
+        protected function store(
+            $action,
+            $key,
+            $value,
+            $expires = Cache::EXPIRES_MEDIUM
+        )
+        {
+            $beginTime = microtime(true);
+            $value = $this->peer->store($action, $key, $value, $expires);
+            $totalTime = microtime(true) - $beginTime;
+
+            $this->log('store + ' . $action, $totalTime, $key);
+
+            return $value;
+        }
     }
 }

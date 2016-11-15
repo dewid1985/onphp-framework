@@ -1,5 +1,4 @@
 <?php
-
 /***************************************************************************
  *   Copyright (C) 2012 by Artem Naumenko                                  *
  *                                                                         *
@@ -9,57 +8,60 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface Listable extends Iterator, ArrayAccess, Countable, SeekableIterator
-{
-    /**
-     * Push new list item to the tail of list
-     *
-     * @return Listable
-     */
-    public function append($value);
+namespace OnPhp {
 
-    /**
-     * Push new list item to the head of list
-     *
-     * @return Listable
-     */
-    public function prepend($value);
+    interface Listable extends Iterator, ArrayAccess, Countable, SeekableIterator
+    {
+        /**
+         * Push new list item to the tail of list
+         *
+         * @return Listable
+         */
+        public function append($value);
 
-    /**
-     * Trims $length items starting from @start
-     *
-     * @return Listable
-     */
-    public function trim($start, $length);
+        /**
+         * Push new list item to the head of list
+         *
+         * @return Listable
+         */
+        public function prepend($value);
 
-    /**
-     * Truncates list
-     *
-     * @return Listable
-     */
-    public function clear();
+        /**
+         * Trims $length items starting from @start
+         *
+         * @return Listable
+         */
+        public function trim($start, $length);
 
-    /**
-     * @return mixed
-     */
-    public function get($index);
+        /**
+         * Truncates list
+         *
+         * @return Listable
+         */
+        public function clear();
 
-    /**
-     * Returns the last element of list and removing it
-     *
-     * @return mixed
-     */
-    public function pop();
+        /**
+         * @return mixed
+         */
+        public function get($index);
 
-    /**
-     * @return Listable
-     */
-    public function set($index, $value);
+        /**
+         * Returns the last element of list and removing it
+         *
+         * @return mixed
+         */
+        public function pop();
 
-    /**
-     * Returns sublist from $start to $start+$length
-     *
-     * @return array
-     */
-    public function range($start, $length);
+        /**
+         * @return Listable
+         */
+        public function set($index, $value);
+
+        /**
+         * Returns sublist from $start to $start+$length
+         *
+         * @return array
+         */
+        public function range($start, $length);
+    }
 }
