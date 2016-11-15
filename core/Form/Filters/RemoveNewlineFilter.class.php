@@ -8,28 +8,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Replaces \n and \r by whitespace
- *
- * @ingroup Filters
- **/
-class RemoveNewlineFilter extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return RemoveNewLineFilter
+     * Replaces \n and \r by whitespace
+     *
+     * @ingroup Filters
      **/
-    public static function me()
+    class RemoveNewlineFilter extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return RemoveNewLineFilter
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function apply($value)
-    {
-        return preg_replace('/[\n\r]+/', ' ', $value);
+        /**
+         * @param $value
+         * @return mixed
+         */
+        public function apply($value)
+        {
+            return preg_replace('/[\n\r]+/', ' ', $value);
+        }
     }
 }

@@ -8,26 +8,27 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class JsonEncoderFilter extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return JsonEncoderFilter
+     * @ingroup Filters
      **/
-    public static function me()
+    class JsonEncoderFilter extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return JsonEncoderFilter
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value) : string
-    {
-        return json_encode($value);
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value) : string
+        {
+            return json_encode($value);
+        }
     }
 }

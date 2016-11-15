@@ -8,28 +8,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Inserts HTML line breaks before all newlines in a string.
- *
- * @ingroup Filters
- **/
-class NewLinesToBreaks extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return NewLinesToBreaks
+     * Inserts HTML line breaks before all newlines in a string.
+     *
+     * @ingroup Filters
      **/
-    public static function me()
+    class NewLinesToBreaks extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return NewLinesToBreaks
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value) : string
-    {
-        return nl2br($value);
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value) : string
+        {
+            return nl2br($value);
+        }
     }
 }

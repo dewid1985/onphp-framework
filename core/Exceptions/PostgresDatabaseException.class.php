@@ -8,15 +8,16 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Exceptions
- **/
-class PostgresDatabaseException extends DatabaseException
-{
-    public function __construct($message = null, $code = null)
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     **/
+    class PostgresDatabaseException extends DatabaseException
     {
-        parent::__construct($message);
-        $this->code = $code;
+        public function __construct($message = null, $code = null)
+        {
+            parent::__construct($message);
+            $this->code = $code;
+        }
     }
 }

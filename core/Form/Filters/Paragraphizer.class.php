@@ -8,31 +8,32 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class Paragraphizer extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return Paragraphizer
+     * @ingroup Filters
      **/
-    public static function me()
+    class Paragraphizer extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return Paragraphizer
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function apply($value)
-    {
-        return preg_replace(
-            '~^([^<].+)\s$~Uums',
-            '<p>$1</p>' . "\n",
-            $value
-        );
+        /**
+         * @param $value
+         * @return mixed
+         */
+        public function apply($value)
+        {
+            return preg_replace(
+                '~^([^<].+)\s$~Uums',
+                '<p>$1</p>' . "\n",
+                $value
+            );
+        }
     }
 }
 

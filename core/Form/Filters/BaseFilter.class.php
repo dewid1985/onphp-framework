@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Filter's template.
- *
- * @ingroup Filters
- * @ingroup Module
- **/
-abstract class BaseFilter extends Singleton implements Filtrator, Instantiatable
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * Filter's template.
+     *
+     * @ingroup Filters
+     * @ingroup Module
+     **/
+    abstract class BaseFilter extends Singleton implements Filtrator, Instantiatable
+    {
+        /*_*/
+    }
 }

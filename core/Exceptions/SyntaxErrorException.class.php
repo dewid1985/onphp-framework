@@ -8,62 +8,64 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Exceptions
- **/
-class SyntaxErrorException extends BaseException
-{
-    private $errorLine = null;
-    private $errorPosition = null;
-
+namespace OnPhp {
     /**
-     * SyntaxErrorException constructor.
-     * @param string $message
-     * @param null $errorLine
-     * @param null $errorPosition
-     * @param int $code
-     */
-    public function __construct(
-        $message,
-        $errorLine = null,
-        $errorPosition = null,
-        $code = 0
-    ) {
-        parent::__construct($message, $code);
-
-        $this->errorLine = $errorLine;
-        $this->errorPosition = $errorPosition;
-    }
-
-    /**
-     * @return null
-     */
-    public function getErrorLine()
+     * @ingroup Exceptions
+     **/
+    class SyntaxErrorException extends BaseException
     {
-        return $this->errorLine;
-    }
+        private $errorLine = null;
+        private $errorPosition = null;
 
-    /**
-     * @return null
-     */
-    public function getErrorPosition()
-    {
-        return $this->errorPosition;
-    }
+        /**
+         * SyntaxErrorException constructor.
+         * @param string $message
+         * @param null $errorLine
+         * @param null $errorPosition
+         * @param int $code
+         */
+        public function __construct(
+            $message,
+            $errorLine = null,
+            $errorPosition = null,
+            $code = 0
+        )
+        {
+            parent::__construct($message, $code);
 
-    /**
-     * @return string
-     */
-    public function __toString() : string
-    {
-        return
-            '[error at line '
-            . (Assert::checkInteger($this->errorLine) ? $this->errorLine : 'unknown')
-            . ', position '
-            . (Assert::checkInteger($this->errorPosition) ? $this->errorPosition : 'unknown')
-            . ": {$this->message}] in: \n" .
-            $this->getTraceAsString();
+            $this->errorLine = $errorLine;
+            $this->errorPosition = $errorPosition;
+        }
+
+        /**
+         * @return null
+         */
+        public function getErrorLine()
+        {
+            return $this->errorLine;
+        }
+
+        /**
+         * @return null
+         */
+        public function getErrorPosition()
+        {
+            return $this->errorPosition;
+        }
+
+        /**
+         * @return string
+         */
+        public function __toString() : string
+        {
+            return
+                '[error at line '
+                . (Assert::checkInteger($this->errorLine) ? $this->errorLine : 'unknown')
+                . ', position '
+                . (Assert::checkInteger($this->errorPosition) ? $this->errorPosition : 'unknown')
+                . ": {$this->message}] in: \n" .
+                $this->getTraceAsString();
+        }
     }
 }
 

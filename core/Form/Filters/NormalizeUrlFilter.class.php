@@ -8,24 +8,24 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see RegulatedPrimitive::addImportFilter()
- *
- * @ingroup Filters
- **/
-class NormalizeUrlFilter implements Filtrator
-{
-
-    public function apply($value)
+namespace OnPhp {
+    /**
+     * @see RegulatedPrimitive::addImportFilter()
+     *
+     * @ingroup Filters
+     **/
+    class NormalizeUrlFilter implements Filtrator
     {
-        $url =
-            (new HttpUrl)
-                ->parse($value)
-                ->ensureAbsolute()
-                ->normalize();
 
-        return $url->toString();
+        public function apply($value)
+        {
+            $url =
+                (new HttpUrl)
+                    ->parse($value)
+                    ->ensureAbsolute()
+                    ->normalize();
+
+            return $url->toString();
+        }
     }
 }
-

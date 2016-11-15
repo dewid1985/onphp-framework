@@ -8,183 +8,184 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * MySQL dialect.
- *
- * @see http://www.mysql.com/
- * @see http://www.php.net/mysql
- *
- * @ingroup DB
- **/
-class MyDialect extends Dialect
-{
-    const IN_BOOLEAN_MODE = 1;
-
+namespace OnPhp {
     /**
-     * @param bool $cascade
-     * @return null
-     */
-    public static function dropTableMode($cascade = false)
+     * MySQL dialect.
+     *
+     * @see http://www.mysql.com/
+     * @see http://www.php.net/mysql
+     *
+     * @ingroup DB
+     **/
+    class MyDialect extends Dialect
     {
-        return null;
-    }
+        const IN_BOOLEAN_MODE = 1;
 
-    /**
-     * @param bool $exist
-     * @return null
-     */
-    public static function timeZone($exist = false)
-    {
-        return null;
-    }
-
-    /**
-     * @param $field
-     * @return string
-     * @throws WrongArgumentException
-     */
-    public function quoteField($field)
-    {
-        if (strpos($field, '.') !== false) {
-            throw new WrongArgumentException();
-        } elseif (strpos($field, '::') !== false) {
-            throw new WrongArgumentException();
+        /**
+         * @param bool $cascade
+         * @return null
+         */
+        public static function dropTableMode($cascade = false)
+        {
+            return null;
         }
 
-        return "`{$field}`";
-    }
-
-    /**
-     * @param $table
-     * @return string
-     */
-    public function quoteTable($table)
-    {
-        return "`{$table}`";
-    }
-
-    /**
-     * @param $data
-     * @return string
-     */
-    public function quoteBinary($data)
-    {
-        return "'" . mysql_real_escape_string($data) . "'";
-    }
-
-    /**
-     * @param DataType $type
-     * @return null|string
-     */
-    public function typeToString(DataType $type)
-    {
-        if ($type->getId() == DataType::BINARY) {
-            return 'BLOB';
+        /**
+         * @param bool $exist
+         * @return null
+         */
+        public static function timeZone($exist = false)
+        {
+            return null;
         }
 
-        return parent::typeToString($type);
-    }
+        /**
+         * @param $field
+         * @return string
+         * @throws WrongArgumentException
+         */
+        public function quoteField($field)
+        {
+            if (strpos($field, '.') !== false) {
+                throw new WrongArgumentException();
+            } elseif (strpos($field, '::') !== false) {
+                throw new WrongArgumentException();
+            }
 
-    /**
-     * @return bool
-     */
-    public function hasTruncate()
-    {
-        return true;
-    }
+            return "`{$field}`";
+        }
 
-    /**
-     * @return bool
-     */
-    public function hasMultipleTruncate()
-    {
-        return false;
-    }
+        /**
+         * @param $table
+         * @return string
+         */
+        public function quoteTable($table)
+        {
+            return "`{$table}`";
+        }
 
-    /**
-     * @return bool
-     */
-    public function hasReturning()
-    {
-        return false;
-    }
+        /**
+         * @param $data
+         * @return string
+         */
+        public function quoteBinary($data)
+        {
+            return "'" . mysql_real_escape_string($data) . "'";
+        }
 
-    /**
-     * @param DBColumn $column
-     * @return null
-     */
-    public function preAutoincrement(DBColumn $column)
-    {
-        $column->setDefault(null);
+        /**
+         * @param DataType $type
+         * @return null|string
+         */
+        public function typeToString(DataType $type)
+        {
+            if ($type->getId() == DataType::BINARY) {
+                return 'BLOB';
+            }
 
-        return null;
-    }
+            return parent::typeToString($type);
+        }
 
-    /**
-     * @param DBColumn $column
-     * @return string
-     */
-    public function postAutoincrement(DBColumn $column)
-    {
-        return 'AUTO_INCREMENT';
-    }
+        /**
+         * @return bool
+         */
+        public function hasTruncate()
+        {
+            return true;
+        }
 
-    /**
-     * @param $fields
-     * @param $words
-     * @param $logic
-     * @return string
-     */
-    public function fullTextSearch($fields, $words, $logic)
-    {
-        return
-            ' MATCH ('
-            . implode(
-                ', ',
-                array_map(
-                    [$this, 'fieldToString'],
-                    $fields
+        /**
+         * @return bool
+         */
+        public function hasMultipleTruncate()
+        {
+            return false;
+        }
+
+        /**
+         * @return bool
+         */
+        public function hasReturning()
+        {
+            return false;
+        }
+
+        /**
+         * @param DBColumn $column
+         * @return null
+         */
+        public function preAutoincrement(DBColumn $column)
+        {
+            $column->setDefault(null);
+
+            return null;
+        }
+
+        /**
+         * @param DBColumn $column
+         * @return string
+         */
+        public function postAutoincrement(DBColumn $column)
+        {
+            return 'AUTO_INCREMENT';
+        }
+
+        /**
+         * @param $fields
+         * @param $words
+         * @param $logic
+         * @return string
+         */
+        public function fullTextSearch($fields, $words, $logic)
+        {
+            return
+                ' MATCH ('
+                . implode(
+                    ', ',
+                    array_map(
+                        [$this, 'fieldToString'],
+                        $fields
+                    )
                 )
-            )
-            . ') AGAINST ('
-            . self::prepareFullText($words, $logic)
-            . ')';
-    }
-
-    /**
-     * @param $words
-     * @param $logic
-     * @return string
-     * @throws WrongArgumentException
-     */
-    private static function prepareFullText($words, $logic)
-    {
-        Assert::isArray($words);
-
-        $retval = self::quoteValue(implode(' ', $words));
-
-        if (self::IN_BOOLEAN_MODE === $logic) {
-            return addcslashes($retval, '+-<>()~*"') . ' ' . 'IN BOOLEAN MODE';
-        } else {
-            return $retval;
+                . ') AGAINST ('
+                . self::prepareFullText($words, $logic)
+                . ')';
         }
-    }
 
-    /**
-     * @param $value
-     * @return string
-     * @throws WrongStateException
-     */
-    public function quoteValue($value)
-    {
-        /// @see Sequenceless for this convention
+        /**
+         * @param $words
+         * @param $logic
+         * @return string
+         * @throws WrongArgumentException
+         */
+        private static function prepareFullText($words, $logic)
+        {
+            Assert::isArray($words);
 
-        if ($value instanceof Identifier && !$value->isFinalized()) {
-            return "''";
-        } // instead of 'null', to be compatible with v. 4
+            $retval = self::quoteValue(implode(' ', $words));
 
-        return "'" . mysql_real_escape_string($value, $this->getLink()) . "'";
+            if (self::IN_BOOLEAN_MODE === $logic) {
+                return addcslashes($retval, '+-<>()~*"') . ' ' . 'IN BOOLEAN MODE';
+            } else {
+                return $retval;
+            }
+        }
+
+        /**
+         * @param $value
+         * @return string
+         * @throws WrongStateException
+         */
+        public function quoteValue($value)
+        {
+            /// @see Sequenceless for this convention
+
+            if ($value instanceof Identifier && !$value->isFinalized()) {
+                return "''";
+            } // instead of 'null', to be compatible with v. 4
+
+            return "'" . mysql_real_escape_string($value, $this->getLink()) . "'";
+        }
     }
 }
 

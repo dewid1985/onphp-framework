@@ -8,12 +8,13 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Exceptions
- * @ingroup Module
- **/
-class ObjectNotFoundException extends DatabaseException
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     * @ingroup Module
+     **/
+    class ObjectNotFoundException extends DatabaseException
+    {
+        /*_*/
+    }
 }

@@ -8,42 +8,42 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * MySQL dialect.
- *
- * @see http://www.mysql.com/
- * @see http://www.php.net/mysqli
- *
- * @ingroup DB
- **/
-class MyImprovedDialect extends MyDialect
-{
+namespace OnPhp {
     /**
-     * @param $value
-     * @return string
-     * @throws WrongStateException
-     */
-    public function quoteValue($value)
+     * MySQL dialect.
+     *
+     * @see http://www.mysql.com/
+     * @see http://www.php.net/mysqli
+     *
+     * @ingroup DB
+     **/
+    class MyImprovedDialect extends MyDialect
     {
-        /// @see Sequenceless for this convention
+        /**
+         * @param $value
+         * @return string
+         * @throws WrongStateException
+         */
+        public function quoteValue($value)
+        {
+            /// @see Sequenceless for this convention
 
-        if ($value instanceof Identifier && !$value->isFinalized()) {
-            return "''";
-        } // instead of 'null', to be compatible with v. 4
+            if ($value instanceof Identifier && !$value->isFinalized()) {
+                return "''";
+            } // instead of 'null', to be compatible with v. 4
 
-        return
-            "'" . mysqli_real_escape_string($this->getLink(), $value) . "'";
-    }
+            return
+                "'" . mysqli_real_escape_string($this->getLink(), $value) . "'";
+        }
 
-    /**
-     * @param $data
-     * @return string
-     * @throws WrongStateException
-     */
-    public function quoteBinary($data)
-    {
-        return "'" . mysqli_real_escape_string($this->getLink(), $data) . "'";
+        /**
+         * @param $data
+         * @return string
+         * @throws WrongStateException
+         */
+        public function quoteBinary($data)
+        {
+            return "'" . mysqli_real_escape_string($this->getLink(), $data) . "'";
+        }
     }
 }
-

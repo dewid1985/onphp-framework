@@ -8,32 +8,33 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class CallbackFilter implements Filtrator
-{
+namespace OnPhp {
     /**
-     * @var Closure
-     */
-    private $callback = null;
-
-    /**
-     * CallbackFilter constructor.
-     * @param Closure $callback
-     */
-    public function __construct(Closure $callback)
+     * @ingroup Filters
+     **/
+    class CallbackFilter implements Filtrator
     {
-        $this->callback = $callback;
-    }
+        /**
+         * @var Closure
+         */
+        private $callback = null;
 
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function apply($value)
-    {
-        return $this->callback->__invoke($value);
+        /**
+         * CallbackFilter constructor.
+         * @param Closure $callback
+         */
+        public function __construct(Closure $callback)
+        {
+            $this->callback = $callback;
+        }
+
+        /**
+         * @param $value
+         * @return mixed
+         */
+        public function apply($value)
+        {
+            return $this->callback->__invoke($value);
+        }
     }
 }

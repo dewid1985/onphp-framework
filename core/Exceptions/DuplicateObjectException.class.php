@@ -11,12 +11,13 @@
 /*
 	$Id$
 */
-
-/**
- * @ingroup Exceptions
- * @ingroup Module
- **/
-class DuplicateObjectException extends DatabaseException
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     * @ingroup Module
+     **/
+    class DuplicateObjectException extends DatabaseException
+    {
+        /*_*/
+    }
 }

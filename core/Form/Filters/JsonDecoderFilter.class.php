@@ -8,38 +8,39 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class JsonDecoderFilter extends BaseFilter
-{
-    private $assoc = false;
-
+namespace OnPhp {
     /**
-     * @return JsonDecoderFilter
+     * @ingroup Filters
      **/
-    public static function me() : JsonDecoderFilter
+    class JsonDecoderFilter extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        private $assoc = false;
 
-    /**
-     * @return JsonDecoderFilter
-     **/
-    public function setAssoc($orly = true) : JsonDecoderFilter
-    {
-        $this->assoc = (true === $orly);
+        /**
+         * @return JsonDecoderFilter
+         **/
+        public static function me() : JsonDecoderFilter
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-        return $this;
-    }
+        /**
+         * @return JsonDecoderFilter
+         **/
+        public function setAssoc($orly = true) : JsonDecoderFilter
+        {
+            $this->assoc = (true === $orly);
 
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function apply($value)
-    {
-        return json_decode($value, $this->assoc);
+            return $this;
+        }
+
+        /**
+         * @param $value
+         * @return mixed
+         */
+        public function apply($value)
+        {
+            return json_decode($value, $this->assoc);
+        }
     }
 }

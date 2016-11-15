@@ -8,45 +8,46 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Chained Filtrator.
- *
- * @ingroup Form
- **/
-class FilterChain implements Filtrator
-{
-    private $chain = [];
-
+namespace OnPhp {
     /**
-     * @param Filtrator $filter
-     * @return FilterChain
-     */
-    public function add(Filtrator $filter) : FilterChain
+     * Chained Filtrator.
+     *
+     * @ingroup Form
+     **/
+    class FilterChain implements Filtrator
     {
-        $this->chain[] = $filter;
-        return $this;
-    }
+        private $chain = [];
 
-    /**
-     * @return FilterChain
-     */
-    public function dropAll() : FilterChain
-    {
-        $this->chain = [];
-        return $this;
-    }
-
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function apply($value)
-    {
-        foreach ($this->chain as $filter) {
-            $value = $filter->apply($value);
+        /**
+         * @param Filtrator $filter
+         * @return FilterChain
+         */
+        public function add(Filtrator $filter) : FilterChain
+        {
+            $this->chain[] = $filter;
+            return $this;
         }
 
-        return $value;
+        /**
+         * @return FilterChain
+         */
+        public function dropAll() : FilterChain
+        {
+            $this->chain = [];
+            return $this;
+        }
+
+        /**
+         * @param $value
+         * @return mixed
+         */
+        public function apply($value)
+        {
+            foreach ($this->chain as $filter) {
+                $value = $filter->apply($value);
+            }
+
+            return $value;
+        }
     }
 }

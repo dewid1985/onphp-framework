@@ -8,13 +8,14 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * In case we're soapless.
- *
- * @ingroup Exceptions
- **/
-class SoapFault extends Exception
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * In case we're soapless.
+     *
+     * @ingroup Exceptions
+     **/
+    class SoapFault extends Exception
+    {
+        /*_*/
+    }
 }

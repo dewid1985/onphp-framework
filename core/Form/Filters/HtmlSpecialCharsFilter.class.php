@@ -8,28 +8,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * HTML Special Characters replacer.
- *
- * @ingroup Filters
- **/
-class HtmlSpecialCharsFilter extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return HtmlSpecialCharsFilter
+     * HTML Special Characters replacer.
+     *
+     * @ingroup Filters
      **/
-    public static function me()
+    class HtmlSpecialCharsFilter extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return HtmlSpecialCharsFilter
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value) : string
-    {
-        return htmlspecialchars($value);
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value) : string
+        {
+            return htmlspecialchars($value);
+        }
     }
 }

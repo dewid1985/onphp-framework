@@ -8,40 +8,41 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * SHA-1 based filter: passwords.
- *
- * @ingroup Filters
- **/
-class HashFilter implements Filtrator
-{
-    /** @var bool  */
-    private $binary = false;
-
+namespace OnPhp {
     /**
-     * HashFilter constructor.
-     * @param bool $binary
-     */
-    public function __construct($binary = false)
+     * SHA-1 based filter: passwords.
+     *
+     * @ingroup Filters
+     **/
+    class HashFilter implements Filtrator
     {
-        $this->binary = ($binary === true);
-    }
+        /** @var bool */
+        private $binary = false;
 
-    /**
-     * @return bool
-     */
-    public function isBinary()
-    {
-        return $this->binary;
-    }
+        /**
+         * HashFilter constructor.
+         * @param bool $binary
+         */
+        public function __construct($binary = false)
+        {
+            $this->binary = ($binary === true);
+        }
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value) : string
-    {
-        return sha1($value, $this->binary);
+        /**
+         * @return bool
+         */
+        public function isBinary()
+        {
+            return $this->binary;
+        }
+
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value) : string
+        {
+            return sha1($value, $this->binary);
+        }
     }
 }

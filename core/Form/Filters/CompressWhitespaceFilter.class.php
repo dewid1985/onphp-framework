@@ -8,26 +8,27 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Replaces multiple adjacent whitespace by one
- *
- * @see RegulatedPrimitive::addImportFilter()
- *
- * @ingroup Filters
- **/
-class CompressWhitespaceFilter extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return CompressWhitespaceFilter
+     * Replaces multiple adjacent whitespace by one
+     *
+     * @see RegulatedPrimitive::addImportFilter()
+     *
+     * @ingroup Filters
      **/
-    public static function me()
+    class CompressWhitespaceFilter extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return CompressWhitespaceFilter
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    public function apply($value)
-    {
-        return preg_replace('/[ \t]+/', ' ', $value);
+        public function apply($value)
+        {
+            return preg_replace('/[ \t]+/', ' ', $value);
+        }
     }
 }

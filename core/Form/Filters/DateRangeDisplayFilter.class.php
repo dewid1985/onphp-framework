@@ -8,42 +8,43 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class DateRangeDisplayFilter extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return DateRangeDisplayFilter
+     * @ingroup Filters
      **/
-    public static function me()
+    class DateRangeDisplayFilter extends BaseFilter
     {
-        return Singleton::getInstance('DateRangeDisplayFilter');
-    }
+        /**
+         * @return DateRangeDisplayFilter
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance('DateRangeDisplayFilter');
+        }
 
-    /**
-     * @param $value
-     * @return null|string
-     */
-    public function apply($value)
-    {
-        $result = null;
+        /**
+         * @param $value
+         * @return null|string
+         */
+        public function apply($value)
+        {
+            $result = null;
 
-        if ($value instanceof DateRange) {
-            if ($value->getStart()) {
-                $result = $value->getStart()->toDate('.');
+            if ($value instanceof DateRange) {
+                if ($value->getStart()) {
+                    $result = $value->getStart()->toDate('.');
+                }
+
+                $result .= ' - ';
+
+                if ($value->getEnd()) {
+                    $result .= $value->getEnd()->toDate('.');
+                }
+
+                return $result;
+            } else {
+                return $value;
             }
-
-            $result .= ' - ';
-
-            if ($value->getEnd()) {
-                $result .= $value->getEnd()->toDate('.');
-            }
-
-            return $result;
-        } else {
-            return $value;
         }
     }
 }

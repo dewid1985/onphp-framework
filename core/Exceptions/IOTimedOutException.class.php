@@ -8,12 +8,13 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Exceptions
- * @ingroup Module
- **/
-class IOTimedOutException extends IOException
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     * @ingroup Module
+     **/
+    class IOTimedOutException extends IOException
+    {
+        /*_*/
+    }
 }

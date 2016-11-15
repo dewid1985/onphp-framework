@@ -8,11 +8,12 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Exceptions
- **/
-class CachedObjectNotFoundException extends ObjectNotFoundException
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     **/
+    class CachedObjectNotFoundException extends ObjectNotFoundException
+    {
+        /*_*/
+    }
 }

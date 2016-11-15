@@ -8,12 +8,13 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Exceptions
- * @ingroup Module
- **/
-class SecurityException extends Exception
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     * @ingroup Module
+     **/
+    class SecurityException extends \Exception
+    {
+        /*_*/
+    }
 }

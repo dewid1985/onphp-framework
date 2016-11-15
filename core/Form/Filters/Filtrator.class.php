@@ -8,16 +8,17 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Interface for primitive's filters.
- *
- * @see FiltrablePrimitive::getDisplayValue()
- *
- * @ingroup Filters
- * @ingroup Module
- **/
-interface Filtrator
-{
-    public function apply($value);
+namespace OnPhp {
+    /**
+     * Interface for primitive's filters.
+     *
+     * @see FiltrablePrimitive::getDisplayValue()
+     *
+     * @ingroup Filters
+     * @ingroup Module
+     **/
+    interface Filtrator
+    {
+        public function apply($value);
+    }
 }

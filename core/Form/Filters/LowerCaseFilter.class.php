@@ -8,27 +8,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class LowerCaseFilter extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return LowerCaseFilter
+     * @ingroup Filters
      **/
-    public static function me()
+    class LowerCaseFilter extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return LowerCaseFilter
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value) : string
-    {
-        return mb_strtolower($value);
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value) : string
+        {
+            return mb_strtolower($value);
+        }
     }
 }
 

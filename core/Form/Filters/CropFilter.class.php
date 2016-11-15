@@ -8,54 +8,55 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see RegulatedPrimitive::addImportFilter()
- *
- * @ingroup Filters
- **/
-class CropFilter implements Filtrator
-{
-    private $start = 0;
-    private $length = 0;
-
+namespace OnPhp {
     /**
-     * @param $start
-     * @return CropFilter
-     * @throws WrongArgumentException
-     */
-    public function setStart($start) : CropFilter
+     * @see RegulatedPrimitive::addImportFilter()
+     *
+     * @ingroup Filters
+     **/
+    class CropFilter implements Filtrator
     {
-        Assert::isPositiveInteger($start);
+        private $start = 0;
+        private $length = 0;
 
-        $this->start = $start;
+        /**
+         * @param $start
+         * @return CropFilter
+         * @throws WrongArgumentException
+         */
+        public function setStart($start) : CropFilter
+        {
+            Assert::isPositiveInteger($start);
 
-        return $this;
-    }
+            $this->start = $start;
 
-    /**
-     * @param $length
-     * @return CropFilter
-     * @throws WrongArgumentException
-     */
-    public function setLength($length) : CropFilter
-    {
-        Assert::isPositiveInteger($length);
+            return $this;
+        }
 
-        $this->length = $length;
+        /**
+         * @param $length
+         * @return CropFilter
+         * @throws WrongArgumentException
+         */
+        public function setLength($length) : CropFilter
+        {
+            Assert::isPositiveInteger($length);
 
-        return $this;
-    }
+            $this->length = $length;
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value) : string
-    {
-        return
-            $this->length
-                ? mb_strcut($value, $this->start, $this->length)
-                : mb_strcut($value, $this->start);
+            return $this;
+        }
+
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value) : string
+        {
+            return
+                $this->length
+                    ? mb_strcut($value, $this->start, $this->length)
+                    : mb_strcut($value, $this->start);
+        }
     }
 }

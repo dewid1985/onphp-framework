@@ -8,13 +8,14 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Exceptions
- * @ingroup Module
- **/
-class TooManyRowsException extends DatabaseException
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     * @ingroup Module
+     **/
+    class TooManyRowsException extends DatabaseException
+    {
+        /*_*/
+    }
 }
 
