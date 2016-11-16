@@ -18,7 +18,7 @@ namespace OnPhp {
      * @ingroup Base
      * @ingroup Module
      **/
-    abstract class Enumeration extends NamedObject implements Serializable
+    abstract class Enumeration extends NamedObject implements \Serializable
     {
         /** @var array */
         protected $names = [/* override me */];

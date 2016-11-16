@@ -12,7 +12,7 @@ namespace OnPhp {
     /**
      * @ingroup Http
      **/
-    class HttpHeaderCollection implements IteratorAggregate
+    class HttpHeaderCollection implements \IteratorAggregate
     {
         private $headers = [];
 

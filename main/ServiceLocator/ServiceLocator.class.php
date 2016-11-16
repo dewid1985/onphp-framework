@@ -21,7 +21,7 @@ namespace OnPhp {
          */
         public function spawn($className/*,  constructor params ..., ..., ...  */)
         {
-            $reflectionClass = new ReflectionClass($className);
+            $reflectionClass = new \ReflectionClass($className);
             $constructorArgs = func_get_args();
             array_shift($constructorArgs);
 

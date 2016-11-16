@@ -10,14 +10,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * Interface IServiceLocatorSupport
+     */
+    interface IServiceLocatorSupport
+    {
+        public function setServiceLocator(IServiceLocator $serviceLocator);
 
-/**
- * Interface IServiceLocatorSupport
- */
-interface IServiceLocatorSupport
-{
-    public function setServiceLocator(IServiceLocator $serviceLocator);
-
-    public function getServiceLocator();
+        public function getServiceLocator();
+    }
 }
 

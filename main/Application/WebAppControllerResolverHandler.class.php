@@ -12,7 +12,9 @@
 namespace OnPhp {
     class WebAppControllerResolverHandler implements InterceptingChainHandler
     {
-        const CONTROLLER_POSTFIX = 'Controller';
+
+        const CONTROLLER_POSTFIX = 'Controller',
+            CONTROLLER_NAMESPACE = 'Controllers';
 
         protected $defaultController = 'MainController';
 
@@ -57,8 +59,9 @@ namespace OnPhp {
                 $area
                 && $this->checkControllerName($area . self::CONTROLLER_POSTFIX, $chain->getPathController())
             ) {
-                return $area . self::CONTROLLER_POSTFIX;
+                return self::CONTROLLER_NAMESPACE . "\\" . $area . self::CONTROLLER_POSTFIX;
             } elseif ($area) {
+
                 HeaderUtils::sendHttpStatus(new HttpStatus(HttpStatus::CODE_404));
                 return $this->notfoundController;
             }
@@ -67,10 +70,14 @@ namespace OnPhp {
 
         protected function checkControllerName($controllerName, $path)
         {
-            return
-                ClassUtils::isClassName($controllerName)
-                && $path
-                && is_readable($path . $controllerName . EXT_CLASS);
+            try {
+                $controller = self::CONTROLLER_NAMESPACE . "\\" . $controllerName;
+                new $controller();
+
+                return $path && is_readable($path . $controllerName . EXT_CLASS);
+            } catch (\Exception $e) {
+                return false;
+            }
         }
 
         protected function getControllerNameByOtherData(InterceptingChain $chain)

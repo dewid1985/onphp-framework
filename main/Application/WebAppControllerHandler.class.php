@@ -20,6 +20,7 @@ namespace OnPhp {
             $controller = $this->getController($chain);
 
             $modelAndView = $this->handleRequest($chain, $controller);
+
             $this->prepairModelAndView($chain, $modelAndView);
 
             $chain->setMav($modelAndView);
