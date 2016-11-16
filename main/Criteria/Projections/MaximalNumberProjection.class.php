@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class MaximalNumberProjection extends AggregateProjection
-{
-    public function getFunctionName()
+namespace OnPhp {
+    /**
+     * @ingroup Projections
+     **/
+    class MaximalNumberProjection extends AggregateProjection
     {
-        return 'max';
+        public function getFunctionName()
+        {
+            return 'max';
+        }
     }
 }

@@ -8,250 +8,252 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class DBTable implements DialectString
-{
-    /** @var null  */
-    private $name = null;
-
-    /** @var array  */
-    private $columns = [];
-    /** @var array  */
-    private $order = [];
-
-    /** @var array  */
-    private $uniques = [];
-
+namespace OnPhp {
     /**
-     * DBTable constructor.
-     * @param $name
-     */
-    public function __construct($name)
+     * @ingroup OSQL
+     **/
+    class DBTable implements DialectString
     {
-        $this->name = $name;
-    }
+        /** @var null */
+        private $name = null;
+
+        /** @var array */
+        private $columns = [];
+        /** @var array */
+        private $order = [];
+
+        /** @var array */
+        private $uniques = [];
+
+        /**
+         * DBTable constructor.
+         * @param $name
+         */
+        public function __construct($name)
+        {
+            $this->name = $name;
+        }
 
 
-    /**
-     * @param Dialect $dialect
-     * @param DBTable $source
-     * @param DBTable $target
-     * @return array
-     */
-    public static function findDifferences(
-        Dialect $dialect,
-        DBTable $source,
-        DBTable $target
-    ) {
-        $out = [];
+        /**
+         * @param Dialect $dialect
+         * @param DBTable $source
+         * @param DBTable $target
+         * @return array
+         */
+        public static function findDifferences(
+            Dialect $dialect,
+            DBTable $source,
+            DBTable $target
+        )
+        {
+            $out = [];
 
-        $head = 'ALTER TABLE ' . $dialect->quoteTable($target->getName());
+            $head = 'ALTER TABLE ' . $dialect->quoteTable($target->getName());
 
-        $sourceColumns = $source->getColumns();
-        $targetColumns = $target->getColumns();
+            $sourceColumns = $source->getColumns();
+            $targetColumns = $target->getColumns();
 
-        foreach ($sourceColumns as $name => $column) {
-            if (isset($targetColumns[$name])) {
-                if (
-                    $column->getType()->getId()
-                    != $targetColumns[$name]->getType()->getId()
-                ) {
-                    $targetColumn = $targetColumns[$name];
+            foreach ($sourceColumns as $name => $column) {
+                if (isset($targetColumns[$name])) {
+                    if (
+                        $column->getType()->getId()
+                        != $targetColumns[$name]->getType()->getId()
+                    ) {
+                        $targetColumn = $targetColumns[$name];
 
-                    $out[] =
-                        $head
-                        . ' ALTER COLUMN ' . $dialect->quoteField($name)
-                        . ' TYPE ' . $targetColumn->getType()->toString()
-                        . (
-                        $targetColumn->getType()->hasSize()
-                            ?
-                            '('
-                            . $targetColumn->getType()->getSize()
+                        $out[] =
+                            $head
+                            . ' ALTER COLUMN ' . $dialect->quoteField($name)
+                            . ' TYPE ' . $targetColumn->getType()->toString()
                             . (
-                            $targetColumn->getType()->hasPrecision()
-                                ? ', ' . $targetColumn->getType()->getPrecision()
+                            $targetColumn->getType()->hasSize()
+                                ?
+                                '('
+                                . $targetColumn->getType()->getSize()
+                                . (
+                                $targetColumn->getType()->hasPrecision()
+                                    ? ', ' . $targetColumn->getType()->getPrecision()
+                                    : null
+                                )
+                                . ')'
                                 : null
                             )
-                            . ')'
-                            : null
-                        )
-                        . ';';
-                }
+                            . ';';
+                    }
 
-                if (
-                    $column->getType()->isNull()
-                    != $targetColumns[$name]->getType()->isNull()
-                ) {
+                    if (
+                        $column->getType()->isNull()
+                        != $targetColumns[$name]->getType()->isNull()
+                    ) {
+                        $out[] =
+                            $head
+                            . ' ALTER COLUMN ' . $dialect->quoteField($name)
+                            . ' '
+                            . (
+                            $targetColumns[$name]->getType()->isNull()
+                                ? 'DROP'
+                                : 'SET'
+                            )
+                            . ' NOT NULL;';
+                    }
+                } else {
                     $out[] =
                         $head
-                        . ' ALTER COLUMN ' . $dialect->quoteField($name)
-                        . ' '
-                        . (
-                        $targetColumns[$name]->getType()->isNull()
-                            ? 'DROP'
-                            : 'SET'
-                        )
-                        . ' NOT NULL;';
+                        . ' DROP COLUMN ' . $dialect->quoteField($name) . ';';
                 }
-            } else {
-                $out[] =
-                    $head
-                    . ' DROP COLUMN ' . $dialect->quoteField($name) . ';';
             }
-        }
 
-        foreach ($targetColumns as $name => $column) {
-            if (!isset($sourceColumns[$name])) {
-                $out[] =
-                    $head
-                    . ' ADD COLUMN '
-                    . $column->toDialectString($dialect) . ';';
-
-                if ($column->hasReference()) {
+            foreach ($targetColumns as $name => $column) {
+                if (!isset($sourceColumns[$name])) {
                     $out[] =
-                        'CREATE INDEX ' . $dialect->quoteField($name . '_idx')
-                        . ' ON ' . $dialect->quoteTable($target->getName()) .
-                        '(' . $dialect->quoteField($name) . ');';
+                        $head
+                        . ' ADD COLUMN '
+                        . $column->toDialectString($dialect) . ';';
+
+                    if ($column->hasReference()) {
+                        $out[] =
+                            'CREATE INDEX ' . $dialect->quoteField($name . '_idx')
+                            . ' ON ' . $dialect->quoteTable($target->getName()) .
+                            '(' . $dialect->quoteField($name) . ');';
+                    }
                 }
             }
+
+            return $out;
         }
 
-        return $out;
-    }
-
-    /**
-     * @return null
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return DBTable
-     **/
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @param array ...$args
-     * @return DBTable
-     * @throws MissingElementException
-     * @throws WrongArgumentException
-     */
-    public function addUniques(...$args) : DBTable
-    {
-        Assert::isNotEmptyArray($args);
-
-        $uniques = [];
-
-        foreach ($args as $name) {
-            // check existence
-            $this->getColumnByName($name);
-
-            $uniques[] = $name;
+        /**
+         * @return null
+         */
+        public function getName()
+        {
+            return $this->name;
         }
 
-        $this->uniques[] = $uniques;
+        /**
+         * @return DBTable
+         **/
+        public function setName($name)
+        {
+            $this->name = $name;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @param $name
-     * @return mixed
-     * @throws MissingElementException
-     */
-    public function getColumnByName($name)
-    {
-        if (!isset($this->columns[$name])) {
-            throw new MissingElementException(
-                "column '{$name}' does not exist"
+        /**
+         * @return array
+         */
+        public function getColumns()
+        {
+            return $this->columns;
+        }
+
+        /**
+         * @param array ...$args
+         * @return DBTable
+         * @throws MissingElementException
+         * @throws WrongArgumentException
+         */
+        public function addUniques(...$args) : DBTable
+        {
+            Assert::isNotEmptyArray($args);
+
+            $uniques = [];
+
+            foreach ($args as $name) {
+                // check existence
+                $this->getColumnByName($name);
+
+                $uniques[] = $name;
+            }
+
+            $this->uniques[] = $uniques;
+
+            return $this;
+        }
+
+        /**
+         * @param $name
+         * @return mixed
+         * @throws MissingElementException
+         */
+        public function getColumnByName($name)
+        {
+            if (!isset($this->columns[$name])) {
+                throw new MissingElementException(
+                    "column '{$name}' does not exist"
+                );
+            }
+
+            return $this->columns[$name];
+        }
+
+        /**
+         * @return array
+         */
+        public function getUniques() : array
+        {
+            return $this->uniques;
+        }
+
+        /**
+         * @param DBColumn $column
+         * @return DBTable
+         * @throws WrongArgumentException
+         */
+        public function addColumn(DBColumn $column) : DBTable
+        {
+            $name = $column->getName();
+
+            Assert::isFalse(
+                isset($this->columns[$name]),
+                "column '{$name}' already exist"
             );
+
+            $this->order[] = $this->columns[$name] = $column;
+
+            $column->setTable($this);
+
+            return $this;
         }
 
-        return $this->columns[$name];
-    }
+        /**
+         * @param $name
+         * @return DBTable
+         * @throws MissingElementException
+         */
+        public function dropColumnByName($name) : DBTable
+        {
+            if (!isset($this->columns[$name])) {
+                throw new MissingElementException(
+                    "column '{$name}' does not exist"
+                );
+            }
 
-    /**
-     * @return array
-     */
-    public function getUniques() : array
-    {
-        return $this->uniques;
-    }
+            unset($this->columns[$name]);
+            unset($this->order[array_search($name, $this->order)]);
 
-    /**
-     * @param DBColumn $column
-     * @return DBTable
-     * @throws WrongArgumentException
-     */
-    public function addColumn(DBColumn $column) : DBTable
-    {
-        $name = $column->getName();
-
-        Assert::isFalse(
-            isset($this->columns[$name]),
-            "column '{$name}' already exist"
-        );
-
-        $this->order[] = $this->columns[$name] = $column;
-
-        $column->setTable($this);
-
-        return $this;
-    }
-
-    /**
-     * @param $name
-     * @return DBTable
-     * @throws MissingElementException
-     */
-    public function dropColumnByName($name) : DBTable
-    {
-        if (!isset($this->columns[$name])) {
-            throw new MissingElementException(
-                "column '{$name}' does not exist"
-            );
+            return $this;
         }
 
-        unset($this->columns[$name]);
-        unset($this->order[array_search($name, $this->order)]);
+        /**
+         * @return array
+         */
+        public function getOrder()
+        {
+            return $this->order;
+        }
 
-        return $this;
-    }
+        // TODO: consider port to AlterTable class (unimplemented yet)
 
-    /**
-     * @return array
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-
-    // TODO: consider port to AlterTable class (unimplemented yet)
-
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        return (new CreateTableQuery($this))->toDialectString($dialect);
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            return (new CreateTableQuery($this))->toDialectString($dialect);
+        }
     }
 }

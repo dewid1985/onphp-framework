@@ -8,43 +8,44 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see http://tools.ietf.org/html/rfc2631
- *
- * @ingroup Crypto
- **/
-class DiffieHellmanParameters
-{
-    private $gen = null;
-    private $modulus = null;
-
+namespace OnPhp {
     /**
-     * DiffieHellmanParameters constructor.
-     * @param BigInteger $gen
-     * @param BigInteger $modulus
-     */
-    public function __construct(BigInteger $gen, BigInteger $modulus)
-    {
-        Assert::brothers($gen, $modulus);
-
-        $this->gen = $gen;
-        $this->modulus = $modulus;
-    }
-
-    /**
-     * @return BigInteger
+     * @see http://tools.ietf.org/html/rfc2631
+     *
+     * @ingroup Crypto
      **/
-    public function getGen()
+    class DiffieHellmanParameters
     {
-        return $this->gen;
-    }
+        private $gen = null;
+        private $modulus = null;
 
-    /**
-     * @return BigInteger
-     **/
-    public function getModulus()
-    {
-        return $this->modulus;
+        /**
+         * DiffieHellmanParameters constructor.
+         * @param BigInteger $gen
+         * @param BigInteger $modulus
+         */
+        public function __construct(BigInteger $gen, BigInteger $modulus)
+        {
+            Assert::brothers($gen, $modulus);
+
+            $this->gen = $gen;
+            $this->modulus = $modulus;
+        }
+
+        /**
+         * @return BigInteger
+         **/
+        public function getGen()
+        {
+            return $this->gen;
+        }
+
+        /**
+         * @return BigInteger
+         **/
+        public function getModulus()
+        {
+            return $this->modulus;
+        }
     }
 }

@@ -8,72 +8,73 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class ProjectionChain implements ObjectProjection
-{
-    private $list = array();
-
-    public function getList()
-    {
-        return $this->list;
-    }
-
+namespace OnPhp {
     /**
-     * @return ProjectionChain
+     * @ingroup Projections
      **/
-    public function add(ObjectProjection $projection, $name = null)
+    class ProjectionChain implements ObjectProjection
     {
-        if ($name) {
-            Assert::isFalse(isset($this->list[$name]));
+        private $list = array();
 
-            $this->list[$name] = $projection;
-        } else {
-            $this->list[] = $projection;
+        public function getList()
+        {
+            return $this->list;
         }
 
-        return $this;
-    }
+        /**
+         * @return ProjectionChain
+         **/
+        public function add(ObjectProjection $projection, $name = null)
+        {
+            if ($name) {
+                Assert::isFalse(isset($this->list[$name]));
 
-    /**
-     * @return JoinCapableQuery
-     **/
-    public function process(Criteria $criteria, JoinCapableQuery $query)
-    {
-        foreach ($this->list as $projection)
-            $projection->process($criteria, $query);
+                $this->list[$name] = $projection;
+            } else {
+                $this->list[] = $projection;
+            }
 
-        return $query;
-    }
-
-    public function isEmpty()
-    {
-        return count($this->list) == 0;
-    }
-
-    /**
-     * @return ProjectionChain
-     **/
-    public function dropByType(/* array */
-        $dropTypes)
-    {
-        $newList = array();
-
-        if (!is_array($dropTypes))
-            $dropTypes = array($dropTypes);
-
-        foreach ($this->list as $name => &$projection) {
-            $class = get_class($projection);
-
-            if (!in_array($class, $dropTypes))
-                $newList[$name] = $projection;
+            return $this;
         }
 
-        // swap
-        $this->list = $newList;
+        /**
+         * @return JoinCapableQuery
+         **/
+        public function process(Criteria $criteria, JoinCapableQuery $query)
+        {
+            foreach ($this->list as $projection)
+                $projection->process($criteria, $query);
 
-        return $this;
+            return $query;
+        }
+
+        public function isEmpty()
+        {
+            return count($this->list) == 0;
+        }
+
+        /**
+         * @return ProjectionChain
+         **/
+        public function dropByType(/* array */
+            $dropTypes)
+        {
+            $newList = array();
+
+            if (!is_array($dropTypes))
+                $dropTypes = array($dropTypes);
+
+            foreach ($this->list as $name => &$projection) {
+                $class = get_class($projection);
+
+                if (!in_array($class, $dropTypes))
+                    $newList[$name] = $projection;
+            }
+
+            // swap
+            $this->list = $newList;
+
+            return $this;
+        }
     }
 }

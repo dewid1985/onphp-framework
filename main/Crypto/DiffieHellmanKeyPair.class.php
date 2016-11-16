@@ -8,96 +8,97 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see http://tools.ietf.org/html/rfc2631
- *
- * @ingroup Crypto
- **/
-class DiffieHellmanKeyPair implements KeyPair
-{
-    private $private = null;
-    private $public = null;
-    private $parameters = null;
-
+namespace OnPhp {
     /**
-     * DiffieHellmanKeyPair constructor.
-     * @param DiffieHellmanParameters $parameters
-     */
-    public function __construct(DiffieHellmanParameters $parameters)
-    {
-        $this->parameters = $parameters;
-    }
-
-    /**
-     * @return DiffieHellmanKeyPair
+     * @see http://tools.ietf.org/html/rfc2631
+     *
+     * @ingroup Crypto
      **/
-    public static function generate(
-        DiffieHellmanParameters $parameters,
-        RandomSource $randomSource
-    )
+    class DiffieHellmanKeyPair implements KeyPair
     {
-        $result = new self($parameters);
+        private $private = null;
+        private $public = null;
+        private $parameters = null;
 
-        $factory = $parameters->getModulus()->getFactory();
+        /**
+         * DiffieHellmanKeyPair constructor.
+         * @param DiffieHellmanParameters $parameters
+         */
+        public function __construct(DiffieHellmanParameters $parameters)
+        {
+            $this->parameters = $parameters;
+        }
 
-        $result->private = $factory->makeRandom(
-            $parameters->getModulus(),
-            $randomSource
-        );
+        /**
+         * @return DiffieHellmanKeyPair
+         **/
+        public static function generate(
+            DiffieHellmanParameters $parameters,
+            RandomSource $randomSource
+        )
+        {
+            $result = new self($parameters);
 
-        $result->public = $parameters->getGen()->modPow(
-            $result->private,
-            $parameters->getModulus()
-        );
+            $factory = $parameters->getModulus()->getFactory();
 
-        return $result;
-    }
+            $result->private = $factory->makeRandom(
+                $parameters->getModulus(),
+                $randomSource
+            );
 
-    /**
-     * @return BigInteger
-     **/
-    public function getPrivate()
-    {
-        return $this->private;
-    }
+            $result->public = $parameters->getGen()->modPow(
+                $result->private,
+                $parameters->getModulus()
+            );
 
-    /**
-     * @return DiffieHellmanKeyPair
-     **/
-    public function setPrivate(BigInteger $private)
-    {
-        $this->private = $private;
-        return $this;
-    }
+            return $result;
+        }
 
-    /**
-     * @return BigInteger
-     **/
-    public function getPublic()
-    {
-        return $this->public;
-    }
+        /**
+         * @return BigInteger
+         **/
+        public function getPrivate()
+        {
+            return $this->private;
+        }
 
-    /**
-     * @return DiffieHellmanKeyPair
-     **/
-    public function setPublic(BigInteger $public)
-    {
-        $this->public = $public;
-        return $this;
-    }
+        /**
+         * @return DiffieHellmanKeyPair
+         **/
+        public function setPrivate(BigInteger $private)
+        {
+            $this->private = $private;
+            return $this;
+        }
 
-    /**
-     * @return BigInteger
-     **/
-    public function makeSharedKey(BigInteger $otherSitePublic)
-    {
-        Assert::brothers($this->private, $otherSitePublic);
+        /**
+         * @return BigInteger
+         **/
+        public function getPublic()
+        {
+            return $this->public;
+        }
 
-        return $otherSitePublic->modPow(
-            $this->private,
-            $this->parameters->getModulus()
-        );
+        /**
+         * @return DiffieHellmanKeyPair
+         **/
+        public function setPublic(BigInteger $public)
+        {
+            $this->public = $public;
+            return $this;
+        }
+
+        /**
+         * @return BigInteger
+         **/
+        public function makeSharedKey(BigInteger $otherSitePublic)
+        {
+            Assert::brothers($this->private, $otherSitePublic);
+
+            return $otherSitePublic->modPow(
+                $this->private,
+                $this->parameters->getModulus()
+            );
+        }
     }
 }

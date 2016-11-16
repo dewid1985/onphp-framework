@@ -8,32 +8,33 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Calendar week representation.
- *
- * @ingroup Calendar
- **/
-class CalendarWeek
-{
-    private $days = [];
-
-
+namespace OnPhp {
     /**
-     * @return array
-     */
-    public function getDays()
-    {
-        return $this->days;
-    }
-
-    /**
-     * @return CalendarWeek
+     * Calendar week representation.
+     *
+     * @ingroup Calendar
      **/
-    public function addDay(CalendarDay $day)
+    class CalendarWeek
     {
-        $this->days[$day->toDate()] = $day;
+        private $days = [];
 
-        return $this;
+
+        /**
+         * @return array
+         */
+        public function getDays()
+        {
+            return $this->days;
+        }
+
+        /**
+         * @return CalendarWeek
+         **/
+        public function addDay(CalendarDay $day)
+        {
+            $this->days[$day->toDate()] = $day;
+
+            return $this;
+        }
     }
 }

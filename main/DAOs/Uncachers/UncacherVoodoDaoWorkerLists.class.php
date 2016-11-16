@@ -8,63 +8,63 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Uncachers
- **/
-class UncacherVoodoDaoWorkerLists implements UncacherBase
-{
-    private $handlerList = [];
-
-    public function __construct($className, SegmentHandler $handler)
-    {
-        $this->handlerList[$className] = $handler;
-    }
-
-
+namespace OnPhp {
     /**
-     * @param $uncacher UncacherVoodoDaoWorkerLists same as self class
-     * @return UncacherBase (this)
-     */
-    public function merge(UncacherBase $uncacher)
+     * @ingroup Uncachers
+     **/
+    class UncacherVoodoDaoWorkerLists implements UncacherBase
     {
-        Assert::isInstance($uncacher, get_class($this));
-        return $this->mergeSelf($uncacher);
-    }
+        private $handlerList = [];
 
-    /**
-     * @param UncacherVoodoDaoWorkerLists $uncacher
-     * @return UncacherVoodoDaoWorkerLists
-     */
-    private function mergeSelf(UncacherVoodoDaoWorkerLists $uncacher)
-    {
-        foreach ($uncacher->getHandlerList() as $className => $handler) {
-            if (!isset($this->handlerList[$className])) {
-                $this->handlerList[$className] = $handler;
+        public function __construct($className, SegmentHandler $handler)
+        {
+            $this->handlerList[$className] = $handler;
+        }
+
+
+        /**
+         * @param $uncacher UncacherVoodoDaoWorkerLists same as self class
+         * @return UncacherBase (this)
+         */
+        public function merge(UncacherBase $uncacher)
+        {
+            Assert::isInstance($uncacher, get_class($this));
+            return $this->mergeSelf($uncacher);
+        }
+
+        /**
+         * @param UncacherVoodoDaoWorkerLists $uncacher
+         * @return UncacherVoodoDaoWorkerLists
+         */
+        private function mergeSelf(UncacherVoodoDaoWorkerLists $uncacher)
+        {
+            foreach ($uncacher->getHandlerList() as $className => $handler) {
+                if (!isset($this->handlerList[$className])) {
+                    $this->handlerList[$className] = $handler;
+                }
+            }
+            return $this;
+        }
+
+        public function getHandlerList()
+        {
+            return $this->handlerList;
+        }
+
+        public function uncache()
+        {
+            foreach ($this->handlerList as $className => $handler) {
+                $this->uncacheClassName($className, $handler);
             }
         }
-        return $this;
-    }
 
-    public function getHandlerList()
-    {
-        return $this->handlerList;
-    }
+        protected function uncacheClassName($className, SegmentHandler $handler)
+        {
+            $handler->drop();
 
-    public function uncache()
-    {
-        foreach ($this->handlerList as $className => $handler) {
-            $this->uncacheClassName($className, $handler);
+            $dao = ClassUtils::callStaticMethod($className . '::dao');
+            /* @var $dao StorableDAO */
+            return Cache::worker($dao)->uncacheByQuery($dao->makeSelectHead());
         }
     }
-
-    protected function uncacheClassName($className, SegmentHandler $handler)
-    {
-        $handler->drop();
-
-        $dao = ClassUtils::callStaticMethod($className . '::dao');
-        /* @var $dao StorableDAO */
-        return Cache::worker($dao)->uncacheByQuery($dao->makeSelectHead());
-    }
 }
-

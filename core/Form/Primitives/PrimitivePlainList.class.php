@@ -8,19 +8,20 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitivePlainList extends PrimitiveList
-{
+namespace OnPhp {
     /**
-     * @return PrimitivePlainList
+     * @ingroup Primitives
      **/
-    public function setList($list) : PrimitivePlainList
+    class PrimitivePlainList extends PrimitiveList
     {
-        $this->list = array_combine($list, $list);
+        /**
+         * @return PrimitivePlainList
+         **/
+        public function setList($list) : PrimitivePlainList
+        {
+            $this->list = array_combine($list, $list);
 
-        return $this;
+            return $this;
+        }
     }
 }

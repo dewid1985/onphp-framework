@@ -8,36 +8,37 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveBinary extends FiltrablePrimitive
-{
+namespace OnPhp {
     /**
-     * @param $scope
-     * @return bool|null
-     */
-    public function import($scope)
+     * @ingroup Primitives
+     **/
+    class PrimitiveBinary extends FiltrablePrimitive
     {
-        if (!BasePrimitive::import($scope)) {
-            return null;
+        /**
+         * @param $scope
+         * @return bool|null
+         */
+        public function import($scope)
+        {
+            if (!BasePrimitive::import($scope)) {
+                return null;
+            }
+
+            $this->value = (string)$scope[$this->name];
+
+            $this->selfFilter();
+
+            if (!empty($this->value) && is_string($this->value)
+                && ($length = strlen($this->value))
+                && !($this->max && $length > $this->max)
+                && !($this->min && $length < $this->min)
+            ) {
+                return true;
+            } else {
+                $this->value = null;
+            }
+
+            return false;
         }
-
-        $this->value = (string) $scope[$this->name];
-
-        $this->selfFilter();
-
-        if (!empty($this->value) && is_string($this->value)
-            && ($length = strlen($this->value))
-            && !($this->max && $length > $this->max)
-            && !($this->min && $length < $this->min)
-        ) {
-            return true;
-        } else {
-            $this->value = null;
-        }
-
-        return false;
     }
 }

@@ -8,24 +8,25 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class GroupByClassProjection extends ClassProjection
-{
-    function __construct($class)
+namespace OnPhp {
+    /**
+     * @ingroup Projections
+     **/
+    class GroupByClassProjection extends ClassProjection
     {
-        parent::__construct($class);
-    }
+        function __construct($class)
+        {
+            parent::__construct($class);
+        }
 
-    /* void */
-    protected function subProcess(
-        JoinCapableQuery $query, DBField $field
-    )
-    {
-        /**@var SelectQuery|UpdateQuery $query */
-        $query
-            ->groupBy($field);
+        /* void */
+        protected function subProcess(
+            JoinCapableQuery $query, DBField $field
+        )
+        {
+            /**@var SelectQuery|UpdateQuery $query */
+            $query
+                ->groupBy($field);
+        }
     }
 }

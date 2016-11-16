@@ -8,122 +8,123 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Basis for primitives which can be scattered across import scope.
- *
- * @ingroup Primitives
- * @ingroup Module
- **/
-abstract class ComplexPrimitive extends RangedPrimitive
-{
-    /** @var null|Ternary  */
-    private $single = null;    // single, not single or fsck it
-
+namespace OnPhp {
     /**
-     * ComplexPrimitive constructor.
-     * @param $name
-     */
-    public function __construct($name)
-    {
-        $this->single = new Ternary(null);
-        parent::__construct($name);
-    }
-
-    /**
-     * @return null|Ternary
-     */
-    public function getState()
-    {
-        return $this->single;
-    }
-
-    /**
-     * @param Ternary $ternary
-     * @return $this
-     */
-    public function setState(Ternary $ternary)
-    {
-        $this->single->setValue($ternary->getValue());
-
-        return $this;
-    }
-
-    /**
-     * @return ComplexPrimitive
+     * Basis for primitives which can be scattered across import scope.
+     *
+     * @ingroup Primitives
+     * @ingroup Module
      **/
-    public function setSingle()
+    abstract class ComplexPrimitive extends RangedPrimitive
     {
-        $this->single->setTrue();
+        /** @var null|Ternary */
+        private $single = null;    // single, not single or fsck it
 
-        return $this;
-    }
-
-    /**
-     * @return ComplexPrimitive
-     **/
-    public function setComplex()
-    {
-        $this->single->setFalse();
-
-        return $this;
-    }
-
-    /**
-     * @return ComplexPrimitive
-     **/
-    public function setAnyState()
-    {
-        $this->single->setNull();
-
-        return $this;
-    }
-
-    // implement me, child :-)
-
-    /**
-     * @param $scope
-     * @return bool|null
-     * @throws WrongArgumentException
-     */
-    public function import($scope)
-    {
-        if (!BasePrimitive::import($scope)) {
-            return null;
+        /**
+         * ComplexPrimitive constructor.
+         * @param $name
+         */
+        public function __construct($name)
+        {
+            $this->single = new Ternary(null);
+            parent::__construct($name);
         }
 
-        if ($this->single->isTrue()) {
-            return $this->importSingle($scope);
-        } elseif ($this->single->isFalse()) {
-            return $this->importMarried($scope);
-        } else {
-            if (!$this->importMarried($scope)) {
-                return $this->importSingle($scope);
+        /**
+         * @return null|Ternary
+         */
+        public function getState()
+        {
+            return $this->single;
+        }
+
+        /**
+         * @param Ternary $ternary
+         * @return $this
+         */
+        public function setState(Ternary $ternary)
+        {
+            $this->single->setValue($ternary->getValue());
+
+            return $this;
+        }
+
+        /**
+         * @return ComplexPrimitive
+         **/
+        public function setSingle()
+        {
+            $this->single->setTrue();
+
+            return $this;
+        }
+
+        /**
+         * @return ComplexPrimitive
+         **/
+        public function setComplex()
+        {
+            $this->single->setFalse();
+
+            return $this;
+        }
+
+        /**
+         * @return ComplexPrimitive
+         **/
+        public function setAnyState()
+        {
+            $this->single->setNull();
+
+            return $this;
+        }
+
+        // implement me, child :-)
+
+        /**
+         * @param $scope
+         * @return bool|null
+         * @throws WrongArgumentException
+         */
+        public function import($scope)
+        {
+            if (!BasePrimitive::import($scope)) {
+                return null;
             }
 
-            return true;
+            if ($this->single->isTrue()) {
+                return $this->importSingle($scope);
+            } elseif ($this->single->isFalse()) {
+                return $this->importMarried($scope);
+            } else {
+                if (!$this->importMarried($scope)) {
+                    return $this->importSingle($scope);
+                }
+
+                return true;
+            }
+
+            Assert::isUnreachable();
         }
 
-        Assert::isUnreachable();
-    }
+        /**
+         * @param $scope
+         * @return mixed
+         */
+        abstract public function importSingle($scope);
 
-    /**
-     * @param $scope
-     * @return mixed
-     */
-    abstract public function importSingle($scope);
+        /**
+         * @param $scope
+         * @return mixed
+         */
+        abstract public function importMarried($scope);
 
-    /**
-     * @param $scope
-     * @return mixed
-     */
-    abstract public function importMarried($scope);
-
-    /**
-     * @throws UnimplementedFeatureException
-     */
-    public function exportValue()
-    {
-        throw new UnimplementedFeatureException();
+        /**
+         * @throws UnimplementedFeatureException
+         */
+        public function exportValue()
+        {
+            throw new UnimplementedFeatureException();
+        }
     }
 }

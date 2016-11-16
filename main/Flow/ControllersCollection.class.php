@@ -9,127 +9,129 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-class ControllersCollection implements Controller
-{
-    private $innerControllers = array();
-
-    private $defaultRequestType = null;
-    private $mav = null;
-
-    public function __construct()
+namespace OnPhp {
+    class ControllersCollection implements Controller
     {
-        $this->mav =
-            (new ModelAndView())->setModel(new Model());
+        private $innerControllers = array();
 
-        $this->defaultRequestType = RequestType::post();
-    }
+        private $defaultRequestType = null;
+        private $mav = null;
 
-    /**
-     * @return ModelAndView
-     **/
-    public function handleRequest(HttpRequest $request)
-    {
-        Assert::isNotEmptyArray(
-            $this->innerControllers,
-            'Add atleast one innerController first'
-        );
+        public function __construct()
+        {
+            $this->mav =
+                (new ModelAndView())->setModel(new Model());
 
-        $activeController = $this->getActiveController($request);
-
-        $model = $this->mav->getModel();
-
-        if ($activeController) {
-            $controllerName = $activeController->getName();
-            $activeMav = $activeController->handleRequest($request);
-
-            $model->set(
-                TextUtils::downFirst($controllerName),
-                $activeMav->getModel()
-            );
-
-            unset($this->innerControllers[$controllerName]);
+            $this->defaultRequestType = RequestType::post();
         }
 
-        foreach ($this->innerControllers as $controller) {
-            $passedRequest = clone $request;
-
-            $passedRequest->
-            {'set' . $controller->getRequestGetter() . 'Var'}
-            ('action', null);
-
-            $subMav = $controller->handleRequest($passedRequest);
-
-            $model->set(
-                TextUtils::downFirst($controller->getName()),
-                $subMav->getModel()
+        /**
+         * @return ModelAndView
+         **/
+        public function handleRequest(HttpRequest $request)
+        {
+            Assert::isNotEmptyArray(
+                $this->innerControllers,
+                'Add atleast one innerController first'
             );
-        }
 
-        return
-            isset($activeMav) && $activeMav->viewIsRedirect()
-                ? $activeMav
-                : $this->mav;
-    }
+            $activeController = $this->getActiveController($request);
 
-    /**
-     * @return Controller
-     **/
-    private function getActiveController(HttpRequest $request)
-    {
-        foreach ($this->innerControllers as $controller)
-            if ($controller->isActive($request)) {
-                unset($this->innerControllers[get_class($controller->getInner())]);
+            $model = $this->mav->getModel();
 
-                return $controller;
+            if ($activeController) {
+                $controllerName = $activeController->getName();
+                $activeMav = $activeController->handleRequest($request);
+
+                $model->set(
+                    TextUtils::downFirst($controllerName),
+                    $activeMav->getModel()
+                );
+
+                unset($this->innerControllers[$controllerName]);
             }
 
-        return null;
-    }
+            foreach ($this->innerControllers as $controller) {
+                $passedRequest = clone $request;
 
-    /**
-     * @return ModelAndView
-     **/
-    public function getMav()
-    {
-        return $this->mav;
-    }
+                $passedRequest->
+                {'set' . $controller->getRequestGetter() . 'Var'}
+                ('action', null);
 
-    /**
-     * @return ControllersCollection
-     **/
-    public function setMav(ModelAndView $mav)
-    {
-        $this->mav = $mav;
+                $subMav = $controller->handleRequest($passedRequest);
 
-        return $this;
-    }
+                $model->set(
+                    TextUtils::downFirst($controller->getName()),
+                    $subMav->getModel()
+                );
+            }
 
-    /**
-     * @return ControllersCollection
-     **/
-    public function add(
-        Controller $controller,
-        RequestType $requestType = null
-    )
-    {
-        if (!$requestType)
-            $requestType = $this->defaultRequestType;
+            return
+                isset($activeMav) && $activeMav->viewIsRedirect()
+                    ? $activeMav
+                    : $this->mav;
+        }
 
-        $this->innerControllers[get_class($controller)] =
-            (new ProxyController())
-                ->setInner($controller)
-                ->setRequestType($requestType);
+        /**
+         * @return Controller
+         **/
+        private function getActiveController(HttpRequest $request)
+        {
+            foreach ($this->innerControllers as $controller)
+                if ($controller->isActive($request)) {
+                    unset($this->innerControllers[get_class($controller->getInner())]);
 
-        return $this;
-    }
+                    return $controller;
+                }
 
-    /**
-     * @return ControllersCollection
-     **/
-    public function setDefaultRequestType(RequestType $requestType)
-    {
-        $this->defaultRequestType = $requestType;
+            return null;
+        }
 
-        return $this;
+        /**
+         * @return ModelAndView
+         **/
+        public function getMav()
+        {
+            return $this->mav;
+        }
+
+        /**
+         * @return ControllersCollection
+         **/
+        public function setMav(ModelAndView $mav)
+        {
+            $this->mav = $mav;
+
+            return $this;
+        }
+
+        /**
+         * @return ControllersCollection
+         **/
+        public function add(
+            Controller $controller,
+            RequestType $requestType = null
+        )
+        {
+            if (!$requestType)
+                $requestType = $this->defaultRequestType;
+
+            $this->innerControllers[get_class($controller)] =
+                (new ProxyController())
+                    ->setInner($controller)
+                    ->setRequestType($requestType);
+
+            return $this;
+        }
+
+        /**
+         * @return ControllersCollection
+         **/
+        public function setDefaultRequestType(RequestType $requestType)
+        {
+            $this->defaultRequestType = $requestType;
+
+            return $this;
+        }
     }
 }

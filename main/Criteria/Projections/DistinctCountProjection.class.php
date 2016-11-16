@@ -8,22 +8,23 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class DistinctCountProjection extends CountProjection
-{
+namespace OnPhp {
     /**
-     * @return SQLFunction
+     * @ingroup Projections
      **/
-    protected function getFunction(
-        Criteria $criteria,
-        JoinCapableQuery $query
-    )
+    class DistinctCountProjection extends CountProjection
     {
-        return
-            parent::getFunction($criteria, $query)
-                ->setAggregateDistinct();
+        /**
+         * @return SQLFunction
+         **/
+        protected function getFunction(
+            Criteria $criteria,
+            JoinCapableQuery $query
+        )
+        {
+            return
+                parent::getFunction($criteria, $query)
+                    ->setAggregateDistinct();
+        }
     }
 }

@@ -8,15 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class ImportCommand extends MakeCommand
-{
-
-    protected function daoMethod()
+namespace OnPhp {
+    /**
+     * @ingroup Flow
+     **/
+    class ImportCommand extends MakeCommand
     {
-        return 'import';
+
+        protected function daoMethod()
+        {
+            return 'import';
+        }
     }
 }

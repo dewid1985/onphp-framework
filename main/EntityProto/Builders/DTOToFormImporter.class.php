@@ -9,27 +9,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class DTOToFormImporter extends FormBuilder
-{
-
-    function __construct(EntityProto $proto)
+namespace OnPhp {
+    class DTOToFormImporter extends FormBuilder
     {
-        parent::__construct($proto);
-    }
 
-    /**
-     * @return FormImporter
-     **/
-    protected function getGetter($object)
-    {
-        return new DTOGetter($this->proto, $object);
-    }
+        function __construct(EntityProto $proto)
+        {
+            parent::__construct($proto);
+        }
 
-    /**
-     * @return FormImporter
-     **/
-    protected function getSetter(&$object)
-    {
-        return new FormImporter($this->proto, $object);
+        /**
+         * @return FormImporter
+         **/
+        protected function getGetter($object)
+        {
+            return new DTOGetter($this->proto, $object);
+        }
+
+        /**
+         * @return FormImporter
+         **/
+        protected function getSetter(&$object)
+        {
+            return new FormImporter($this->proto, $object);
+        }
     }
 }

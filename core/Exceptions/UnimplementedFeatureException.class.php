@@ -16,7 +16,7 @@ namespace OnPhp {
      * @ingroup Exceptions
      * @ingroup Module
      **/
-    class UnimplementedFeatureException extends Exception
+    class UnimplementedFeatureException extends \Exception
     {
         /*_*/
     }

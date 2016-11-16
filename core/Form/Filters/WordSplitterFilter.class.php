@@ -8,68 +8,69 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class WordSplitterFilter implements Filtrator
-{
-    /** @var int  */
-    private $maxWordLength = 25;
-
-    /** @var string  */
-    private $delimer = '&#x200B;';
-
-
+namespace OnPhp {
     /**
-     * @param $value
-     * @return mixed
-     */
-    public function apply($value)
+     * @ingroup Filters
+     **/
+    class WordSplitterFilter implements Filtrator
     {
-        return
-            preg_replace(
-                '/([^\s]{' . $this->getMaxWordLength() . ','
-                . $this->getMaxWordLength() . '})([^\s])/u',
-                '$1' . $this->getDelimer() . '$2',
-                $value
-            );
-    }
+        /** @var int */
+        private $maxWordLength = 25;
+
+        /** @var string */
+        private $delimer = '&#x200B;';
 
 
-    /**
-     * @return int
-     */
-    public function getMaxWordLength() : int
-    {
-        return $this->maxWordLength;
-    }
+        /**
+         * @param $value
+         * @return mixed
+         */
+        public function apply($value)
+        {
+            return
+                preg_replace(
+                    '/([^\s]{' . $this->getMaxWordLength() . ','
+                    . $this->getMaxWordLength() . '})([^\s])/u',
+                    '$1' . $this->getDelimer() . '$2',
+                    $value
+                );
+        }
 
-    /**
-     * @param $length
-     * @return WordSplitterFilter
-     */
-    public function setMaxWordLength($length)
-    {
-        $this->maxWordLength = $length;
-        return $this;
-    }
 
-    /**
-     * @return string
-     */
-    public function getDelimer() : string
-    {
-        return $this->delimer;
-    }
+        /**
+         * @return int
+         */
+        public function getMaxWordLength() : int
+        {
+            return $this->maxWordLength;
+        }
 
-    /**
-     * @param $delimer
-     * @return WordSplitterFilter
-     */
-    public function setDelimer($delimer)
-    {
-        $this->delimer = $delimer;
-        return $this;
+        /**
+         * @param $length
+         * @return WordSplitterFilter
+         */
+        public function setMaxWordLength($length)
+        {
+            $this->maxWordLength = $length;
+            return $this;
+        }
+
+        /**
+         * @return string
+         */
+        public function getDelimer() : string
+        {
+            return $this->delimer;
+        }
+
+        /**
+         * @param $delimer
+         * @return WordSplitterFilter
+         */
+        public function setDelimer($delimer)
+        {
+            $this->delimer = $delimer;
+            return $this;
+        }
     }
 }

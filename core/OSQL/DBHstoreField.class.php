@@ -8,60 +8,61 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Reference for actual DB-table hstore column.
- *
- * @ingroup OSQL
- * @ingroup Module
- **/
-class DBHstoreField extends DBField
-{
-    private $key = null;
-
+namespace OnPhp {
     /**
-     * DBHstoreField constructor.
-     * @param $field
-     * @param null $table
-     * @param null $key
-     */
-    function __construct($field, $table = null, $key = null)
+     * Reference for actual DB-table hstore column.
+     *
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    class DBHstoreField extends DBField
     {
-        if (!is_null($key)) $this->setKey($key);
+        private $key = null;
 
-        parent::__construct($field, $table);
-    }
+        /**
+         * DBHstoreField constructor.
+         * @param $field
+         * @param null $table
+         * @param null $key
+         */
+        function __construct($field, $table = null, $key = null)
+        {
+            if (!is_null($key)) $this->setKey($key);
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        $field =
-            (
-            $this->getTable()
-                ? $this->getTable()->toDialectString($dialect) . '.'
-                : null
-            )
-            . $dialect->quoteField($this->getField());
-        if ($this->key) {
-            $field .= '->\'' . $this->key . '\'';
+            parent::__construct($field, $table);
         }
-        $field = '(' . $field . ')';
-        return
-            $this->cast
-                ? $dialect->toCasted($field, $this->cast)
-                : $field;
-    }
 
-    /**
-     * @param string $key
-     * @return $this
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-        return $this;
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            $field =
+                (
+                $this->getTable()
+                    ? $this->getTable()->toDialectString($dialect) . '.'
+                    : null
+                )
+                . $dialect->quoteField($this->getField());
+            if ($this->key) {
+                $field .= '->\'' . $this->key . '\'';
+            }
+            $field = '(' . $field . ')';
+            return
+                $this->cast
+                    ? $dialect->toCasted($field, $this->cast)
+                    : $field;
+        }
+
+        /**
+         * @param string $key
+         * @return $this
+         */
+        public function setKey($key)
+        {
+            $this->key = $key;
+            return $this;
+        }
     }
 }

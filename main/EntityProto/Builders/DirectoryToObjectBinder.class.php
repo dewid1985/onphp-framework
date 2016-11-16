@@ -9,141 +9,143 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class DirectoryToObjectBinder extends ObjectBuilder
-{
-    private $identityMap = null;
-
-    public function __construct(EntityProto $proto)
+namespace OnPhp {
+    class DirectoryToObjectBinder extends ObjectBuilder
     {
-        parent::__construct($proto);
+        private $identityMap = null;
 
-        $this->identityMap = new DirectoryContext;
-    }
+        public function __construct(EntityProto $proto)
+        {
+            parent::__construct($proto);
 
-    /**
-     * @return DirectoryContext
-     **/
-    public function getIdentityMap()
-    {
-        return $this->identityMap;
-    }
+            $this->identityMap = new DirectoryContext;
+        }
 
-    public function setIdentityMap(DirectoryContext $identityMap)
-    {
-        $this->identityMap = $identityMap;
+        /**
+         * @return DirectoryContext
+         **/
+        public function getIdentityMap()
+        {
+            return $this->identityMap;
+        }
 
-        return $this;
-    }
+        public function setIdentityMap(DirectoryContext $identityMap)
+        {
+            $this->identityMap = $identityMap;
 
-    /**
-     * @return PrototypedBuilder
-     **/
-    public function cloneBuilder(EntityProto $proto)
-    {
-        $result = parent::cloneBuilder($proto);
+            return $this;
+        }
 
-        $result->setIdentityMap($this->identityMap);
+        /**
+         * @return PrototypedBuilder
+         **/
+        public function cloneBuilder(EntityProto $proto)
+        {
+            $result = parent::cloneBuilder($proto);
 
-        return $result;
-    }
+            $result->setIdentityMap($this->identityMap);
 
-    public function cloneInnerBuilder($property)
-    {
-        $result = parent::cloneInnerBuilder($property);
-
-        $result->setIdentityMap($this->identityMap);
-
-        return $result;
-    }
-
-    /**
-     * @return PrototypedBuilder
-     **/
-    public function makeReverseBuilder()
-    {
-        return
-            (new ObjectToDirectoryBinder($this->proto))
-                ->setIdentityMap($this->identityMap);
-    }
-
-    public function make($object, $recursive = true)
-    {
-        Assert::isTrue(is_readable($object), "required object `$object` must exist");
-
-        $realObject = $this->getRealObject($object);
-
-        $result = $this->identityMap->lookup($realObject);
-
-        if ($result) {
             return $result;
         }
 
-        $result = parent::make($realObject, $recursive);
+        public function cloneInnerBuilder($property)
+        {
+            $result = parent::cloneInnerBuilder($property);
 
-        if ($result instanceof Identifiable) {
-            $result->setId(basename($realObject));
+            $result->setIdentityMap($this->identityMap);
+
+            return $result;
         }
 
-        return $result;
-    }
+        /**
+         * @return PrototypedBuilder
+         **/
+        public function makeReverseBuilder()
+        {
+            return
+                (new ObjectToDirectoryBinder($this->proto))
+                    ->setIdentityMap($this->identityMap);
+        }
 
-    private function getRealObject($object)
-    {
-        $result = $object;
+        public function make($object, $recursive = true)
+        {
+            Assert::isTrue(is_readable($object), "required object `$object` must exist");
 
-        if (is_link($object)) {
-            $result = readlink($object);
+            $realObject = $this->getRealObject($object);
 
-            if ($result === false) {
-                throw new WrongStateException("invalid link: $object");
+            $result = $this->identityMap->lookup($realObject);
+
+            if ($result) {
+                return $result;
             }
 
-            if (substr($result, 0, 1) !== DIRECTORY_SEPARATOR) {
-                $result = (new GenericUri())
-                    ->setScheme('file')
-                    ->setPath($object)
-                    ->transform(
-                        (new GenericUri)->setPath($result)
-                    )
-                    ->getPath();
+            $result = parent::make($realObject, $recursive);
+
+            if ($result instanceof Identifiable) {
+                $result->setId(basename($realObject));
             }
+
+            return $result;
         }
 
-        $realResult = realpath($result);
+        private function getRealObject($object)
+        {
+            $result = $object;
 
-        if ($realResult === false) {
-            throw new WrongStateException(
-                "invalid context: $object ($result)"
-            );
+            if (is_link($object)) {
+                $result = readlink($object);
+
+                if ($result === false) {
+                    throw new WrongStateException("invalid link: $object");
+                }
+
+                if (substr($result, 0, 1) !== DIRECTORY_SEPARATOR) {
+                    $result = (new GenericUri())
+                        ->setScheme('file')
+                        ->setPath($object)
+                        ->transform(
+                            (new GenericUri)->setPath($result)
+                        )
+                        ->getPath();
+                }
+            }
+
+            $realResult = realpath($result);
+
+            if ($realResult === false) {
+                throw new WrongStateException(
+                    "invalid context: $object ($result)"
+                );
+            }
+
+            return $realResult;
         }
 
-        return $realResult;
-    }
+        protected function initialize($object, &$result)
+        {
+            parent::initialize($object, $result);
 
-    protected function initialize($object, &$result)
-    {
-        parent::initialize($object, $result);
+            $realObject = $this->getRealObject($object);
 
-        $realObject = $this->getRealObject($object);
+            $this->identityMap->bind($realObject, $result);
 
-        $this->identityMap->bind($realObject, $result);
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return FormGetter
+         **/
+        protected function getGetter($object)
+        {
+            return new DirectoryGetter($this->proto, $object);
+        }
 
-    /**
-     * @return FormGetter
-     **/
-    protected function getGetter($object)
-    {
-        return new DirectoryGetter($this->proto, $object);
-    }
-
-    /**
-     * @return ObjectSetter
-     **/
-    protected function getSetter(&$object)
-    {
-        return new ObjectSetter($this->proto, $object);
+        /**
+         * @return ObjectSetter
+         **/
+        protected function getSetter(&$object)
+        {
+            return new ObjectSetter($this->proto, $object);
+        }
     }
 }

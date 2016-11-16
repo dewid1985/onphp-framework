@@ -9,25 +9,27 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class FormHardenedSetter extends FormMutator
-{
-    public function set($name, $value)
+namespace OnPhp {
+    class FormHardenedSetter extends FormMutator
     {
-        if (!isset($this->mapping[$name]))
-            throw new WrongArgumentException(
-                "knows nothing about property '{$name}'"
-            );
+        public function set($name, $value)
+        {
+            if (!isset($this->mapping[$name]))
+                throw new WrongArgumentException(
+                    "knows nothing about property '{$name}'"
+                );
 
-        $primitive = $this->mapping[$name];
+            $primitive = $this->mapping[$name];
 
-        $method = ($value === null)
-            ? 'dropValue'
-            : 'setValue';
+            $method = ($value === null)
+                ? 'dropValue'
+                : 'setValue';
 
-        $this->object
-            ->get($primitive->getName())
-            ->$method($value);
+            $this->object
+                ->get($primitive->getName())
+                ->$method($value);
 
-        return $this;
+            return $this;
+        }
     }
 }

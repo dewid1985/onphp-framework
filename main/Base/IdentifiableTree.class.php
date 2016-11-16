@@ -8,75 +8,76 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @see NamedTree
- *
- * @ingroup Helpers
- **/
-abstract class IdentifiableTree
-    extends IdentifiableObject
-    implements Stringable
-{
-    private $parent = null;
-
+namespace OnPhp {
     /**
-     * @return IdentifiableTree
+     * @see NamedTree
+     *
+     * @ingroup Helpers
      **/
-    public function dropParent()
+    abstract class IdentifiableTree
+        extends IdentifiableObject
+        implements Stringable
     {
-        $this->parent = null;
+        private $parent = null;
 
-        return $this;
-    }
+        /**
+         * @return IdentifiableTree
+         **/
+        public function dropParent()
+        {
+            $this->parent = null;
 
-    /**
-     * @return IdentifiableTree
-     **/
-    public function getRoot()
-    {
-        $current = $this;
-        $next = $this;
-
-        while ($next) {
-            $current = $next;
-            $next = $next->getParent();
+            return $this;
         }
 
-        return $current;
-    }
+        /**
+         * @return IdentifiableTree
+         **/
+        public function getRoot()
+        {
+            $current = $this;
+            $next = $this;
 
-    /**
-     * @return IdentifiableTree
-     **/
-    public function getParent()
-    {
-        return $this->parent;
-    }
+            while ($next) {
+                $current = $next;
+                $next = $next->getParent();
+            }
 
-    /**
-     * @return IdentifiableTree
-     **/
-    public function setParent(IdentifiableTree $parent)
-    {
-        Assert::brothers($this, $parent);
+            return $current;
+        }
 
-        $this->parent = $parent;
+        /**
+         * @return IdentifiableTree
+         **/
+        public function getParent()
+        {
+            return $this->parent;
+        }
 
-        return $this;
-    }
+        /**
+         * @return IdentifiableTree
+         **/
+        public function setParent(IdentifiableTree $parent)
+        {
+            Assert::brothers($this, $parent);
 
-    public function toString($delimiter = ', ')
-    {
-        $ids = array($this->getId());
+            $this->parent = $parent;
 
-        $parent = $this;
+            return $this;
+        }
 
-        while ($parent = $parent->getParent())
-            $ids[] = $parent->getId();
+        public function toString($delimiter = ', ')
+        {
+            $ids = array($this->getId());
 
-        $ids = array_reverse($ids);
+            $parent = $this;
 
-        return implode($delimiter, $ids);
+            while ($parent = $parent->getParent())
+                $ids[] = $parent->getId();
+
+            $ids = array_reverse($ids);
+
+            return implode($delimiter, $ids);
+        }
     }
 }

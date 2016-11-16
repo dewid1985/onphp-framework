@@ -9,28 +9,30 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class TempDirectory
-{
-    private $path = null;
-
-    public function __construct(
-        $directory = 'temp-garbage/', $prefix = 'TmpDir'
-    )
+namespace OnPhp {
+    class TempDirectory
     {
-        $this->path = FileUtils::makeTempDirectory($directory, $prefix);
-    }
+        private $path = null;
 
-    public function __destruct()
-    {
-        try {
-            FileUtils::removeDirectory($this->path, true);
-        } catch (BaseException $e) {
-            // boo! deal with garbage yourself.
+        public function __construct(
+            $directory = 'temp-garbage/', $prefix = 'TmpDir'
+        )
+        {
+            $this->path = FileUtils::makeTempDirectory($directory, $prefix);
         }
-    }
 
-    public function getPath()
-    {
-        return $this->path;
+        public function __destruct()
+        {
+            try {
+                FileUtils::removeDirectory($this->path, true);
+            } catch (BaseException $e) {
+                // boo! deal with garbage yourself.
+            }
+        }
+
+        public function getPath()
+        {
+            return $this->path;
+        }
     }
 }

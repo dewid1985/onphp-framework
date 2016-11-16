@@ -9,69 +9,71 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class IsoCurrency extends Enumeration
-{
-    const RUB = 643;
-    const USD = 840;
-    const EUR = 978;
-    const UAH = 980;
-    const ILS = 376;
-    const LVL = 428;
-    const LTL = 440;
-    const BYR = 974;
-    const EEK = 233;
-    const GBP = 826;
-    const KZT = 398;
-    const DKK = 208;
-    const SEK = 752;
-    const NOK = 578;
-    const KGS = 417;
-
-    protected $names = [
-        self::RUB => 'Russian Ruble',
-        self::USD => 'US Dollar',
-        self::EUR => 'Euro',
-        self::UAH => 'Hryvnia',
-        self::ILS => 'New Israeli Sheqel',
-        self::LVL => 'Latvian Lats',
-        self::LTL => 'Lithuanian Litas',
-        self::BYR => 'Belarussian Ruble',
-        self::EEK => 'Kroon',
-        self::GBP => 'Pound Sterling',
-        self::KZT => 'Tenge',
-        self::DKK => 'Danish Krone',
-        self::SEK => 'Swedish Krona',
-        self::NOK => 'Norwegian Krone',
-        self::KGS => 'Som'
-    ];
-
-    protected $signs = [
-        self::RUB => 'руб.',
-        self::USD => '$',
-        self::EUR => '€',
-        self::UAH => 'грн.',
-        self::ILS => 'ILS',
-        self::LVL => 'LVL',
-        self::LTL => 'LTL',
-        self::BYR => 'BYR',
-        self::EEK => 'EEK',
-        self::GBP => 'GBP',
-        self::KZT => 'KZT',
-        self::DKK => 'DKK',
-        self::SEK => 'SEK',
-        self::NOK => 'NOK',
-        self::KGS => 'KGS'
-    ];
-
-
-    public static function getAnyId()
+namespace OnPhp {
+    class IsoCurrency extends Enumeration
     {
-        return self::RUB;
-    }
+        const RUB = 643;
+        const USD = 840;
+        const EUR = 978;
+        const UAH = 980;
+        const ILS = 376;
+        const LVL = 428;
+        const LTL = 440;
+        const BYR = 974;
+        const EEK = 233;
+        const GBP = 826;
+        const KZT = 398;
+        const DKK = 208;
+        const SEK = 752;
+        const NOK = 578;
+        const KGS = 417;
 
-    public function getSign()
-    {
-        return $this->signs[$this->id];
+        protected $names = [
+            self::RUB => 'Russian Ruble',
+            self::USD => 'US Dollar',
+            self::EUR => 'Euro',
+            self::UAH => 'Hryvnia',
+            self::ILS => 'New Israeli Sheqel',
+            self::LVL => 'Latvian Lats',
+            self::LTL => 'Lithuanian Litas',
+            self::BYR => 'Belarussian Ruble',
+            self::EEK => 'Kroon',
+            self::GBP => 'Pound Sterling',
+            self::KZT => 'Tenge',
+            self::DKK => 'Danish Krone',
+            self::SEK => 'Swedish Krona',
+            self::NOK => 'Norwegian Krone',
+            self::KGS => 'Som'
+        ];
+
+        protected $signs = [
+            self::RUB => 'руб.',
+            self::USD => '$',
+            self::EUR => '€',
+            self::UAH => 'грн.',
+            self::ILS => 'ILS',
+            self::LVL => 'LVL',
+            self::LTL => 'LTL',
+            self::BYR => 'BYR',
+            self::EEK => 'EEK',
+            self::GBP => 'GBP',
+            self::KZT => 'KZT',
+            self::DKK => 'DKK',
+            self::SEK => 'SEK',
+            self::NOK => 'NOK',
+            self::KGS => 'KGS'
+        ];
+
+
+        public static function getAnyId()
+        {
+            return self::RUB;
+        }
+
+        public function getSign()
+        {
+            return $this->signs[$this->id];
+        }
     }
 }
 

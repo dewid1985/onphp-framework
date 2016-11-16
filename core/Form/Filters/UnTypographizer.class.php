@@ -8,48 +8,49 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class UnTypographizer extends BaseFilter
-{
-    /** @var array  */
-    private static $symbols =
-        [
-            '&nbsp;' => ' ',
-            ' &lt; ' => ' < ',
-            ' &gt; ' => ' > ',
-            '&#133;' => '…',
-            '&trade;' => '™',
-            '&copy;' => '©',
-            '&#8470;' => '№',
-            '&#151;' => '—',
-            '&mdash;' => '—',
-            '&laquo;' => '«',
-            '&raquo;' => '»',
-            '&bull;' => '•',
-            '&reg;' => '®',
-            '&frac14;' => '¼',
-            '&frac12;' => '½',
-            '&frac34;' => '¾',
-            '&plusmn;' => '±'
-        ];
-
+namespace OnPhp {
     /**
-     * @return UnTypographizer
+     * @ingroup Filters
      **/
-    public static function me()
+    class UnTypographizer extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /** @var array */
+        private static $symbols =
+            [
+                '&nbsp;' => ' ',
+                ' &lt; ' => ' < ',
+                ' &gt; ' => ' > ',
+                '&#133;' => '…',
+                '&trade;' => '™',
+                '&copy;' => '©',
+                '&#8470;' => '№',
+                '&#151;' => '—',
+                '&mdash;' => '—',
+                '&laquo;' => '«',
+                '&raquo;' => '»',
+                '&bull;' => '•',
+                '&reg;' => '®',
+                '&frac14;' => '¼',
+                '&frac12;' => '½',
+                '&frac34;' => '¾',
+                '&plusmn;' => '±'
+            ];
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value) : string
-    {
-        return strtr($value, self::$symbols);
+        /**
+         * @return UnTypographizer
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
+
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value) : string
+        {
+            return strtr($value, self::$symbols);
+        }
     }
 }

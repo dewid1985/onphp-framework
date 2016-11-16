@@ -8,108 +8,110 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Feed
- **/
-class AtomItemWorker extends Singleton implements FeedItemWorker
-{
+namespace OnPhp {
     /**
-     * @return AtomItemWorker
-     **/
-    public static function me()
+     * Class AtomItemWorker
+     * @ingroup Feed
+     * @package OnPhp
+     */
+    class AtomItemWorker extends Singleton implements FeedItemWorker
     {
-        return Singleton::getInstance(__CLASS__);
-    }
-
-    public function makeItems(SimpleXMLElement $xmlFeed)
-    {
-        $result = [];
-
-        foreach ($xmlFeed->entry as $entry) {
-            $feedItem = new FeedItem((string) $entry->title);
-
-            if (isset($entry->content)) {
-                $feedItem->setContent(
-                    $this->makeFeedItemContent(
-                        $entry->content
-                    )
-                );
-            }
-
-            if (isset($entry->summary)) {
-                $feedItem->setSummary(
-                    $this->makeFeedItemContent(
-                        $entry->summary
-                    )
-                );
-            }
-
-            if (isset($entry->id)) {
-                $feedItem->setId(
-                    $entry->id
-                );
-            }
-
-            $result[] =
-                $feedItem
-                    ->setPublished(
-                        new Timestamp(strtotime((string) $entry->updated))
-                    )
-                    ->setLink((string) $entry->link);
+        /**
+         * @return AtomItemWorker
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
         }
 
-        return $result;
-    }
+        public function makeItems(SimpleXMLElement $xmlFeed)
+        {
+            $result = [];
 
-    private function makeFeedItemContent($content)
-    {
-        $feedItemContent =  new FeedItemContent();
+            foreach ($xmlFeed->entry as $entry) {
+                $feedItem = new FeedItem((string)$entry->title);
 
-        if (isset($content->attributes()->type)) {
-            switch ((string) $content->attributes()->type) {
-
-                case 'text':
-
-                    $feedItemContent->
-                    setType(
-                        new FeedItemContentType(
-                            FeedItemContentType::TEXT
+                if (isset($entry->content)) {
+                    $feedItem->setContent(
+                        $this->makeFeedItemContent(
+                            $entry->content
                         )
                     );
+                }
 
-                    break;
-
-                case 'html':
-
-                    $feedItemContent->
-                    setType(
-                        new FeedItemContentType(
-                            FeedItemContentType::HTML
+                if (isset($entry->summary)) {
+                    $feedItem->setSummary(
+                        $this->makeFeedItemContent(
+                            $entry->summary
                         )
                     );
+                }
 
-                    break;
-
-                case 'xhtml':
-
-                    $feedItemContent->
-                    setType(
-                        new FeedItemContentType(
-                            FeedItemContentType::XHTML
-                        )
+                if (isset($entry->id)) {
+                    $feedItem->setId(
+                        $entry->id
                     );
+                }
 
-                    break;
+                $result[] =
+                    $feedItem
+                        ->setPublished(
+                            new Timestamp(strtotime((string)$entry->updated))
+                        )
+                        ->setLink((string)$entry->link);
             }
+
+            return $result;
         }
 
-        return $feedItemContent->setBody((string) $content);
-    }
+        private function makeFeedItemContent($content)
+        {
+            $feedItemContent = new FeedItemContent();
 
-    public function toXml(FeedItem $item)
-    {
-        throw new UnimplementedFeatureException('implement me!');
+            if (isset($content->attributes()->type)) {
+                switch ((string)$content->attributes()->type) {
+
+                    case 'text':
+
+                        $feedItemContent->
+                        setType(
+                            new FeedItemContentType(
+                                FeedItemContentType::TEXT
+                            )
+                        );
+
+                        break;
+
+                    case 'html':
+
+                        $feedItemContent->
+                        setType(
+                            new FeedItemContentType(
+                                FeedItemContentType::HTML
+                            )
+                        );
+
+                        break;
+
+                    case 'xhtml':
+
+                        $feedItemContent->
+                        setType(
+                            new FeedItemContentType(
+                                FeedItemContentType::XHTML
+                            )
+                        );
+
+                        break;
+                }
+            }
+
+            return $feedItemContent->setBody((string)$content);
+        }
+
+        public function toXml(FeedItem $item)
+        {
+            throw new UnimplementedFeatureException('implement me!');
+        }
     }
 }
-

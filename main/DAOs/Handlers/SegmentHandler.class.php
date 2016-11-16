@@ -8,24 +8,25 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * @ingroup DAOs
+     * @ingroup Module
+     **/
+    interface SegmentHandler
+    {
+        public function __construct($segmentId);
 
-/**
- * @ingroup DAOs
- * @ingroup Module
- **/
-interface SegmentHandler
-{
-    public function __construct($segmentId);
+        /// checks for a key existence in segment
+        public function ping($key);
 
-    /// checks for a key existence in segment
-    public function ping($key);
+        /// creates key in segment
+        public function touch($key);
 
-    /// creates key in segment
-    public function touch($key);
+        /// deletes key from segment
+        public function unlink($key);
 
-    /// deletes key from segment
-    public function unlink($key);
-
-    /// destroys segment
-    public function drop();
+        /// destroys segment
+        public function drop();
+    }
 }

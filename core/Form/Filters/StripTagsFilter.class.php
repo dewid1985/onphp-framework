@@ -8,36 +8,37 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see RegulatedPrimitive::addImportFilter()
- *
- * @ingroup Filters
- **/
-class StripTagsFilter implements Filtrator
-{
-    private $exclude = null;
-
+namespace OnPhp {
     /**
-     * @return StripTagsFilter
+     * @see RegulatedPrimitive::addImportFilter()
+     *
+     * @ingroup Filters
      **/
-    public function setAllowableTags($exclude)
+    class StripTagsFilter implements Filtrator
     {
-        if (null !== $exclude) {
-            Assert::isString($exclude);
+        private $exclude = null;
+
+        /**
+         * @return StripTagsFilter
+         **/
+        public function setAllowableTags($exclude)
+        {
+            if (null !== $exclude) {
+                Assert::isString($exclude);
+            }
+
+            $this->exclude = $exclude;
+
+            return $this;
         }
 
-        $this->exclude = $exclude;
-
-        return $this;
-    }
-
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value)
-    {
-        return strip_tags($value, $this->exclude);
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value)
+        {
+            return strip_tags($value, $this->exclude);
+        }
     }
 }

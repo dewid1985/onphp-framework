@@ -8,58 +8,59 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see Timestamp
- * @see DateRange
- *
- * @ingroup Helpers
- **/
-class TimestampRange extends DateRange
-{
-
-    function __construct($start, $end)
-    {
-        parent::__construct($start, $end);
-    }
-
+namespace OnPhp {
     /**
-     * @return int|null
-     */
-    public function getStartStamp() // null if start is null
-    {
-        if ($start = $this->getStart()) {
-            return $start->toStamp();
-        }
-
-        return null;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getEndStamp() // null if end is null
-    {
-        if ($end = $this->getEnd()) {
-            return $end->toStamp();
-        }
-
-        return null;
-    }
-
-    /**
-     * @return TimestampRange
+     * @see Timestamp
+     * @see DateRange
+     *
+     * @ingroup Helpers
      **/
-    public function toTimestampRange()
+    class TimestampRange extends DateRange
     {
-        return $this;
-    }
 
-    /**
-     * @return string
-     */
-    protected function getObjectName()
-    {
-        return 'Timestamp';
+        function __construct($start, $end)
+        {
+            parent::__construct($start, $end);
+        }
+
+        /**
+         * @return int|null
+         */
+        public function getStartStamp() // null if start is null
+        {
+            if ($start = $this->getStart()) {
+                return $start->toStamp();
+            }
+
+            return null;
+        }
+
+        /**
+         * @return int|null
+         */
+        public function getEndStamp() // null if end is null
+        {
+            if ($end = $this->getEnd()) {
+                return $end->toStamp();
+            }
+
+            return null;
+        }
+
+        /**
+         * @return TimestampRange
+         **/
+        public function toTimestampRange()
+        {
+            return $this;
+        }
+
+        /**
+         * @return string
+         */
+        protected function getObjectName()
+        {
+            return 'Timestamp';
+        }
     }
 }

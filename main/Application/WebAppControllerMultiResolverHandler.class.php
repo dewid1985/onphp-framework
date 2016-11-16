@@ -10,49 +10,51 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class WebAppControllerMultiResolverHandler extends WebAppControllerResolverHandler
-{
-    protected $subPathList = [];
-
-    /**
-     * @param $subPath
-     * @return $this
-     */
-    public function addSubPath($subPath)
+namespace OnPhp {
+    class WebAppControllerMultiResolverHandler extends WebAppControllerResolverHandler
     {
-        $this->subPathList[] = $subPath;
-        return $this;
-    }
+        protected $subPathList = [];
 
-    /**
-     * @param $controllerName
-     * @param $path
-     * @return bool
-     */
-    protected function checkControllerName($controllerName, $path)
-    {
-        return
-            ClassUtils::isClassName($controllerName)
-            && $path
-            && $this->isReadable($controllerName, $path);
-    }
-
-    /**
-     * @param $controllerName
-     * @param $path
-     * @return bool
-     */
-    protected function isReadable($controllerName, $path)
-    {
-        $subPathList = $this->subPathList;
-        array_unshift($subPathList, '');
-
-        foreach ($subPathList as $subPath) {
-            if (is_readable($path . $subPath . $controllerName . EXT_CLASS)) {
-                return true;
-            }
+        /**
+         * @param $subPath
+         * @return $this
+         */
+        public function addSubPath($subPath)
+        {
+            $this->subPathList[] = $subPath;
+            return $this;
         }
 
-        return false;
+        /**
+         * @param $controllerName
+         * @param $path
+         * @return bool
+         */
+        protected function checkControllerName($controllerName, $path)
+        {
+            return
+                ClassUtils::isClassName($controllerName)
+                && $path
+                && $this->isReadable($controllerName, $path);
+        }
+
+        /**
+         * @param $controllerName
+         * @param $path
+         * @return bool
+         */
+        protected function isReadable($controllerName, $path)
+        {
+            $subPathList = $this->subPathList;
+            array_unshift($subPathList, '');
+
+            foreach ($subPathList as $subPath) {
+                if (is_readable($path . $subPath . $controllerName . EXT_CLASS)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

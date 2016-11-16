@@ -8,83 +8,84 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class CreateTableQuery extends QueryIdentification
-{
-    /** @var DBTable|null  */
-    private $table = null;
-
-    public function __construct(DBTable $table)
+namespace OnPhp {
+    /**
+     * @ingroup OSQL
+     **/
+    class CreateTableQuery extends QueryIdentification
     {
-        $this->table = $table;
-    }
+        /** @var DBTable|null */
+        private $table = null;
 
-    public function toDialectString(Dialect $dialect)
-    {
-        $name = $this->table->getName();
+        public function __construct(DBTable $table)
+        {
+            $this->table = $table;
+        }
 
-        $middle = "CREATE TABLE {$dialect->quoteTable($name)} (\n    ";
+        public function toDialectString(Dialect $dialect)
+        {
+            $name = $this->table->getName();
 
-        $prepend = [];
-        $columns = [];
-        $primary = [];
+            $middle = "CREATE TABLE {$dialect->quoteTable($name)} (\n    ";
 
-        $order = $this->table->getOrder();
+            $prepend = [];
+            $columns = [];
+            $primary = [];
 
-        /** @var DBColumn $column */
-        foreach ($order as $column) {
+            $order = $this->table->getOrder();
 
-            if ($column->isAutoincrement()) {
+            /** @var DBColumn $column */
+            foreach ($order as $column) {
 
-                if ($pre = $dialect->preAutoincrement($column)) {
-                    $prepend[] = $pre;
+                if ($column->isAutoincrement()) {
+
+                    if ($pre = $dialect->preAutoincrement($column)) {
+                        $prepend[] = $pre;
+                    }
+
+                    $columns[] = implode(' ',
+                        [
+                            $column->toDialectString($dialect),
+                            $dialect->postAutoincrement($column)
+                        ]
+                    );
+                } else {
+                    $columns[] = $column->toDialectString($dialect);
                 }
 
-                $columns[] = implode(' ',
-                    [
-                        $column->toDialectString($dialect),
-                        $dialect->postAutoincrement($column)
-                    ]
-                );
-            } else {
-                $columns[] = $column->toDialectString($dialect);
-            }
+                $name = $column->getName();
 
-            $name = $column->getName();
-
-            if ($column->isPrimaryKey()) {
-                $primary[] = $dialect->quoteField($name);
-            }
-        }
-
-        $out =
-            (
-            $prepend
-                ? implode("\n", $prepend) . "\n"
-                : null
-            )
-            . $middle
-            . implode(",\n    ", $columns);
-
-        if ($primary) {
-            $out .= ",\n    PRIMARY KEY(" . implode(', ', $primary) . ')';
-        }
-
-        if ($uniques = $this->table->getUniques()) {
-            $names = [];
-
-            foreach ($uniques as $row) {
-                foreach ($row as $name) {
-                    $names[] = $dialect->quoteField($name);
+                if ($column->isPrimaryKey()) {
+                    $primary[] = $dialect->quoteField($name);
                 }
-
-                $out .= ",\n    UNIQUE(" . implode(', ', $names) . ')';
             }
-        }
 
-        return $out . "\n);\n";
+            $out =
+                (
+                $prepend
+                    ? implode("\n", $prepend) . "\n"
+                    : null
+                )
+                . $middle
+                . implode(",\n    ", $columns);
+
+            if ($primary) {
+                $out .= ",\n    PRIMARY KEY(" . implode(', ', $primary) . ')';
+            }
+
+            if ($uniques = $this->table->getUniques()) {
+                $names = [];
+
+                foreach ($uniques as $row) {
+                    foreach ($row as $name) {
+                        $names[] = $dialect->quoteField($name);
+                    }
+
+                    $out .= ",\n    UNIQUE(" . implode(', ', $names) . ')';
+                }
+            }
+
+            return $out . "\n);\n";
+        }
     }
 }

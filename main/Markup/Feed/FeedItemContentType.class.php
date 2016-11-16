@@ -8,20 +8,23 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * Class FeedItemContentType
+     * @ingroup Feed
+     * @package OnPhp
+     */
+    class FeedItemContentType extends Enumeration
+    {
+        const TEXT = 1;
+        const HTML = 2;
+        const XHTML = 3;
 
-/**
- * @ingroup Feed
- **/
-class FeedItemContentType extends Enumeration
-{
-	const TEXT = 1;
-	const HTML = 2;
-	const XHTML = 3;
-
-	protected $names = [
-		self::TEXT => 'text',
-		self::HTML => 'html',
-		self::XHTML => 'xhtml'
-	];
+        protected $names = [
+            self::TEXT => 'text',
+            self::HTML => 'html',
+            self::XHTML => 'xhtml'
+        ];
+    }
 }
 

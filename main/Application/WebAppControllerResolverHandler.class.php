@@ -9,91 +9,93 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class WebAppControllerResolverHandler implements InterceptingChainHandler
-{
-    const CONTROLLER_POSTFIX = 'Controller';
-
-    protected $defaultController = 'MainController';
-
-    protected $notfoundController = 'NotFoundController';
-
-    /**
-     * @return WebAppControllerResolverHandler
-     */
-    public function run(InterceptingChain $chain)
+namespace OnPhp {
+    class WebAppControllerResolverHandler implements InterceptingChainHandler
     {
-        /* @var $chain WebApplication */
-        $request = $chain->getRequest();
+        const CONTROLLER_POSTFIX = 'Controller';
 
-        if ($controllerName = $this->getControllerNameByArea($chain)) {
-            $chain->setControllerName($controllerName);
-        } elseif ($controllerName = $this->getControllerNameByOtherData($chain)) {
-            $chain->setControllerName($controllerName);
-        } else {
-            $chain->setControllerName($this->defaultController);
+        protected $defaultController = 'MainController';
+
+        protected $notfoundController = 'NotFoundController';
+
+        /**
+         * @return WebAppControllerResolverHandler
+         */
+        public function run(InterceptingChain $chain)
+        {
+            /* @var $chain WebApplication */
+            $request = $chain->getRequest();
+
+            if ($controllerName = $this->getControllerNameByArea($chain)) {
+                $chain->setControllerName($controllerName);
+            } elseif ($controllerName = $this->getControllerNameByOtherData($chain)) {
+                $chain->setControllerName($controllerName);
+            } else {
+                $chain->setControllerName($this->defaultController);
+            }
+
+            $chain->next();
+
+            return $this;
         }
 
-        $chain->next();
+        protected function getControllerNameByArea(InterceptingChain $chain)
+        {
+            /** @var HttpRequest $request */
+            $request = $chain->getRequest();
 
-        return $this;
-    }
+            $area = null;
+            if ($request->hasAttachedVar('area')) {
+                $area = $request->getAttachedVar('area');
+            } elseif ($request->hasGetVar('area')) {
+                $area = $chain->getRequest()->getGetVar('area');
+            } elseif ($request->hasPostVar('area')) {
+                $area = $chain->getRequest()->getPostVar('area');
+            }
 
-    protected function getControllerNameByArea(InterceptingChain $chain)
-    {
-        /** @var HttpRequest $request */
-        $request = $chain->getRequest();
-
-        $area = null;
-        if ($request->hasAttachedVar('area')) {
-            $area = $request->getAttachedVar('area');
-        } elseif ($request->hasGetVar('area')) {
-            $area = $chain->getRequest()->getGetVar('area');
-        } elseif ($request->hasPostVar('area')) {
-            $area = $chain->getRequest()->getPostVar('area');
+            if (
+                $area
+                && $this->checkControllerName($area . self::CONTROLLER_POSTFIX, $chain->getPathController())
+            ) {
+                return $area . self::CONTROLLER_POSTFIX;
+            } elseif ($area) {
+                HeaderUtils::sendHttpStatus(new HttpStatus(HttpStatus::CODE_404));
+                return $this->notfoundController;
+            }
+            return null;
         }
 
-        if (
-            $area
-            && $this->checkControllerName($area . self::CONTROLLER_POSTFIX, $chain->getPathController())
-        ) {
-            return $area . self::CONTROLLER_POSTFIX;
-        } elseif ($area) {
-            HeaderUtils::sendHttpStatus(new HttpStatus(HttpStatus::CODE_404));
-            return $this->notfoundController;
+        protected function checkControllerName($controllerName, $path)
+        {
+            return
+                ClassUtils::isClassName($controllerName)
+                && $path
+                && is_readable($path . $controllerName . EXT_CLASS);
         }
-        return null;
-    }
 
-    protected function checkControllerName($controllerName, $path)
-    {
-        return
-            ClassUtils::isClassName($controllerName)
-            && $path
-            && is_readable($path . $controllerName . EXT_CLASS);
-    }
+        protected function getControllerNameByOtherData(InterceptingChain $chain)
+        {
+            return null;
+        }
 
-    protected function getControllerNameByOtherData(InterceptingChain $chain)
-    {
-        return null;
-    }
+        /**
+         * @return WebAppControllerResolverHandler
+         */
+        public function setDefaultController($defaultController)
+        {
+            $this->defaultController = $defaultController;
 
-    /**
-     * @return WebAppControllerResolverHandler
-     */
-    public function setDefaultController($defaultController)
-    {
-        $this->defaultController = $defaultController;
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return WebAppControllerResolverHandler
+         */
+        public function setNotfoundController($notfoundController)
+        {
+            $this->notfoundController = $notfoundController;
 
-    /**
-     * @return WebAppControllerResolverHandler
-     */
-    public function setNotfoundController($notfoundController)
-    {
-        $this->notfoundController = $notfoundController;
-
-        return $this;
+            return $this;
+        }
     }
 }

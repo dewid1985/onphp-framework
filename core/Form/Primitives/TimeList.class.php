@@ -8,104 +8,105 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class TimeList extends BasePrimitive
-{
-    /** @var array  */
-    protected $value = [];
-
+namespace OnPhp {
     /**
-     * @return TimeList
+     * @ingroup Primitives
      **/
-    public function clean() : TimeList
+    class TimeList extends BasePrimitive
     {
-        parent::clean();
+        /** @var array */
+        protected $value = [];
 
-        $this->value = [];
+        /**
+         * @return TimeList
+         **/
+        public function clean() : TimeList
+        {
+            parent::clean();
 
-        return $this;
-    }
+            $this->value = [];
 
-    /**
-     * @param $scope
-     * @return bool|null
-     */
-    public function import($scope)
-    {
-        if (
-            empty($scope[$this->name])
-            || !is_array($scope[$this->name])
-        ) {
-            return null;
+            return $this;
         }
 
-        $this->raw = $scope[$this->name];
-        $this->imported = true;
-
-        $array = $scope[$this->name];
-        $list = [];
-
-        foreach ($array as $string) {
-            $timeList = self::stringToTimeList($string);
-
-            if ($timeList) {
-                $list[] = $timeList;
+        /**
+         * @param $scope
+         * @return bool|null
+         */
+        public function import($scope)
+        {
+            if (
+                empty($scope[$this->name])
+                || !is_array($scope[$this->name])
+            ) {
+                return null;
             }
-        }
 
-        $this->value = $list;
+            $this->raw = $scope[$this->name];
+            $this->imported = true;
 
-        return ($this->value !== []);
-    }
+            $array = $scope[$this->name];
+            $list = [];
 
-    /**
-     * @param $string
-     * @return array
-     */
-    public static function stringToTimeList($string)
-    {
-        $list = [];
+            foreach ($array as $string) {
+                $timeList = self::stringToTimeList($string);
 
-        //$times = split("([,; \n]+)", $string);
-        $times = explode([',',';'], $string);
-
-        for ($i = 0, $size = count($times); $i < $size; ++$i) {
-            $time = mb_ereg_replace('[^0-9:]', ':', $times[$i]);
-
-            try {
-                $list[] = new Time($time);
-            } catch (WrongArgumentException $e) {/* ignore */
+                if ($timeList) {
+                    $list[] = $timeList;
+                }
             }
+
+            $this->value = $list;
+
+            return ($this->value !== []);
         }
 
-        return $list;
-    }
+        /**
+         * @param $string
+         * @return array
+         */
+        public static function stringToTimeList($string)
+        {
+            $list = [];
 
-    /**
-     * @return array
-     */
-    public function getValueOrDefault() : array
-    {
-        if (is_array($this->value) && $this->value[0]) {
-            return $this->value;
+            //$times = split("([,; \n]+)", $string);
+            $times = explode([',', ';'], $string);
+
+            for ($i = 0, $size = count($times); $i < $size; ++$i) {
+                $time = mb_ereg_replace('[^0-9:]', ':', $times[$i]);
+
+                try {
+                    $list[] = new Time($time);
+                } catch (WrongArgumentException $e) {/* ignore */
+                }
+            }
+
+            return $list;
         }
 
-        return [$this->default];
-    }
+        /**
+         * @return array
+         */
+        public function getValueOrDefault() : array
+        {
+            if (is_array($this->value) && $this->value[0]) {
+                return $this->value;
+            }
 
-    /**
-     * @return array
-     */
-    public function getActualValue() : array
-    {
-        return [$this->getValueOrDefault()];
-    }
+            return [$this->default];
+        }
 
-    public function exportValue()
-    {
-        throw new UnimplementedFeatureException();
+        /**
+         * @return array
+         */
+        public function getActualValue() : array
+        {
+            return [$this->getValueOrDefault()];
+        }
+
+        public function exportValue()
+        {
+            throw new UnimplementedFeatureException();
+        }
     }
 }

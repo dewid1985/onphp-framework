@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class MinimalNumberProjection extends AggregateProjection
-{
-    public function getFunctionName()
+namespace OnPhp {
+    /**
+     * @ingroup Projections
+     **/
+    class MinimalNumberProjection extends AggregateProjection
     {
-        return 'min';
+        public function getFunctionName()
+        {
+            return 'min';
+        }
     }
 }

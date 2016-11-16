@@ -9,10 +9,12 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class ObjectBuilder extends PrototypedBuilder
-{
-    protected function createEmpty()
+namespace OnPhp {
+    abstract class ObjectBuilder extends PrototypedBuilder
     {
-        return $this->proto->createObject();
+        protected function createEmpty()
+        {
+            return $this->proto->createObject();
+        }
     }
 }

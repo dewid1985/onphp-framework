@@ -9,7 +9,9 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface Comparator
-{
-    public function compare($one, $two);
+namespace OnPhp {
+    interface Comparator
+    {
+        public function compare($one, $two);
+    }
 }

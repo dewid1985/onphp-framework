@@ -8,13 +8,14 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Support interface for Form's logic rules.
- *
- * @ingroup Logic
- **/
-interface LogicalObject extends DialectString
-{
-    public function toBoolean(Form $form);
+namespace OnPhp {
+    /**
+     * Support interface for Form's logic rules.
+     *
+     * @ingroup Logic
+     **/
+    interface LogicalObject extends DialectString
+    {
+        public function toBoolean(Form $form);
+    }
 }

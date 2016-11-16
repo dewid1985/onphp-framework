@@ -8,102 +8,103 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Logic
- **/
-class PostfixUnaryExpression implements LogicalObject, MappableObject
-{
-    const
-        IS_NULL = 'IS NULL',
-        IS_NOT_NULL = 'IS NOT NULL',
-
-        IS_TRUE = 'IS TRUE',
-        IS_FALSE = 'IS FALSE';
-
-    /** @var null  */
-    private $subject = null;
-    /** @var null  */
-    private $logic = null;
-    /** @var bool  */
-    private $brackets = true;
-
+namespace OnPhp {
     /**
-     * PostfixUnaryExpression constructor.
-     * @param $subject
-     * @param $logic
-     */
-    public function __construct($subject, $logic)
+     * @ingroup Logic
+     **/
+    class PostfixUnaryExpression implements LogicalObject, MappableObject
     {
-        $this->subject = $subject;
-        $this->logic = $logic;
-    }
+        const
+            IS_NULL = 'IS NULL',
+            IS_NOT_NULL = 'IS NOT NULL',
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect) : string
-    {
-        $sql = $dialect->toFieldString($this->subject)
-            . ' ' . $dialect->logicToString($this->logic);
-        return $this->brackets ? "({$sql})" : $sql;
-    }
+            IS_TRUE = 'IS TRUE',
+            IS_FALSE = 'IS FALSE';
 
-    /**
-     * @param ProtoDAO $dao
-     * @param JoinCapableQuery $query
-     * @return PostfixUnaryExpression
-     */
-    public function toMapped(ProtoDAO $dao, JoinCapableQuery $query)
-    {
-        $expression = new self(
-            $dao->guessAtom($this->subject, $query),
-            $this->logic
-        );
+        /** @var null */
+        private $subject = null;
+        /** @var null */
+        private $logic = null;
+        /** @var bool */
+        private $brackets = true;
 
-        return $expression->noBrackets(!$this->brackets);
-    }
+        /**
+         * PostfixUnaryExpression constructor.
+         * @param $subject
+         * @param $logic
+         */
+        public function __construct($subject, $logic)
+        {
+            $this->subject = $subject;
+            $this->logic = $logic;
+        }
 
-    /**
-     * @param bool $noBrackets
-     * @return $this
-     */
-    public function noBrackets($noBrackets = true)
-    {
-        $this->brackets = !$noBrackets;
-        return $this;
-    }
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect) : string
+        {
+            $sql = $dialect->toFieldString($this->subject)
+                . ' ' . $dialect->logicToString($this->logic);
+            return $this->brackets ? "({$sql})" : $sql;
+        }
 
-    /**
-     * @param Form $form
-     * @return bool
-     * @throws UnsupportedMethodException
-     * @throws WrongArgumentException
-     */
-    public function toBoolean(Form $form)
-    {
-        Assert::isTrue($this->brackets, 'brackets must be enabled');
-        $subject = $form->toFormValue($this->subject);
+        /**
+         * @param ProtoDAO $dao
+         * @param JoinCapableQuery $query
+         * @return PostfixUnaryExpression
+         */
+        public function toMapped(ProtoDAO $dao, JoinCapableQuery $query)
+        {
+            $expression = new self(
+                $dao->guessAtom($this->subject, $query),
+                $this->logic
+            );
 
-        switch ($this->logic) {
-            case self::IS_NULL:
-                return null === $subject;
+            return $expression->noBrackets(!$this->brackets);
+        }
 
-            case self::IS_NOT_NULL:
-                return null !== $subject;
+        /**
+         * @param bool $noBrackets
+         * @return $this
+         */
+        public function noBrackets($noBrackets = true)
+        {
+            $this->brackets = !$noBrackets;
+            return $this;
+        }
 
-            case self::IS_TRUE:
-                return true === $subject;
+        /**
+         * @param Form $form
+         * @return bool
+         * @throws UnsupportedMethodException
+         * @throws WrongArgumentException
+         */
+        public function toBoolean(Form $form)
+        {
+            Assert::isTrue($this->brackets, 'brackets must be enabled');
+            $subject = $form->toFormValue($this->subject);
 
-            case self::IS_FALSE:
-                return false === $subject;
+            switch ($this->logic) {
+                case self::IS_NULL:
+                    return null === $subject;
 
-            default:
+                case self::IS_NOT_NULL:
+                    return null !== $subject;
 
-                throw new UnsupportedMethodException(
-                    "'{$this->logic}' doesn't supported yet"
-                );
+                case self::IS_TRUE:
+                    return true === $subject;
+
+                case self::IS_FALSE:
+                    return false === $subject;
+
+                default:
+
+                    throw new UnsupportedMethodException(
+                        "'{$this->logic}' doesn't supported yet"
+                    );
+            }
         }
     }
 }

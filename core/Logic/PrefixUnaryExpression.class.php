@@ -8,90 +8,91 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Logic
- **/
-class PrefixUnaryExpression implements LogicalObject, MappableObject
-{
-    const
-        NOT = 'NOT',
-        MINUS = '-';
-
-    /** @var null  */
-    private $subject = null;
-    /** @var null  */
-    private $logic = null;
-    /** @var bool  */
-    private $brackets = true;
-
+namespace OnPhp {
     /**
-     * PrefixUnaryExpression constructor.
-     * @param $logic
-     * @param $subject
-     */
-    public function __construct($logic, $subject)
+     * @ingroup Logic
+     **/
+    class PrefixUnaryExpression implements LogicalObject, MappableObject
     {
-        $this->subject = $subject;
-        $this->logic = $logic;
-    }
+        const
+            NOT = 'NOT',
+            MINUS = '-';
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        $sql = $dialect->logicToString($this->logic)
-            . ' ' . $dialect->toFieldString($this->subject);
+        /** @var null */
+        private $subject = null;
+        /** @var null */
+        private $logic = null;
+        /** @var bool */
+        private $brackets = true;
 
-        return $this->brackets ? "({$sql})" : $sql;
-    }
+        /**
+         * PrefixUnaryExpression constructor.
+         * @param $logic
+         * @param $subject
+         */
+        public function __construct($logic, $subject)
+        {
+            $this->subject = $subject;
+            $this->logic = $logic;
+        }
 
-    /**
-     * @param ProtoDAO $dao
-     * @param JoinCapableQuery $query
-     * @return PrefixUnaryExpression
-     */
-    public function toMapped(ProtoDAO $dao, JoinCapableQuery $query) : PrefixUnaryExpression
-    {
-        $expression = new self(
-            $this->logic,
-            $dao->guessAtom($this->subject, $query)
-        );
-        return $expression->noBrackets($this->brackets);
-    }
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            $sql = $dialect->logicToString($this->logic)
+                . ' ' . $dialect->toFieldString($this->subject);
 
-    /**
-     * @param bool $noBrackets
-     * @return PrefixUnaryExpression
-     */
-    public function noBrackets($noBrackets = true) : PrefixUnaryExpression
-    {
-        $this->brackets = !$noBrackets;
-        return $this;
-    }
+            return $this->brackets ? "({$sql})" : $sql;
+        }
 
-    /**
-     * @param Form $form
-     * @return bool
-     * @throws UnsupportedMethodException
-     * @throws WrongArgumentException
-     */
-    public function toBoolean(Form $form) : bool
-    {
-        Assert::isTrue($this->brackets, 'brackets must be enabled');
-        $subject = $form->toFormValue($this->subject);
+        /**
+         * @param ProtoDAO $dao
+         * @param JoinCapableQuery $query
+         * @return PrefixUnaryExpression
+         */
+        public function toMapped(ProtoDAO $dao, JoinCapableQuery $query) : PrefixUnaryExpression
+        {
+            $expression = new self(
+                $this->logic,
+                $dao->guessAtom($this->subject, $query)
+            );
+            return $expression->noBrackets($this->brackets);
+        }
 
-        switch ($this->logic) {
-            case self::NOT :
-                return false === $subject;
+        /**
+         * @param bool $noBrackets
+         * @return PrefixUnaryExpression
+         */
+        public function noBrackets($noBrackets = true) : PrefixUnaryExpression
+        {
+            $this->brackets = !$noBrackets;
+            return $this;
+        }
 
-            default:
+        /**
+         * @param Form $form
+         * @return bool
+         * @throws UnsupportedMethodException
+         * @throws WrongArgumentException
+         */
+        public function toBoolean(Form $form) : bool
+        {
+            Assert::isTrue($this->brackets, 'brackets must be enabled');
+            $subject = $form->toFormValue($this->subject);
 
-                throw new UnsupportedMethodException(
-                    "'{$this->logic}' doesn't supported yet"
-                );
+            switch ($this->logic) {
+                case self::NOT :
+                    return false === $subject;
+
+                default:
+
+                    throw new UnsupportedMethodException(
+                        "'{$this->logic}' doesn't supported yet"
+                    );
+            }
         }
     }
 }

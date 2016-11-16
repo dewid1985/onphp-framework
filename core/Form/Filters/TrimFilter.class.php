@@ -8,72 +8,73 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class TrimFilter implements Filtrator
-{
-    const LEFT = 'l';
-    const RIGHT = 'r';
-    const BOTH = null;
-
-    private $charlist = null;
-    private $direction = self::BOTH;
-
+namespace OnPhp {
     /**
-     * @return TrimFilter
+     * @ingroup Filters
      **/
-    public function setLeft() : TrimFilter
+    class TrimFilter implements Filtrator
     {
-        $this->direction = self::LEFT;
+        const LEFT = 'l';
+        const RIGHT = 'r';
+        const BOTH = null;
 
-        return $this;
-    }
+        private $charlist = null;
+        private $direction = self::BOTH;
 
-    /**
-     * @return TrimFilter
-     */
-    public function setRight() : TrimFilter
-    {
-        $this->direction = self::RIGHT;
+        /**
+         * @return TrimFilter
+         **/
+        public function setLeft() : TrimFilter
+        {
+            $this->direction = self::LEFT;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return TrimFilter
-     */
-    public function setBoth() : TrimFilter
-    {
-        $this->direction = self::BOTH;
+        /**
+         * @return TrimFilter
+         */
+        public function setRight() : TrimFilter
+        {
+            $this->direction = self::RIGHT;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function apply($value)
-    {
-        $function = $this->direction . 'trim';
+        /**
+         * @return TrimFilter
+         */
+        public function setBoth() : TrimFilter
+        {
+            $this->direction = self::BOTH;
 
-        return (
-        $this->charlist
-            ? $function($value, $this->charlist)
-            : $function($value)
-        );
-    }
+            return $this;
+        }
 
-    /**
-     * @param $charlist
-     * @return TrimFilter
-     */
-    public function setCharlist($charlist) : TrimFilter
-    {
-        $this->charlist = $charlist;
+        /**
+         * @param $value
+         * @return mixed
+         */
+        public function apply($value)
+        {
+            $function = $this->direction . 'trim';
 
-        return $this;
+            return (
+            $this->charlist
+                ? $function($value, $this->charlist)
+                : $function($value)
+            );
+        }
+
+        /**
+         * @param $charlist
+         * @return TrimFilter
+         */
+        public function setCharlist($charlist) : TrimFilter
+        {
+            $this->charlist = $charlist;
+
+            return $this;
+        }
     }
 }

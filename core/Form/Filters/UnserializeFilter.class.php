@@ -8,29 +8,30 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Unserialize string
- *
- * @ingroup Filters
- * @deprecated Because of the potential security problem.
- **/
-class UnserializeFilter extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return UnserializeFilter
+     * Unserialize string
+     *
+     * @ingroup Filters
+     * @deprecated Because of the potential security problem.
      **/
-    public static function me()
+    class UnserializeFilter extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return UnserializeFilter
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function apply($value)
-    {
-        return unserialize($value);
+        /**
+         * @param $value
+         * @return mixed
+         */
+        public function apply($value)
+        {
+            return unserialize($value);
+        }
     }
 }

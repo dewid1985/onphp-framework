@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class SumProjection extends AggregateProjection
-{
-    public function getFunctionName()
+namespace OnPhp {
+    /**
+     * @ingroup Projections
+     **/
+    class SumProjection extends AggregateProjection
     {
-        return 'sum';
+        public function getFunctionName()
+        {
+            return 'sum';
+        }
     }
 }

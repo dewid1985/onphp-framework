@@ -8,20 +8,21 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class EditCommand implements EditorCommand
-{
+namespace OnPhp {
     /**
-     * @return ModelAndView
+     * @ingroup Flow
      **/
-    public function run(Prototyped $subject, Form $form, HttpRequest $request)
+    class EditCommand implements EditorCommand
     {
-        if ($object = $form->getValue('id'))
-            FormUtils::object2form($object, $form);
+        /**
+         * @return ModelAndView
+         **/
+        public function run(Prototyped $subject, Form $form, HttpRequest $request)
+        {
+            if ($object = $form->getValue('id'))
+                FormUtils::object2form($object, $form);
 
-        return new ModelAndView();
+            return new ModelAndView();
+        }
     }
 }

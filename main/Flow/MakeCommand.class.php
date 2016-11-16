@@ -8,25 +8,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-abstract class MakeCommand extends TakeCommand
-{
+namespace OnPhp {
     /**
-     * @return ModelAndView
-     **/
-    public function run(Prototyped $subject, Form $form, HttpRequest $request)
+     * Class MakeCommand
+     * @ingroup Flow
+     * @package OnPhp
+     */
+    abstract class MakeCommand extends TakeCommand
     {
-        $form->markGood('id');
+        /**
+         * @return ModelAndView
+         **/
+        public function run(Prototyped $subject, Form $form, HttpRequest $request)
+        {
+            $form->markGood('id');
 
-        if (!$form->getErrors()) {
-            FormUtils::form2object($form, $subject);
+            if (!$form->getErrors()) {
+                FormUtils::form2object($form, $subject);
 
-            return parent::run($subject, $form, $request);
+                return parent::run($subject, $form, $request);
+            }
+
+            return new ModelAndView();
         }
-
-        return new ModelAndView();
     }
 }

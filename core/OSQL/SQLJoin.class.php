@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class SQLJoin extends SQLBaseJoin
-{
-    public function toDialectString(Dialect $dialect)
+namespace OnPhp {
+    /**
+     * @ingroup OSQL
+     **/
+    class SQLJoin extends SQLBaseJoin
     {
-        return parent::baseToString($dialect, null);
+        public function toDialectString(Dialect $dialect)
+        {
+            return parent::baseToString($dialect, null);
+        }
     }
 }

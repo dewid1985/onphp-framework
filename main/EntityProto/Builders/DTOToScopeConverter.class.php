@@ -9,31 +9,33 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class DTOToScopeConverter extends PrototypedBuilder
-{
-    function __construct(EntityProto $proto)
+namespace OnPhp {
+    class DTOToScopeConverter extends PrototypedBuilder
     {
-        parent::__construct($proto);
-    }
+        function __construct(EntityProto $proto)
+        {
+            parent::__construct($proto);
+        }
 
-    protected function createEmpty()
-    {
-        return [];
-    }
+        protected function createEmpty()
+        {
+            return [];
+        }
 
-    /**
-     * @return DTOGetter
-     **/
-    protected function getGetter($object)
-    {
-        return new DTOGetter($this->proto, $object);
-    }
+        /**
+         * @return DTOGetter
+         **/
+        protected function getGetter($object)
+        {
+            return new DTOGetter($this->proto, $object);
+        }
 
-    /**
-     * @return ScopeSetter
-     **/
-    protected function getSetter(&$object)
-    {
-        return new ScopeSetter($this->proto, $object);
+        /**
+         * @return ScopeSetter
+         **/
+        protected function getSetter(&$object)
+        {
+            return new ScopeSetter($this->proto, $object);
+        }
     }
 }

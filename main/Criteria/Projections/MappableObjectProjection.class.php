@@ -8,29 +8,30 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class MappableObjectProjection implements ObjectProjection
-{
-    private $mappable = null;
-    private $alias = null;
-
-    public function __construct(MappableObject $mappable, $alias = null)
-    {
-        $this->mappable = $mappable;
-        $this->alias = $alias;
-    }
-
+namespace OnPhp {
     /**
-     * @return JoinCapableQuery
+     * @ingroup Projections
      **/
-    public function process(Criteria $criteria, JoinCapableQuery $query)
+    class MappableObjectProjection implements ObjectProjection
     {
-        return $query->get(
-            $this->mappable->toMapped($criteria->getDao(), $query),
-            $this->alias
-        );
+        private $mappable = null;
+        private $alias = null;
+
+        public function __construct(MappableObject $mappable, $alias = null)
+        {
+            $this->mappable = $mappable;
+            $this->alias = $alias;
+        }
+
+        /**
+         * @return JoinCapableQuery
+         **/
+        public function process(Criteria $criteria, JoinCapableQuery $query)
+        {
+            return $query->get(
+                $this->mappable->toMapped($criteria->getDao(), $query),
+                $this->alias
+            );
+        }
     }
 }

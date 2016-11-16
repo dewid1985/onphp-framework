@@ -8,22 +8,23 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class PropertyProjection extends BaseProjection
-{
+namespace OnPhp {
     /**
-     * @return JoinCapableQuery
+     * @ingroup Projections
      **/
-    public function process(Criteria $criteria, JoinCapableQuery $query)
+    class PropertyProjection extends BaseProjection
     {
-        Assert::isNotNull($this->property);
+        /**
+         * @return JoinCapableQuery
+         **/
+        public function process(Criteria $criteria, JoinCapableQuery $query)
+        {
+            Assert::isNotNull($this->property);
 
-        return $query->get(
-            $criteria->getDao()->guessAtom($this->property, $query),
-            $this->alias
-        );
+            return $query->get(
+                $criteria->getDao()->guessAtom($this->property, $query),
+                $this->alias
+            );
+        }
     }
 }

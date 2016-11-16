@@ -8,110 +8,110 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Html
- **/
-class SgmlOpenTag extends SgmlTag
-{
-    private $attributes = [];
-    private $empty = false;
-
+namespace OnPhp {
     /**
-     * @return bool
-     */
-    public function isEmpty() : bool
-    {
-        return $this->empty;
-    }
-
-    /**
-     * @return SgmlOpenTag
+     * @ingroup Html
      **/
-    public function setEmpty($isEmpty)
+    class SgmlOpenTag extends SgmlTag
     {
-        Assert::isBoolean($isEmpty);
+        private $attributes = [];
+        private $empty = false;
 
-        $this->empty = $isEmpty;
-
-        return $this;
-    }
-
-    /**
-     * @return SgmlOpenTag
-     **/
-    public function setAttribute($name, $value)
-    {
-        $this->attributes[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @param $name
-     * @return bool
-     */
-    public function hasAttribute($name)
-    {
-        $name = strtolower($name);
-
-        return isset($this->attributes[$name]);
-    }
-
-    /**
-     * @param $name
-     * @return mixed
-     * @throws WrongArgumentException
-     */
-    public function getAttribute($name)
-    {
-        $name = strtolower($name);
-
-        if (!isset($this->attributes[$name])) {
-            throw new WrongArgumentException(
-                "attribute '{$name}' does not exist"
-            );
+        /**
+         * @return bool
+         */
+        public function isEmpty() : bool
+        {
+            return $this->empty;
         }
 
-        return $this->attributes[$name];
-    }
+        /**
+         * @return SgmlOpenTag
+         **/
+        public function setEmpty($isEmpty)
+        {
+            Assert::isBoolean($isEmpty);
 
-    /**
-     * @param $name
-     * @return $this
-     * @throws WrongArgumentException
-     */
-    public function dropAttribute($name)
-    {
-        $name = strtolower($name);
+            $this->empty = $isEmpty;
 
-        if (!isset($this->attributes[$name])) {
-            throw new WrongArgumentException(
-                "attribute '{$name}' does not exist"
-            );
+            return $this;
         }
 
-        unset($this->attributes[$name]);
+        /**
+         * @return SgmlOpenTag
+         **/
+        public function setAttribute($name, $value)
+        {
+            $this->attributes[$name] = $value;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return array
-     */
-    public function getAttributesList()
-    {
-        return $this->attributes;
-    }
+        /**
+         * @param $name
+         * @return bool
+         */
+        public function hasAttribute($name)
+        {
+            $name = strtolower($name);
 
-    /**
-     * @return SgmlOpenTag
-     **/
-    public function dropAttributesList()
-    {
-        $this->attributes = [];
+            return isset($this->attributes[$name]);
+        }
 
-        return $this;
+        /**
+         * @param $name
+         * @return mixed
+         * @throws WrongArgumentException
+         */
+        public function getAttribute($name)
+        {
+            $name = strtolower($name);
+
+            if (!isset($this->attributes[$name])) {
+                throw new WrongArgumentException(
+                    "attribute '{$name}' does not exist"
+                );
+            }
+
+            return $this->attributes[$name];
+        }
+
+        /**
+         * @param $name
+         * @return $this
+         * @throws WrongArgumentException
+         */
+        public function dropAttribute($name)
+        {
+            $name = strtolower($name);
+
+            if (!isset($this->attributes[$name])) {
+                throw new WrongArgumentException(
+                    "attribute '{$name}' does not exist"
+                );
+            }
+
+            unset($this->attributes[$name]);
+
+            return $this;
+        }
+
+        /**
+         * @return array
+         */
+        public function getAttributesList()
+        {
+            return $this->attributes;
+        }
+
+        /**
+         * @return SgmlOpenTag
+         **/
+        public function dropAttributesList()
+        {
+            $this->attributes = [];
+
+            return $this;
+        }
     }
 }
-

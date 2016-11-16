@@ -8,83 +8,84 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see LightMetaProperty
- *
- * @ingroup Helpers
- **/
-class InnerMetaProperty extends LightMetaProperty
-{
-
-    public function isBuildable($array, $prefix = null)
-    {
-        return true;
-    }
-
-    public function fillMapping(array $mapping)
-    {
-        return
-            array_merge(
-                $mapping,
-                $this->getProto()->getMapping()
-            );
-    }
-
+namespace OnPhp {
     /**
-     * @return AbstractProtoClass
+     * @see LightMetaProperty
+     *
+     * @ingroup Helpers
      **/
-    public function getProto()
+    class InnerMetaProperty extends LightMetaProperty
     {
-        return call_user_func(array($this->getClassName(), 'proto'));
-    }
 
-    /**
-     * @return Form
-     **/
-    public function fillForm(Form $form, $prefix = null)
-    {
-        foreach ($this->getProto()->getPropertyList() as $property) {
-            $property->fillForm($form, $this->getName() . ':');
+        public function isBuildable($array, $prefix = null)
+        {
+            return true;
         }
 
-        return $form;
-    }
+        public function fillMapping(array $mapping)
+        {
+            return
+                array_merge(
+                    $mapping,
+                    $this->getProto()->getMapping()
+                );
+        }
 
-    public function fillQuery(
-        InsertOrUpdateQuery $query,
-        Prototyped $object,
-        Prototyped $old = null
-    )
-    {
-        $inner = $object->{$this->getGetter()}();
-        $oldInner = $old ? $old->{$this->getGetter()}() : null;
+        /**
+         * @return AbstractProtoClass
+         **/
+        public function getProto()
+        {
+            return call_user_func(array($this->getClassName(), 'proto'));
+        }
 
-        return
-            $this->getProto()->fillQuery(
-                $query,
-                $inner,
-                //when old and objects have one value object
-                //  we'll update all valueObject fields:
-                $oldInner !== $inner ? $oldInner : null
+        /**
+         * @return Form
+         **/
+        public function fillForm(Form $form, $prefix = null)
+        {
+            foreach ($this->getProto()->getPropertyList() as $property) {
+                $property->fillForm($form, $this->getName() . ':');
+            }
+
+            return $form;
+        }
+
+        public function fillQuery(
+            InsertOrUpdateQuery $query,
+            Prototyped $object,
+            Prototyped $old = null
+        )
+        {
+            $inner = $object->{$this->getGetter()}();
+            $oldInner = $old ? $old->{$this->getGetter()}() : null;
+
+            return
+                $this->getProto()->fillQuery(
+                    $query,
+                    $inner,
+                    //when old and objects have one value object
+                    //  we'll update all valueObject fields:
+                    $oldInner !== $inner ? $oldInner : null
+                );
+        }
+
+        public function toValue(ProtoDAO $dao = null, $array, $prefix = null)
+        {
+            $proto = $this->getProto();
+
+            return $proto->completeObject(
+                $proto->makeOnlyObject(
+                    $this->getClassName(), $array, $prefix, $dao
+                ),
+                $array,
+                $prefix
             );
-    }
+        }
 
-    public function toValue(ProtoDAO $dao = null, $array, $prefix = null)
-    {
-        $proto = $this->getProto();
-
-        return $proto->completeObject(
-            $proto->makeOnlyObject(
-                $this->getClassName(), $array, $prefix, $dao
-            ),
-            $array,
-            $prefix
-        );
-    }
-
-    public function isFormless()
-    {
-        return true;
+        public function isFormless()
+        {
+            return true;
+        }
     }
 }

@@ -8,27 +8,28 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveFloat extends PrimitiveNumber
-{
+namespace OnPhp {
     /**
-     * @param $number
-     * @throws WrongArgumentException
-     */
-    protected function checkNumber($number)
+     * @ingroup Primitives
+     **/
+    class PrimitiveFloat extends PrimitiveNumber
     {
-        Assert::isFloat($number);
-    }
+        /**
+         * @param $number
+         * @throws WrongArgumentException
+         */
+        protected function checkNumber($number)
+        {
+            Assert::isFloat($number);
+        }
 
-    /**
-     * @param $number
-     * @return float
-     */
-    protected function castNumber($number) : float
-    {
-        return (float) $number;
+        /**
+         * @param $number
+         * @return float
+         */
+        protected function castNumber($number) : float
+        {
+            return (float)$number;
+        }
     }
 }

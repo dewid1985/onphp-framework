@@ -8,41 +8,42 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class FieldGroup implements DialectString
-{
-    /** @var array  */
-    private $list = [];
-
+namespace OnPhp {
     /**
-     * @return FieldGroup
+     * @ingroup OSQL
      **/
-    public function add(Castable $field)
+    class FieldGroup implements DialectString
     {
-        $this->list[] = $field;
+        /** @var array */
+        private $list = [];
 
-        return $this;
-    }
+        /**
+         * @return FieldGroup
+         **/
+        public function add(Castable $field)
+        {
+            $this->list[] = $field;
 
-    /**
-     * @param Dialect $dialect
-     * @return null|string
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        if (!$this->list) {
-            return null;
+            return $this;
         }
 
-        $out = [];
+        /**
+         * @param Dialect $dialect
+         * @return null|string
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            if (!$this->list) {
+                return null;
+            }
 
-        foreach ($this->list as $field) {
-            $out[] = $field->toDialectString($dialect);
+            $out = [];
+
+            foreach ($this->list as $field) {
+                $out[] = $field->toDialectString($dialect);
+            }
+
+            return implode(', ', $out);
         }
-
-        return implode(', ', $out);
     }
 }

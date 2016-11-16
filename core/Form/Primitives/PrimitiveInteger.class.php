@@ -8,39 +8,40 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveInteger extends PrimitiveNumber
-{
-    const SIGNED_SMALL_MIN = -32768;
-    const SIGNED_SMALL_MAX = +32767;
-
-    const SIGNED_MIN = -2147483648;
-    const SIGNED_MAX = +2147483647;
-
-    const SIGNED_BIG_MIN = -9223372036854775808;
-    const SIGNED_BIG_MAX = 9223372036854775807;
-
-    const UNSIGNED_SMALL_MAX = 65535;
-    const UNSIGNED_MAX = 4294967295;
-
+namespace OnPhp {
     /**
-     * @param $number
-     * @throws WrongArgumentException
-     */
-    protected function checkNumber($number)
+     * @ingroup Primitives
+     **/
+    class PrimitiveInteger extends PrimitiveNumber
     {
-        Assert::isInteger($number);
-    }
+        const SIGNED_SMALL_MIN = -32768;
+        const SIGNED_SMALL_MAX = +32767;
 
-    /**
-     * @param $number
-     * @return int
-     */
-    protected function castNumber($number) : int
-    {
-        return (int) $number;
+        const SIGNED_MIN = -2147483648;
+        const SIGNED_MAX = +2147483647;
+
+        const SIGNED_BIG_MIN = -9223372036854775808;
+        const SIGNED_BIG_MAX = 9223372036854775807;
+
+        const UNSIGNED_SMALL_MAX = 65535;
+        const UNSIGNED_MAX = 4294967295;
+
+        /**
+         * @param $number
+         * @throws WrongArgumentException
+         */
+        protected function checkNumber($number)
+        {
+            Assert::isInteger($number);
+        }
+
+        /**
+         * @param $number
+         * @return int
+         */
+        protected function castNumber($number) : int
+        {
+            return (int)$number;
+        }
     }
 }

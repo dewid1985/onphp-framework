@@ -8,148 +8,149 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * @ingroup Html
+     **/
+    class HtmlAssembler
+    {
+        private $tags = null;
 
-/**
- * @ingroup Html
- **/
-class HtmlAssembler
-{
-	private $tags = null;
+        public function __construct($tags)
+        {
+            Assert::isTrue(current($tags) instanceof SgmlToken);
 
-	public function __construct($tags)
-	{
-		Assert::isTrue(current($tags) instanceof SgmlToken);
+            $this->tags = $tags;
+        }
 
-		$this->tags = $tags;
-	}
+        public static function makeDomNode(DOMNode $node)
+        {
+            $result = null;
 
-	public static function makeDomNode(DOMNode $node)
-	{
-		$result = null;
+            if ($node instanceof DOMElement) {
 
-		if ($node instanceof DOMElement) {
+                $result = '<' . $node->nodeName;
 
-			$result = '<' . $node->nodeName;
+                $attributes = self::getDomAttributes($node);
 
-			$attributes = self::getDomAttributes($node);
+                if ($attributes) {
+                    $result .= ' ' . $attributes;
+                }
 
-			if ($attributes) {
-				$result .= ' ' . $attributes;
-			}
+                if (!$node->firstChild) {
+                    $result .= ' />';
+                } else {
+                    $result .= '>';
+                }
 
-			if (!$node->firstChild) {
-				$result .= ' />';
-			} else {
-				$result .= '>';
-			}
+                $childNode = $node->firstChild;
 
-			$childNode = $node->firstChild;
+                while ($childNode) {
+                    $result .= self::makeDomNode($childNode);
+                    $childNode = $childNode->nextSibling;
+                }
 
-			while ($childNode) {
-				$result .= self::makeDomNode($childNode);
-				$childNode = $childNode->nextSibling;
-			}
+                if ($node->firstChild) {
+                    $result .= '</' . $node->nodeName . '>';
+                }
 
-			if ($node->firstChild) {
-				$result .= '</' . $node->nodeName . '>';
-			}
+            } elseif ($node instanceof DOMCharacterData) {
 
-		} elseif ($node instanceof DOMCharacterData) {
+                $result = $node->data;
 
-			$result = $node->data;
+            } else {
+                throw new UnimplementedFeatureException(
+                    'assembling of ' . get_class($node) . ' is not implemented yet'
+                );
+            }
 
-		} else {
-			throw new UnimplementedFeatureException(
-				'assembling of ' . get_class($node) . ' is not implemented yet'
-			);
-		}
+            return $result;
+        }
 
-		return $result;
-	}
+        private static function getDomAttributes(DOMNode $node)
+        {
+            $result = null;
 
-	private static function getDomAttributes(DOMNode $node)
-	{
-		$result = null;
+            $attributes = [];
 
-		$attributes = [];
+            if ($node->attributes) {
+                $i = 0;
 
-		if ($node->attributes) {
-			$i = 0;
+                while ($item = $node->attributes->item($i)) {
+                    $attributes[] = $item->name . '="' . $item->value . '"';
 
-			while ($item = $node->attributes->item($i)) {
-				$attributes[] = $item->name . '="' . $item->value . '"';
+                    ++$i;
+                }
+            }
 
-				++$i;
-			}
-		}
+            if ($attributes) {
+                $result = implode(' ', $attributes);
+            }
 
-		if ($attributes) {
-			$result = implode(' ', $attributes);
-		}
+            return $result;
+        }
 
-		return $result;
-	}
+        public function getHtml()
+        {
+            $result = null;
 
-	public function getHtml()
-	{
-		$result = null;
+            foreach ($this->tags as $tag) {
+                $result .= self::makeTag($tag);
+            }
 
-		foreach ($this->tags as $tag) {
-			$result .= self::makeTag($tag);
-		}
+            return $result;
+        }
 
-		return $result;
-	}
+        public static function makeTag(SgmlToken $tag)
+        {
+            if ($tag instanceof Cdata) {
+                $result = $tag->getData();
+            } elseif ($tag instanceof SgmlIgnoredTag) {
+                Assert::isNotNull($tag->getId());
 
-	public static function makeTag(SgmlToken $tag)
-	{
-		if ($tag instanceof Cdata) {
-			$result = $tag->getData();
-		} elseif ($tag instanceof SgmlIgnoredTag) {
-			Assert::isNotNull($tag->getId());
+                $result = '<' . $tag->getId()
+                    . $tag->getCdata()->getData()
+                    . $tag->getEndMark() . '>';
 
-			$result = '<' . $tag->getId()
-				. $tag->getCdata()->getData()
-				. $tag->getEndMark() . '>';
+            } elseif ($tag instanceof SgmlOpenTag) {
+                Assert::isNotNull($tag->getId());
 
-		} elseif ($tag instanceof SgmlOpenTag) {
-			Assert::isNotNull($tag->getId());
+                $attributes = self::getAttributes($tag);
 
-			$attributes = self::getAttributes($tag);
+                $result = '<' . $tag->getId()
+                    . ($attributes ? ' ' . $attributes : null)
+                    . ($tag->isEmpty() ? '/' : null) . '>';
 
-			$result = '<' . $tag->getId()
-				. ($attributes ? ' ' . $attributes : null)
-				. ($tag->isEmpty() ? '/' : null) . '>';
+            } elseif ($tag instanceof SgmlEndTag) {
+                $result = '</' . $tag->getId() . '>';
 
-		} elseif ($tag instanceof SgmlEndTag) {
-			$result = '</' . $tag->getId() . '>';
+            } else {
+                throw new WrongArgumentException(
+                    "don't know how to assemble tag class '"
+                    . get_class($tag) . "'"
+                );
+            }
 
-		} else {
-			throw new WrongArgumentException(
-				"don't know how to assemble tag class '"
-				. get_class($tag) . "'"
-			);
-		}
+            return $result;
+        }
 
-		return $result;
-	}
+        private static function getAttributes(SgmlOpenTag $tag)
+        {
+            $attributes = [];
 
-	private static function getAttributes(SgmlOpenTag $tag)
-	{
-		$attributes = [];
+            foreach ($tag->getAttributesList() as $name => $value) {
+                if ($value === null) {
+                    $quotedValue = null;
+                } else // FIXME: is multibyte safe?
+                {
+                    $quotedValue = '="' . str_replace('"', '&quot;', $value) . '"';
+                }
 
-		foreach ($tag->getAttributesList() as $name => $value) {
-			if ($value === null) {
-				$quotedValue = null;
-			} else // FIXME: is multibyte safe?
-			{
-				$quotedValue = '="' . str_replace('"', '&quot;', $value) . '"';
-			}
+                $attributes[] = $name . $quotedValue;
+            }
 
-			$attributes[] = $name . $quotedValue;
-		}
-
-		return implode(' ', $attributes);
-	}
+            return implode(' ', $attributes);
+        }
+    }
 }
 

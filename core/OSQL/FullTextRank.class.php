@@ -8,25 +8,26 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * Full-text ranking. Mostly used in "ORDER BY".
- *
- * @ingroup OSQL
- **/
-class FullTextRank extends FullText
-{
+namespace OnPhp {
     /**
-     * @param Dialect $dialect
-     * @throws UnimplementedFeatureException
-     */
-    public function toDialectString(Dialect $dialect)
+     * Full-text ranking. Mostly used in "ORDER BY".
+     *
+     * @ingroup OSQL
+     **/
+    class FullTextRank extends FullText
     {
-        return
-            $dialect->fullTextRank(
-                $this->field,
-                $this->words,
-                $this->logic
-            );
+        /**
+         * @param Dialect $dialect
+         * @throws UnimplementedFeatureException
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            return
+                $dialect->fullTextRank(
+                    $this->field,
+                    $this->words,
+                    $this->logic
+                );
+        }
     }
 }

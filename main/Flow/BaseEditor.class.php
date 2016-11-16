@@ -8,81 +8,84 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-abstract class BaseEditor implements Controller
-{
-    const COMMAND_SUCCEEDED = 'success';
-    const COMMAND_FAILED = 'error';
-
-    // to be redefined in __construct
-    protected $commandMap = array();
-    protected $defaultAction = 'edit';
-
-    protected $map = null;
-    protected $subject = null;
-
-    protected $idFieldName = null;
-
-    public function __construct(Prototyped $subject)
-    {
-        $this->subject = $subject;
-
-        $form =
-            $this->subject->proto()->makeForm()->add(
-                Primitive::choice('action')->setList($this->commandMap)->
-                setDefault($this->defaultAction)
-            );
-
-        if ($this->idFieldName)
-            $form->add(
-                Primitive::alias($this->idFieldName, $form->get('id'))
-            );
-
-        $this->map =
-            (new MappedForm($form))
-                ->addSource('id', RequestType::get())
-                ->addSource('action', RequestType::get())
-                ->setDefaultType(RequestType::post());
-
-        if ($this->idFieldName)
-            $this->map->addSource($this->idFieldName, RequestType::get());
-    }
-
+namespace OnPhp {
     /**
-     * @return ModelAndView
-     **/
-    public function postHandleRequest(ModelAndView $mav, HttpRequest $request)
+     * Class BaseEditor
+     * @ingroup Flow
+     * @package OnPhp
+     */
+    abstract class BaseEditor implements Controller
     {
-        $form = $this->getForm();
+        const COMMAND_SUCCEEDED = 'success';
+        const COMMAND_FAILED = 'error';
 
-        if ($mav->getView() == self::COMMAND_SUCCEEDED) {
+        // to be redefined in __construct
+        protected $commandMap = array();
+        protected $defaultAction = 'edit';
 
-            $mav->setView(new RedirectToView(get_class($this)));
+        protected $map = null;
+        protected $subject = null;
 
-            $mav->getModel()->drop('id');
+        protected $idFieldName = null;
 
-        } else {
-            $mav->setView(get_class($this));
+        public function __construct(Prototyped $subject)
+        {
+            $this->subject = $subject;
 
-            if ($command = $form->getValue('action'))
-                $mav->getModel()->set('action', $command);
-            else
-                $form->dropAllErrors();
+            $form =
+                $this->subject->proto()->makeForm()->add(
+                    Primitive::choice('action')->setList($this->commandMap)->
+                    setDefault($this->defaultAction)
+                );
 
-            $mav->getModel()->set('form', $form);
+            if ($this->idFieldName)
+                $form->add(
+                    Primitive::alias($this->idFieldName, $form->get('id'))
+                );
+
+            $this->map =
+                (new MappedForm($form))
+                    ->addSource('id', RequestType::get())
+                    ->addSource('action', RequestType::get())
+                    ->setDefaultType(RequestType::post());
+
+            if ($this->idFieldName)
+                $this->map->addSource($this->idFieldName, RequestType::get());
         }
 
-        return $mav;
-    }
+        /**
+         * @return ModelAndView
+         **/
+        public function postHandleRequest(ModelAndView $mav, HttpRequest $request)
+        {
+            $form = $this->getForm();
 
-    /**
-     * @return Form
-     **/
-    public function getForm()
-    {
-        return $this->map->getForm();
+            if ($mav->getView() == self::COMMAND_SUCCEEDED) {
+
+                $mav->setView(new RedirectToView(get_class($this)));
+
+                $mav->getModel()->drop('id');
+
+            } else {
+                $mav->setView(get_class($this));
+
+                if ($command = $form->getValue('action'))
+                    $mav->getModel()->set('action', $command);
+                else
+                    $form->dropAllErrors();
+
+                $mav->getModel()->set('form', $form);
+            }
+
+            return $mav;
+        }
+
+        /**
+         * @return Form
+         **/
+        public function getForm()
+        {
+            return $this->map->getForm();
+        }
     }
 }

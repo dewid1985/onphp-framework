@@ -8,16 +8,17 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveScalarIdentifier extends PrimitiveIdentifier
-{
-    protected $scalar = true;
-
-    public function setScalar($orly = false)
+namespace OnPhp {
+    /**
+     * @ingroup Primitives
+     **/
+    class PrimitiveScalarIdentifier extends PrimitiveIdentifier
     {
-        throw new WrongStateException();
+        protected $scalar = true;
+
+        public function setScalar($orly = false)
+        {
+            throw new WrongStateException();
+        }
     }
 }

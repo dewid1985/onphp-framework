@@ -8,174 +8,173 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Transparent caching DAO worker.
- *
- * @see CommonDaoWorker for manual-caching one.
- * @see VoodooDaoWorker for greedy though non-blocking brother.
- *
- * @ingroup DAOs
- **/
-class SmartDaoWorker extends TransparentDaoWorker
-{
-    private $indexKey = null;
-
-    public function __construct(GenericDAO $dao)
+namespace OnPhp {
+    /**
+     * Transparent caching DAO worker.
+     *
+     * @see CommonDaoWorker for manual-caching one.
+     * @see VoodooDaoWorker for greedy though non-blocking brother.
+     *
+     * @ingroup DAOs
+     **/
+    class SmartDaoWorker extends TransparentDaoWorker
     {
-        parent::__construct($dao);
+        private $indexKey = null;
 
-        $this->indexKey =
-            $this->watermark
-            . $this->className
-            . self::SUFFIX_INDEX;
-    }
+        public function __construct(GenericDAO $dao)
+        {
+            parent::__construct($dao);
 
-    /// cachers
-    //@{
-
-    public function uncacheLists()
-    {
-        $intKey = $this->keyToInt($this->indexKey);
-        return $this->registerUncacher(
-            new UncacherSmartDaoWorkerLists($this->className, $this->indexKey, $intKey)
-        );
-    }
-
-    protected function cacheByQuery(
-        SelectQuery $query,
-        /* Identifiable */
-        $object,
-        $expires = Cache::EXPIRES_FOREVER
-    )
-    {
-        $queryId = $query->getId();
-
-        $semKey = $this->keyToInt($this->indexKey);
-
-        $key = $this->makeQueryKey($query, self::SUFFIX_QUERY);
-
-        $pool = SemaphorePool::me();
-
-        if ($pool->get($semKey)) {
-            $this->syncMap($key);
-
-            Cache::me()
-                ->mark($this->className)
-                ->add($key, $object, $expires);
-
-            $pool->free($semKey);
+            $this->indexKey =
+                $this->watermark
+                . $this->className
+                . self::SUFFIX_INDEX;
         }
 
-        return $object;
-    }
-    //@}
+        /// cachers
+        //@{
 
-    /// uncachers
-    //@{
-
-    private function syncMap($objectKey)
-    {
-        $cache = Cache::me();
-
-        $mapExists = true;
-        if (!$map = $cache->mark($this->className)->get($this->indexKey)) {
-            $map = array();
-            $mapExists = false;
+        public function uncacheLists()
+        {
+            $intKey = $this->keyToInt($this->indexKey);
+            return $this->registerUncacher(
+                new UncacherSmartDaoWorkerLists($this->className, $this->indexKey, $intKey)
+            );
         }
 
-        $map[$objectKey] = true;
+        protected function cacheByQuery(
+            SelectQuery $query,
+            /* Identifiable */
+            $object,
+            $expires = Cache::EXPIRES_FOREVER
+        )
+        {
+            $queryId = $query->getId();
 
-        if ($mapExists) {
-            $cache
-                ->mark($this->className)
-                ->replace($this->indexKey, $map, Cache::EXPIRES_FOREVER);
-        } else {
-            $cache
-                ->mark($this->className)
-                ->set($this->indexKey, $map, Cache::EXPIRES_FOREVER);
-        }
+            $semKey = $this->keyToInt($this->indexKey);
 
-        return true;
-    }
-    //@}
+            $key = $this->makeQueryKey($query, self::SUFFIX_QUERY);
 
-    /// internal helpers
-    //@{
+            $pool = SemaphorePool::me();
 
-    protected function cacheListByQuery(
-        SelectQuery $query,
-        /* array || Cache::NOT_FOUND */
-        $array
-    )
-    {
-        if ($array !== Cache::NOT_FOUND) {
-            Assert::isArray($array);
-            Assert::isTrue(current($array) instanceof Identifiable);
-        }
+            if ($pool->get($semKey)) {
+                $this->syncMap($key);
 
-        $cache = Cache::me();
+                Cache::me()
+                    ->mark($this->className)
+                    ->add($key, $object, $expires);
 
-        $listKey = $this->makeQueryKey($query, self::SUFFIX_LIST);
-
-        $semKey = $this->keyToInt($this->indexKey);
-
-        $pool = SemaphorePool::me();
-
-        if ($pool->get($semKey)) {
-
-            $this->syncMap($listKey);
-
-            $cache->mark($this->className)->
-            add($listKey, $array, Cache::EXPIRES_FOREVER);
-
-            if ($array !== Cache::NOT_FOUND)
-                foreach ($array as $object)
-                    $this->cacheById($object);
-
-            $pool->free($semKey);
-        }
-
-        return $array;
-    }
-
-    protected function gentlyGetByKey($key)
-    {
-        if ($object = Cache::me()->mark($this->className)->get($key)) {
-            if ($this->checkMap($key)) {
-                return $object;
-            } else {
-                Cache::me()->mark($this->className)->delete($key);
+                $pool->free($semKey);
             }
+
+            return $object;
+        }
+        //@}
+
+        /// uncachers
+        //@{
+
+        private function syncMap($objectKey)
+        {
+            $cache = Cache::me();
+
+            $mapExists = true;
+            if (!$map = $cache->mark($this->className)->get($this->indexKey)) {
+                $map = array();
+                $mapExists = false;
+            }
+
+            $map[$objectKey] = true;
+
+            if ($mapExists) {
+                $cache
+                    ->mark($this->className)
+                    ->replace($this->indexKey, $map, Cache::EXPIRES_FOREVER);
+            } else {
+                $cache
+                    ->mark($this->className)
+                    ->set($this->indexKey, $map, Cache::EXPIRES_FOREVER);
+            }
+
+            return true;
+        }
+        //@}
+
+        /// internal helpers
+        //@{
+
+        protected function cacheListByQuery(
+            SelectQuery $query,
+            /* array || Cache::NOT_FOUND */
+            $array
+        )
+        {
+            if ($array !== Cache::NOT_FOUND) {
+                Assert::isArray($array);
+                Assert::isTrue(current($array) instanceof Identifiable);
+            }
+
+            $cache = Cache::me();
+
+            $listKey = $this->makeQueryKey($query, self::SUFFIX_LIST);
+
+            $semKey = $this->keyToInt($this->indexKey);
+
+            $pool = SemaphorePool::me();
+
+            if ($pool->get($semKey)) {
+
+                $this->syncMap($listKey);
+
+                $cache->mark($this->className)->
+                add($listKey, $array, Cache::EXPIRES_FOREVER);
+
+                if ($array !== Cache::NOT_FOUND)
+                    foreach ($array as $object)
+                        $this->cacheById($object);
+
+                $pool->free($semKey);
+            }
+
+            return $array;
         }
 
-        return null;
-    }
+        protected function gentlyGetByKey($key)
+        {
+            if ($object = Cache::me()->mark($this->className)->get($key)) {
+                if ($this->checkMap($key)) {
+                    return $object;
+                } else {
+                    Cache::me()->mark($this->className)->delete($key);
+                }
+            }
 
-    private function checkMap($objectKey)
-    {
-        $pool = SemaphorePool::me();
+            return null;
+        }
 
-        $semKey = $this->keyToInt($this->indexKey);
+        private function checkMap($objectKey)
+        {
+            $pool = SemaphorePool::me();
 
-        if (!$pool->get($semKey))
-            return false;
+            $semKey = $this->keyToInt($this->indexKey);
 
-        if (!$map = Cache::me()->mark($this->className)->get($this->indexKey)) {
+            if (!$pool->get($semKey))
+                return false;
+
+            if (!$map = Cache::me()->mark($this->className)->get($this->indexKey)) {
+                $pool->free($semKey);
+                return false;
+            }
+
+            if (!isset($map[$objectKey])) {
+                $pool->free($semKey);
+                return false;
+            }
+
             $pool->free($semKey);
-            return false;
+
+            return true;
         }
-
-        if (!isset($map[$objectKey])) {
-            $pool->free($semKey);
-            return false;
-        }
-
-        $pool->free($semKey);
-
-        return true;
+        //@}
     }
-    //@}
 }
-
-

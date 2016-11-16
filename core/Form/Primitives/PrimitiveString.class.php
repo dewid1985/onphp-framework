@@ -8,75 +8,76 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveString extends FiltrablePrimitive
-{
-    // TODO: consider making a primitive based on main::Net::Mail::MailAddress
-    const
-        MAIL_PATTERN = '/^[a-zA-Z0-9\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~]+(\.[a-zA-Z0-9\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~]+)*@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$/Ds',
-        URL_PATTERN = '/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}((:[0-9]{1,5})?\/.*)?$/is',
-        SHA1_PATTERN = '/^[0-9a-f]{40}$/',
-        MD5_PATTERN = '/^[0-9a-f]{32}$/',
-        PHONE_PATTERN = '/^((8|\+7)[\- ]?)?([\d]{0,4})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/';
-
+namespace OnPhp {
     /**
-     * @var null
-     */
-    protected $pattern = null;
-
-    /**
-     * @return null|string
-     */
-    public function getAllowedPattern()
-    {
-        return $this->pattern;
-    }
-
-    /**
-     * @return PrimitiveString
+     * @ingroup Primitives
      **/
-    public function setAllowedPattern($pattern) : PrimitiveString
+    class PrimitiveString extends FiltrablePrimitive
     {
-        $this->pattern = $pattern;
+        // TODO: consider making a primitive based on main::Net::Mail::MailAddress
+        const
+            MAIL_PATTERN = '/^[a-zA-Z0-9\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~]+(\.[a-zA-Z0-9\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~]+)*@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$/Ds',
+            URL_PATTERN = '/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}((:[0-9]{1,5})?\/.*)?$/is',
+            SHA1_PATTERN = '/^[0-9a-f]{40}$/',
+            MD5_PATTERN = '/^[0-9a-f]{32}$/',
+            PHONE_PATTERN = '/^((8|\+7)[\- ]?)?([\d]{0,4})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/';
 
-        return $this;
-    }
+        /**
+         * @var null
+         */
+        protected $pattern = null;
 
-    /**
-     * @param $scope
-     * @return bool|null
-     */
-    public function import($scope)
-    {
-        if (!BasePrimitive::import($scope)) {
-            return null;
+        /**
+         * @return null|string
+         */
+        public function getAllowedPattern()
+        {
+            return $this->pattern;
         }
 
-        if (!is_scalar($scope[$this->name]) || is_bool($scope[$this->name])) {
+        /**
+         * @return PrimitiveString
+         **/
+        public function setAllowedPattern($pattern) : PrimitiveString
+        {
+            $this->pattern = $pattern;
+
+            return $this;
+        }
+
+        /**
+         * @param $scope
+         * @return bool|null
+         */
+        public function import($scope)
+        {
+            if (!BasePrimitive::import($scope)) {
+                return null;
+            }
+
+            if (!is_scalar($scope[$this->name]) || is_bool($scope[$this->name])) {
+                return false;
+            }
+
+            $this->value = (string)$scope[$this->name];
+
+            $this->selfFilter();
+
+            if (
+                is_string($this->value)
+                // zero is quite special value here
+                && ($this->value === '0' || !empty($this->value))
+                && ($length = mb_strlen($this->value))
+                && !($this->max && $length > $this->max)
+                && !($this->min && $length < $this->min)
+                && (!$this->pattern || preg_match($this->pattern, $this->value))
+            ) {
+                return true;
+            } else {
+                $this->value = null;
+            }
+
             return false;
         }
-
-        $this->value = (string) $scope[$this->name];
-
-        $this->selfFilter();
-
-        if (
-            is_string($this->value)
-            // zero is quite special value here
-            && ($this->value === '0' || !empty($this->value))
-            && ($length = mb_strlen($this->value))
-            && !($this->max && $length > $this->max)
-            && !($this->min && $length < $this->min)
-            && (!$this->pattern || preg_match($this->pattern, $this->value))
-        ) {
-            return true;
-        } else {
-            $this->value = null;
-        }
-
-        return false;
     }
 }

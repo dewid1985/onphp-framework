@@ -9,32 +9,34 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class FormToScopeExporter extends ObjectBuilder
-{
-
-    function __construct(EntityProto $proto)
+namespace OnPhp {
+    class FormToScopeExporter extends ObjectBuilder
     {
-        parent::__construct($proto);
-    }
 
-    protected function createEmpty()
-    {
-        return [];
-    }
+        function __construct(EntityProto $proto)
+        {
+            parent::__construct($proto);
+        }
 
-    /**
-     * @return FormGetter
-     **/
-    protected function getGetter($object)
-    {
-        return new FormExporter($this->proto, $object);
-    }
+        protected function createEmpty()
+        {
+            return [];
+        }
 
-    /**
-     * @return ObjectSetter
-     **/
-    protected function getSetter(&$object)
-    {
-        return new ScopeSetter($this->proto, $object);
+        /**
+         * @return FormGetter
+         **/
+        protected function getGetter($object)
+        {
+            return new FormExporter($this->proto, $object);
+        }
+
+        /**
+         * @return ObjectSetter
+         **/
+        protected function getSetter(&$object)
+        {
+            return new ScopeSetter($this->proto, $object);
+        }
     }
 }

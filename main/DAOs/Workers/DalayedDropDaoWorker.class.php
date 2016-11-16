@@ -8,50 +8,51 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * DAO worker with dealyed object drop from cache
- *
- * @see CommonDaoWorker for manual-caching one.
- * @see SmartDaoWorker for transparent one.
- *
- * @ingroup DAOs
- **/
-class DalayedDropDaoWorker extends NullDaoWorker
-{
-    private $modifiedIds = array();
-
-    /// uncachers
-    //@{
-    public function uncacheById($id)
-    {
-        $this->modifiedIds[$id] = $id;
-
-        return true;
-    }
-
+namespace OnPhp {
     /**
-     * @param mixed $id
-     * @return UncacherBase
-     */
-    public function getUncacherById($id)
+     * DAO worker with dealyed object drop from cache
+     *
+     * @see CommonDaoWorker for manual-caching one.
+     * @see SmartDaoWorker for transparent one.
+     *
+     * @ingroup DAOs
+     **/
+    class DalayedDropDaoWorker extends NullDaoWorker
     {
-        return new UncacherNullDaoWorker();
-    }
+        private $modifiedIds = array();
 
-    public function dropWith($worker)
-    {
-        Assert::classExists($worker);
+        /// uncachers
+        //@{
+        public function uncacheById($id)
+        {
+            $this->modifiedIds[$id] = $id;
 
-        if ($this->modifiedIds) {
-            $workerObject = new $worker($this->dao);
-
-            $workerObject->uncacheByIds($this->modifiedIds);
-
-            $this->modifiedIds = array();
+            return true;
         }
 
-        return $this;
+        /**
+         * @param mixed $id
+         * @return UncacherBase
+         */
+        public function getUncacherById($id)
+        {
+            return new UncacherNullDaoWorker();
+        }
+
+        public function dropWith($worker)
+        {
+            Assert::classExists($worker);
+
+            if ($this->modifiedIds) {
+                $workerObject = new $worker($this->dao);
+
+                $workerObject->uncacheByIds($this->modifiedIds);
+
+                $this->modifiedIds = array();
+            }
+
+            return $this;
+        }
+        //@}
     }
-    //@}
 }

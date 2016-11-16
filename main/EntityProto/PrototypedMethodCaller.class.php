@@ -9,18 +9,20 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class PrototypedMethodCaller
-{
-    protected $proto = null;
-    protected $object = null;
-
-    protected $mapping = array();
-
-    public function __construct(EntityProto $proto, &$object)
+namespace OnPhp {
+    abstract class PrototypedMethodCaller
     {
-        $this->proto = $proto;
-        $this->object = &$object;
+        protected $proto = null;
+        protected $object = null;
 
-        $this->mapping = $proto->getFormMapping();
+        protected $mapping = array();
+
+        public function __construct(EntityProto $proto, &$object)
+        {
+            $this->proto = $proto;
+            $this->object = &$object;
+
+            $this->mapping = $proto->getFormMapping();
+        }
     }
 }

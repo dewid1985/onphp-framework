@@ -9,10 +9,13 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Main
- **/
-interface PrototypedEntity
-{
-    public static function entityProto();
+namespace OnPhp {
+    /**
+     * Interface PrototypedEntity
+     * @package OnPhp
+     */
+    interface PrototypedEntity
+    {
+        public static function entityProto();
+    }
 }

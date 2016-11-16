@@ -8,64 +8,65 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class ForeignChangeAction extends Enumeration
-{
-    const
-        NO_ACTION = 0x01,
-        RESTRICT = 0x02,
-        CASCADE = 0x03,
-        SET_NULL = 0x04,
-        SET_DEFAULT = 0x05;
-
-    protected $names = [
-        self::NO_ACTION => 'NO ACTION', // default one
-        self::RESTRICT => 'RESTRICT',
-        self::CASCADE => 'CASCADE',
-        self::SET_NULL => 'SET NULL',
-        self::SET_DEFAULT => 'SET DEFAULT'
-    ];
-
+namespace OnPhp {
     /**
-     * @return ForeignChangeAction
+     * @ingroup OSQL
      **/
-    public static function noAction()
+    class ForeignChangeAction extends Enumeration
     {
-        return new self(self::NO_ACTION);
-    }
+        const
+            NO_ACTION = 0x01,
+            RESTRICT = 0x02,
+            CASCADE = 0x03,
+            SET_NULL = 0x04,
+            SET_DEFAULT = 0x05;
 
-    /**
-     * @return ForeignChangeAction
-     **/
-    public static function restrict()
-    {
-        return new self(self::RESTRICT);
-    }
+        protected $names = [
+            self::NO_ACTION => 'NO ACTION', // default one
+            self::RESTRICT => 'RESTRICT',
+            self::CASCADE => 'CASCADE',
+            self::SET_NULL => 'SET NULL',
+            self::SET_DEFAULT => 'SET DEFAULT'
+        ];
 
-    /**
-     * @return ForeignChangeAction
-     **/
-    public static function cascade()
-    {
-        return new self(self::CASCADE);
-    }
+        /**
+         * @return ForeignChangeAction
+         **/
+        public static function noAction()
+        {
+            return new self(self::NO_ACTION);
+        }
 
-    /**
-     * @return ForeignChangeAction
-     **/
-    public static function setNull()
-    {
-        return new self(self::SET_NULL);
-    }
+        /**
+         * @return ForeignChangeAction
+         **/
+        public static function restrict()
+        {
+            return new self(self::RESTRICT);
+        }
 
-    /**
-     * @return ForeignChangeAction
-     **/
-    public static function setDefault()
-    {
-        return new self(self::SET_DEFAULT);
+        /**
+         * @return ForeignChangeAction
+         **/
+        public static function cascade()
+        {
+            return new self(self::CASCADE);
+        }
+
+        /**
+         * @return ForeignChangeAction
+         **/
+        public static function setNull()
+        {
+            return new self(self::SET_NULL);
+        }
+
+        /**
+         * @return ForeignChangeAction
+         **/
+        public static function setDefault()
+        {
+            return new self(self::SET_DEFAULT);
+        }
     }
 }

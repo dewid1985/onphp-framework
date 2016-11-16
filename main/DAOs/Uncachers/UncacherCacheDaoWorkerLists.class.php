@@ -8,64 +8,65 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Uncachers
- **/
-class UncacherCacheDaoWorkerLists implements UncacherBase
-{
-    private $classNameList = [];
-
-    public function __construct($className)
-    {
-        $this->classNameList[$className] = $className;
-    }
-
+namespace OnPhp {
     /**
-     * @param UncacherBase $uncacher
-     * @return UncacherCacheDaoWorkerLists
-     * @throws WrongArgumentException
-     */
-    public function merge(UncacherBase $uncacher)
+     * @ingroup Uncachers
+     **/
+    class UncacherCacheDaoWorkerLists implements UncacherBase
     {
-        Assert::isInstance($uncacher, get_class($this));
-        return $this->mergeSelf($uncacher);
-    }
+        private $classNameList = [];
 
-    /**
-     * @param UncacherCacheDaoWorkerLists $uncacher
-     * @return UncacherCacheDaoWorkerLists
-     */
-    private function mergeSelf(UncacherCacheDaoWorkerLists $uncacher)
-    {
-        foreach ($uncacher->getClassNameList() as $className) {
-            if (!isset($this->classNameList[$className]))
-                $this->classNameList[$className] = $className;
+        public function __construct($className)
+        {
+            $this->classNameList[$className] = $className;
         }
-        return $this;
-    }
 
-    /*
-     *
-     */
-    public function getClassNameList()
-    {
-        return $this->classNameList;
-    }
-
-    public function uncache()
-    {
-        foreach ($this->classNameList as $className) {
-            $this->uncacheClassName($className);
+        /**
+         * @param UncacherBase $uncacher
+         * @return UncacherCacheDaoWorkerLists
+         * @throws WrongArgumentException
+         */
+        public function merge(UncacherBase $uncacher)
+        {
+            Assert::isInstance($uncacher, get_class($this));
+            return $this->mergeSelf($uncacher);
         }
-    }
 
-    private function uncacheClassName($className)
-    {
-        if (
-        !Cache::me()->mark($className)->increment($className, 1)
-        )
-            Cache::me()->mark($className)->delete($className);
+        /**
+         * @param UncacherCacheDaoWorkerLists $uncacher
+         * @return UncacherCacheDaoWorkerLists
+         */
+        private function mergeSelf(UncacherCacheDaoWorkerLists $uncacher)
+        {
+            foreach ($uncacher->getClassNameList() as $className) {
+                if (!isset($this->classNameList[$className]))
+                    $this->classNameList[$className] = $className;
+            }
+            return $this;
+        }
+
+        /*
+         *
+         */
+        public function getClassNameList()
+        {
+            return $this->classNameList;
+        }
+
+        public function uncache()
+        {
+            foreach ($this->classNameList as $className) {
+                $this->uncacheClassName($className);
+            }
+        }
+
+        private function uncacheClassName($className)
+        {
+            if (
+            !Cache::me()->mark($className)->increment($className, 1)
+            )
+                Cache::me()->mark($className)->delete($className);
+        }
     }
 }
 

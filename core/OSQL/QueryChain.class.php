@@ -8,95 +8,96 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class QueryChain extends SQLChain
-{
+namespace OnPhp {
     /**
-     * @param $args
-     * @param $logic
-     * @return QueryChain
-     * @throws WrongArgumentException
-     */
-    public static function block($args, $logic) : QueryChain
+     * @ingroup OSQL
+     **/
+    class QueryChain extends SQLChain
     {
-        $queryChain = new self;
+        /**
+         * @param $args
+         * @param $logic
+         * @return QueryChain
+         * @throws WrongArgumentException
+         */
+        public static function block($args, $logic) : QueryChain
+        {
+            $queryChain = new self;
 
-        foreach ($args as $arg) {
-            if (!$arg instanceof SelectQuery) {
-                throw new WrongArgumentException(
-                    'unsupported object type: ' . get_class($arg)
-                );
+            foreach ($args as $arg) {
+                if (!$arg instanceof SelectQuery) {
+                    throw new WrongArgumentException(
+                        'unsupported object type: ' . get_class($arg)
+                    );
+                }
+
+                $queryChain->exp($arg, $logic);
             }
 
-            $queryChain->exp($arg, $logic);
+            return $queryChain;
         }
 
-        return $queryChain;
-    }
+        /**
+         * @param Form $form
+         * @throws UnsupportedMethodException
+         */
+        public function toBoolean(Form $form)
+        {
+            throw new UnsupportedMethodException('get rid of useless interface');
+        }
 
-    /**
-     * @param Form $form
-     * @throws UnsupportedMethodException
-     */
-    public function toBoolean(Form $form)
-    {
-        throw new UnsupportedMethodException('get rid of useless interface');
-    }
+        /**
+         * @param SelectQuery $query
+         * @return SQLChain
+         */
+        public function union(SelectQuery $query)
+        {
+            return $this->exp($query, CombineQuery::UNION);
+        }
 
-    /**
-     * @param SelectQuery $query
-     * @return SQLChain
-     */
-    public function union(SelectQuery $query)
-    {
-        return $this->exp($query, CombineQuery::UNION);
-    }
+        /**
+         * @param SelectQuery $query
+         * @return SQLChain
+         */
+        public function unionAll(SelectQuery $query)
+        {
+            return $this->exp($query, CombineQuery::UNION_ALL);
+        }
 
-    /**
-     * @param SelectQuery $query
-     * @return SQLChain
-     */
-    public function unionAll(SelectQuery $query)
-    {
-        return $this->exp($query, CombineQuery::UNION_ALL);
-    }
+        /**
+         * @param SelectQuery $query
+         * @return SQLChain
+         */
+        public function intersect(SelectQuery $query)
+        {
+            return $this->exp($query, CombineQuery::INTERSECT);
+        }
 
-    /**
-     * @param SelectQuery $query
-     * @return SQLChain
-     */
-    public function intersect(SelectQuery $query)
-    {
-        return $this->exp($query, CombineQuery::INTERSECT);
-    }
+        /**
+         * @param SelectQuery $query
+         * @return SQLChain
+         */
+        public function intersectAll(SelectQuery $query)
+        {
+            return $this->exp($query, CombineQuery::INTERSECT_ALL);
+        }
 
-    /**
-     * @param SelectQuery $query
-     * @return SQLChain
-     */
-    public function intersectAll(SelectQuery $query)
-    {
-        return $this->exp($query, CombineQuery::INTERSECT_ALL);
-    }
+        /**
+         * @param SelectQuery $query
+         * @return SQLChain
+         */
+        public function except(SelectQuery $query)
+        {
+            return $this->exp($query, CombineQuery::EXCEPT);
+        }
 
-    /**
-     * @param SelectQuery $query
-     * @return SQLChain
-     */
-    public function except(SelectQuery $query)
-    {
-        return $this->exp($query, CombineQuery::EXCEPT);
-    }
-
-    /**
-     * @param SelectQuery $query
-     * @return SQLChain
-     */
-    public function exceptAll(SelectQuery $query)
-    {
-        return $this->exp($query, CombineQuery::EXCEPT_ALL);
+        /**
+         * @param SelectQuery $query
+         * @return SQLChain
+         */
+        public function exceptAll(SelectQuery $query)
+        {
+            return $this->exp($query, CombineQuery::EXCEPT_ALL);
+        }
     }
 }

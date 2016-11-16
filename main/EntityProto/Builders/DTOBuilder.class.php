@@ -9,12 +9,14 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class DTOBuilder extends PrototypedBuilder
-{
-    protected function createEmpty()
+namespace OnPhp {
+    abstract class DTOBuilder extends PrototypedBuilder
     {
-        $className = $this->proto->className() . 'DTO';
+        protected function createEmpty()
+        {
+            $className = $this->proto->className() . 'DTO';
 
-        return new $className;
+            return new $className;
+        }
     }
 }

@@ -8,51 +8,52 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Integer's interval implementation and accompanying utility methods.
- *
- * @ingroup Helpers
- **/
-class Range extends BaseRange
-{
-    public function __construct($min = null, $max = null)
-    {
-        if ($min !== null)
-            Assert::isInteger($min);
-
-        if ($max !== null)
-            Assert::isInteger($max);
-
-        parent::__construct($min, $max);
-    }
-
-
+namespace OnPhp {
     /**
-     * @throws WrongArgumentException
-     * @return Range
+     * Integer's interval implementation and accompanying utility methods.
+     *
+     * @ingroup Helpers
      **/
-    public function setMin($min = null)
+    class Range extends BaseRange
     {
-        if ($min !== null)
-            Assert::isInteger($min);
-        else
-            return $this;
+        public function __construct($min = null, $max = null)
+        {
+            if ($min !== null)
+                Assert::isInteger($min);
 
-        return parent::setMin($min);
-    }
+            if ($max !== null)
+                Assert::isInteger($max);
 
-    /**
-     * @throws WrongArgumentException
-     * @return Range
-     **/
-    public function setMax($max = null)
-    {
-        if ($max !== null)
-            Assert::isInteger($max);
-        else
-            return $this;
+            parent::__construct($min, $max);
+        }
 
-        return parent::setMax($max);
+
+        /**
+         * @throws WrongArgumentException
+         * @return Range
+         **/
+        public function setMin($min = null)
+        {
+            if ($min !== null)
+                Assert::isInteger($min);
+            else
+                return $this;
+
+            return parent::setMin($min);
+        }
+
+        /**
+         * @throws WrongArgumentException
+         * @return Range
+         **/
+        public function setMax($max = null)
+        {
+            if ($max !== null)
+                Assert::isInteger($max);
+            else
+                return $this;
+
+            return parent::setMax($max);
+        }
     }
 }

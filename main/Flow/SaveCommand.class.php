@@ -8,30 +8,33 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class SaveCommand extends TakeCommand
-{
+namespace OnPhp {
     /**
-     * @return ModelAndView
-     **/
-    public function run(Prototyped $subject, Form $form, HttpRequest $request)
+     * Class SaveCommand
+     * @ingroup Flow
+     * @package OnPhp
+     */
+    class SaveCommand extends TakeCommand
     {
-        if (!$form->getErrors()) {
-            ClassUtils::copyProperties($form->getValue('id'), $subject);
+        /**
+         * @return ModelAndView
+         **/
+        public function run(Prototyped $subject, Form $form, HttpRequest $request)
+        {
+            if (!$form->getErrors()) {
+                ClassUtils::copyProperties($form->getValue('id'), $subject);
 
-            FormUtils::form2object($form, $subject, false);
+                FormUtils::form2object($form, $subject, false);
 
-            return parent::run($subject, $form, $request);
+                return parent::run($subject, $form, $request);
+            }
+
+            return new ModelAndView();
         }
 
-        return new ModelAndView();
-    }
-
-    protected function daoMethod()
-    {
-        return 'save';
+        protected function daoMethod()
+        {
+            return 'save';
+        }
     }
 }

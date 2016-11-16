@@ -8,27 +8,27 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Feed
- **/
-class YandexRssFeedItem extends FeedItem
-{
-    private $fullText = null;
-
-    public function getFullText()
-    {
-        return $this->fullText;
-    }
-
+namespace OnPhp {
     /**
-     * @return YandexRssFeedItem
+     * @ingroup Feed
      **/
-    public function setFullText($fullText)
+    class YandexRssFeedItem extends FeedItem
     {
-        $this->fullText = $fullText;
+        private $fullText = null;
 
-        return $this;
+        public function getFullText()
+        {
+            return $this->fullText;
+        }
+
+        /**
+         * @return YandexRssFeedItem
+         **/
+        public function setFullText($fullText)
+        {
+            $this->fullText = $fullText;
+
+            return $this;
+        }
     }
 }
-

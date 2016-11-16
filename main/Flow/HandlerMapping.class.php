@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-interface HandlerMapping
-{
+namespace OnPhp {
     /**
-     * @return Controller
+     * @ingroup Flow
      **/
-    public function getController(HttpRequest $request);
+    interface HandlerMapping
+    {
+        /**
+         * @return Controller
+         **/
+        public function getController(HttpRequest $request);
+    }
 }

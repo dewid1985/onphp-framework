@@ -9,8 +9,11 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface InterceptingChainHandler
-{
-    public function run(InterceptingChain $chain);
+namespace OnPhp {
 
+    interface InterceptingChainHandler
+    {
+        public function run(InterceptingChain $chain);
+
+    }
 }

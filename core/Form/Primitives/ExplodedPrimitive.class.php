@@ -8,91 +8,92 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class ExplodedPrimitive extends PrimitiveString
-{
-    /** @var string  */
-    protected $separator = ' ';
-
-    /** @var bool  */
-    protected $splitByRegexp = false;
-
+namespace OnPhp {
     /**
-     * @return string
-     */
-    public function getSeparator()
-    {
-        return $this->separator;
-    }
-
-    /**
-     * @return ExplodedPrimitive
+     * @ingroup Primitives
      **/
-    public function setSeparator($separator)
+    class ExplodedPrimitive extends PrimitiveString
     {
-        $this->separator = $separator;
+        /** @var string */
+        protected $separator = ' ';
 
-        return $this;
-    }
+        /** @var bool */
+        protected $splitByRegexp = false;
 
-    /**
-     * @param $scope
-     * @return bool|null
-     * @throws WrongArgumentException
-     */
-    public function import($scope)
-    {
-        if (!$result = parent::import($scope)) {
-            return $result;
+        /**
+         * @return string
+         */
+        public function getSeparator()
+        {
+            return $this->separator;
         }
 
-        if (
-        $this->value =
-            $this->isSplitByRegexp()
-                ?
-                preg_split(
-                    $this->separator,
-                    $this->value,
-                    -1,
-                    PREG_SPLIT_NO_EMPTY
-                )
-                : explode($this->separator, $this->value)
-        ) {
-            return true;
-        } else {
-            return false;
+        /**
+         * @return ExplodedPrimitive
+         **/
+        public function setSeparator($separator)
+        {
+            $this->separator = $separator;
+
+            return $this;
         }
 
-        Assert::isUnreachable();
-    }
+        /**
+         * @param $scope
+         * @return bool|null
+         * @throws WrongArgumentException
+         */
+        public function import($scope)
+        {
+            if (!$result = parent::import($scope)) {
+                return $result;
+            }
 
-    /**
-     * @return bool
-     */
-    public function isSplitByRegexp()
-    {
-        return $this->splitByRegexp;
-    }
+            if (
+            $this->value =
+                $this->isSplitByRegexp()
+                    ?
+                    preg_split(
+                        $this->separator,
+                        $this->value,
+                        -1,
+                        PREG_SPLIT_NO_EMPTY
+                    )
+                    : explode($this->separator, $this->value)
+            ) {
+                return true;
+            } else {
+                return false;
+            }
 
-    /**
-     * @param bool $splitByRegexp
-     * @return $this
-     */
-    public function setSplitByRegexp($splitByRegexp = false)
-    {
-        $this->splitByRegexp = ($splitByRegexp === true);
+            Assert::isUnreachable();
+        }
 
-        return $this;
-    }
+        /**
+         * @return bool
+         */
+        public function isSplitByRegexp()
+        {
+            return $this->splitByRegexp;
+        }
 
-    /**
-     * @throws UnimplementedFeatureException
-     */
-    public function exportValue()
-    {
-        throw new UnimplementedFeatureException();
+        /**
+         * @param bool $splitByRegexp
+         * @return $this
+         */
+        public function setSplitByRegexp($splitByRegexp = false)
+        {
+            $this->splitByRegexp = ($splitByRegexp === true);
+
+            return $this;
+        }
+
+        /**
+         * @throws UnimplementedFeatureException
+         */
+        public function exportValue()
+        {
+            throw new UnimplementedFeatureException();
+        }
     }
 }

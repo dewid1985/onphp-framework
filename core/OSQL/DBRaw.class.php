@@ -8,50 +8,51 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Karma's destroyer.
- *
- * @deprecated since the begining of time
- *
- * @ingroup OSQL
- **/
-class DBRaw implements LogicalObject
-{
-    /** @var null  */
-    private $string = null;
-
+namespace OnPhp {
     /**
-     * DBRaw constructor.
-     * @param $rawString
-     * @throws UnsupportedMethodException
-     */
-    public function __construct($rawString)
+     * Karma's destroyer.
+     *
+     * @deprecated since the begining of time
+     *
+     * @ingroup OSQL
+     **/
+    class DBRaw implements LogicalObject
     {
-        if (!defined('__I_HATE_MY_KARMA__')) {
-            throw new UnsupportedMethodException(
-                'do not use it. please.'
-            );
+        /** @var null */
+        private $string = null;
+
+        /**
+         * DBRaw constructor.
+         * @param $rawString
+         * @throws UnsupportedMethodException
+         */
+        public function __construct($rawString)
+        {
+            if (!defined('__I_HATE_MY_KARMA__')) {
+                throw new UnsupportedMethodException(
+                    'do not use it. please.'
+                );
+            }
+
+            $this->string = $rawString;
         }
 
-        $this->string = $rawString;
-    }
+        /**
+         * @param Dialect $dialect
+         * @return null
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            return $this->string;
+        }
 
-    /**
-     * @param Dialect $dialect
-     * @return null
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        return $this->string;
-    }
-
-    /**
-     * @param Form $form
-     * @throws UnsupportedMethodException
-     */
-    public function toBoolean(Form $form)
-    {
-        throw new UnsupportedMethodException();
+        /**
+         * @param Form $form
+         * @throws UnsupportedMethodException
+         */
+        public function toBoolean(Form $form)
+        {
+            throw new UnsupportedMethodException();
+        }
     }
 }

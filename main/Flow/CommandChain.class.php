@@ -9,83 +9,82 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Flow
- **/
-class CommandChain implements EditorCommand
-{
-    private $chain = [];
-
-    /**
-     * @return CommandChain
-     **/
-    public function add(EditorCommand $command)
+namespace OnPhp {
+    class CommandChain implements EditorCommand
     {
-        $this->chain[] = $command;
+        private $chain = [];
 
-        return $this;
-    }
+        /**
+         * @return CommandChain
+         **/
+        public function add(EditorCommand $command)
+        {
+            $this->chain[] = $command;
 
-    /**
-     * @throws BaseException
-     * @return ModelAndView
-     **/
-    public function run(Prototyped $subject, Form $form, HttpRequest $request)
-    {
-        Assert::isTrue(
-            ($size = count($this->chain)) > 0,
-
-            'command chain is empty'
-        );
-
-        for ($i = 0; $i < $size; ++$i) {
-            $command = &$this->chain[$i];
-
-            try {
-                $mav = $command->run($subject, $form, $request);
-
-                if ($mav->getView() == EditorController::COMMAND_FAILED) {
-                    $this->rollback($i);
-                    return $mav;
-                }
-            } catch (BaseException $e) {
-                $this->rollback($i);
-                throw $e;
-            }
+            return $this;
         }
 
-        return $mav;
-    }
+        /**
+         * @throws BaseException
+         * @return ModelAndView
+         **/
+        public function run(Prototyped $subject, Form $form, HttpRequest $request)
+        {
+            Assert::isTrue(
+                ($size = count($this->chain)) > 0,
 
-    /**
-     * @return CommandChain
-     **/
-    protected function rollback($position)
-    {
-        for ($i = $position; $i > -1; --$i) {
-            if ($this->chain[$i] instanceof CarefulCommand) {
+                'command chain is empty'
+            );
+
+            for ($i = 0; $i < $size; ++$i) {
+                $command = &$this->chain[$i];
+
                 try {
-                    $this->chain[$i]->rollback();
+                    $mav = $command->run($subject, $form, $request);
+
+                    if ($mav->getView() == EditorController::COMMAND_FAILED) {
+                        $this->rollback($i);
+                        return $mav;
+                    }
                 } catch (BaseException $e) {
-                    // silently ignore, since no one
-                    // allowed to interrupt this proccess
+                    $this->rollback($i);
+                    throw $e;
                 }
             }
+
+            return $mav;
         }
 
-        return $this;
-    }
+        /**
+         * @return CommandChain
+         **/
+        protected function rollback($position)
+        {
+            for ($i = $position; $i > -1; --$i) {
+                if ($this->chain[$i] instanceof CarefulCommand) {
+                    try {
+                        $this->chain[$i]->rollback();
+                    } catch (BaseException $e) {
+                        // silently ignore, since no one
+                        // allowed to interrupt this proccess
+                    }
+                }
+            }
 
-    /**
-     * @return CommandChain
-     **/
-    protected function commit()
-    {
-        for ($size = count($this->chain), $i = 0; $i < $size; --$i) {
-            if ($this->chain[$i] instanceof CarefulCommand)
-                $this->chain[$i]->commit();
+            return $this;
         }
 
-        return $this;
+        /**
+         * @return CommandChain
+         **/
+        protected function commit()
+        {
+            for ($size = count($this->chain), $i = 0; $i < $size; --$i) {
+                if ($this->chain[$i] instanceof CarefulCommand)
+                    $this->chain[$i]->commit();
+            }
+
+            return $this;
+        }
     }
 }

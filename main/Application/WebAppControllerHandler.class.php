@@ -1,5 +1,4 @@
 <?php
-
 /***************************************************************************
  *   Copyright (C) 2009 by Solomatin Alexandr                              *
  *                                                                         *
@@ -9,63 +8,66 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class WebAppControllerHandler implements InterceptingChainHandler
-{
-    /**
-     * @return WebAppControllerHandler
-     */
-    public function run(InterceptingChain $chain)
+namespace OnPhp {
+
+    class WebAppControllerHandler implements InterceptingChainHandler
     {
-        $controller = $this->getController($chain);
+        /**
+         * @return WebAppControllerHandler
+         */
+        public function run(InterceptingChain $chain)
+        {
+            $controller = $this->getController($chain);
 
-        $modelAndView = $this->handleRequest($chain, $controller);
-        $this->prepairModelAndView($chain, $modelAndView);
+            $modelAndView = $this->handleRequest($chain, $controller);
+            $this->prepairModelAndView($chain, $modelAndView);
 
-        $chain->setMav($modelAndView);
+            $chain->setMav($modelAndView);
 
-        $chain->next();
+            $chain->next();
 
-        return $this;
-    }
-
-    /**
-     * По параметрам из chain создаем контроллер
-     * @param InterceptingChain $chain
-     * @return Controller
-     */
-    protected function getController(InterceptingChain $chain)
-    {
-        $controllerName = $chain->getControllerName();
-        return $chain->getServiceLocator()->spawn($controllerName);
-    }
-
-    /**
-     * @return ModelAndView
-     */
-    protected function handleRequest(InterceptingChain $chain, Controller $controller)
-    {
-        $modelAndView = $controller->handleRequest($chain->getRequest());
-
-        if (!$modelAndView instanceof ModelAndView) {
-            throw new WrongStateException(
-                'Controller \'' . get_class($controller) . '\' instead ModelAndView return null'
-            );
+            return $this;
         }
 
-        return $modelAndView;
-    }
-
-    /**
-     * @return WebAppControllerHandler
-     */
-    protected function prepairModelAndView(InterceptingChain $chain, ModelAndView $modelAndView)
-    {
-        $controllerName = $chain->getControllerName();
-
-        if (!$modelAndView->getView()) {
-            $modelAndView->setView($controllerName);
+        /**
+         * По параметрам из chain создаем контроллер
+         * @param InterceptingChain $chain
+         * @return Controller
+         */
+        protected function getController(InterceptingChain $chain)
+        {
+            $controllerName = $chain->getControllerName();
+            return $chain->getServiceLocator()->spawn($controllerName);
         }
 
-        return $this;
+        /**
+         * @return ModelAndView
+         */
+        protected function handleRequest(InterceptingChain $chain, Controller $controller)
+        {
+            $modelAndView = $controller->handleRequest($chain->getRequest());
+
+            if (!$modelAndView instanceof ModelAndView) {
+                throw new WrongStateException(
+                    'Controller \'' . get_class($controller) . '\' instead ModelAndView return null'
+                );
+            }
+
+            return $modelAndView;
+        }
+
+        /**
+         * @return WebAppControllerHandler
+         */
+        protected function prepairModelAndView(InterceptingChain $chain, ModelAndView $modelAndView)
+        {
+            $controllerName = $chain->getControllerName();
+
+            if (!$modelAndView->getView()) {
+                $modelAndView->setView($controllerName);
+            }
+
+            return $this;
+        }
     }
 }

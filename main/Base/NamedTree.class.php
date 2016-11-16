@@ -8,73 +8,74 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @see IdentifiableTree
- *
- * @ingroup Helpers
- **/
-abstract class NamedTree extends NamedObject
-{
-    private $parent = null;
-
+namespace OnPhp {
     /**
-     * @return NamedTree
+     * @see IdentifiableTree
+     *
+     * @ingroup Helpers
      **/
-    public function dropParent()
+    abstract class NamedTree extends NamedObject
     {
-        $this->parent = null;
+        private $parent = null;
 
-        return $this;
-    }
+        /**
+         * @return NamedTree
+         **/
+        public function dropParent()
+        {
+            $this->parent = null;
 
-    /**
-     * @return NamedTree
-     **/
-    public function getRoot()
-    {
-        $current = $this;
-        $next = $this;
-
-        while ($next) {
-            $current = $next;
-            $next = $next->getParent();
+            return $this;
         }
 
-        return $current;
-    }
+        /**
+         * @return NamedTree
+         **/
+        public function getRoot()
+        {
+            $current = $this;
+            $next = $this;
 
-    /**
-     * @return NamedTree
-     **/
-    public function getParent()
-    {
-        return $this->parent;
-    }
+            while ($next) {
+                $current = $next;
+                $next = $next->getParent();
+            }
 
-    /**
-     * @return NamedTree
-     **/
-    public function setParent(NamedTree $parent)
-    {
-        Assert::brothers($this, $parent);
+            return $current;
+        }
 
-        $this->parent = $parent;
+        /**
+         * @return NamedTree
+         **/
+        public function getParent()
+        {
+            return $this->parent;
+        }
 
-        return $this;
-    }
+        /**
+         * @return NamedTree
+         **/
+        public function setParent(NamedTree $parent)
+        {
+            Assert::brothers($this, $parent);
 
-    public function toString($delimiter = ' :: ') : string
-    {
-        $name = array($this->getName());
+            $this->parent = $parent;
 
-        $parent = $this;
+            return $this;
+        }
 
-        while ($parent = $parent->getParent())
-            $name[] = $parent->getName();
+        public function toString($delimiter = ' :: ') : string
+        {
+            $name = array($this->getName());
 
-        $name = array_reverse($name);
+            $parent = $this;
 
-        return implode($delimiter, $name);
+            while ($parent = $parent->getParent())
+                $name[] = $parent->getName();
+
+            $name = array_reverse($name);
+
+            return implode($delimiter, $name);
+        }
     }
 }

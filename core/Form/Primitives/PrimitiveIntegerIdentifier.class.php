@@ -8,21 +8,22 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveIntegerIdentifier extends PrimitiveIdentifier
-{
-    protected $scalar = false;
-
+namespace OnPhp {
     /**
-     * @param bool $orly
-     * @return IdentifiablePrimitive|void
-     * @throws WrongStateException
-     */
-    public function setScalar($orly = false)
+     * @ingroup Primitives
+     **/
+    class PrimitiveIntegerIdentifier extends PrimitiveIdentifier
     {
-        throw new WrongStateException();
+        protected $scalar = false;
+
+        /**
+         * @param bool $orly
+         * @return IdentifiablePrimitive|void
+         * @throws WrongStateException
+         */
+        public function setScalar($orly = false)
+        {
+            throw new WrongStateException();
+        }
     }
 }

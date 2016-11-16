@@ -9,26 +9,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class ObjectToDTOConverter extends DTOBuilder
-{
-    function __construct(EntityProto $proto)
+namespace OnPhp {
+    class ObjectToDTOConverter extends DTOBuilder
     {
-        parent::__construct($proto);
-    }
+        function __construct(EntityProto $proto)
+        {
+            parent::__construct($proto);
+        }
 
-    /**
-     * @return ObjectGetter
-     **/
-    protected function getGetter($object)
-    {
-        return new ObjectGetter($this->proto, $object);
-    }
+        /**
+         * @return ObjectGetter
+         **/
+        protected function getGetter($object)
+        {
+            return new ObjectGetter($this->proto, $object);
+        }
 
-    /**
-     * @return DTOSetter
-     **/
-    protected function getSetter(&$object)
-    {
-        return new DTOSetter($this->proto, $object);
+        /**
+         * @return DTOSetter
+         **/
+        protected function getSetter(&$object)
+        {
+            return new DTOSetter($this->proto, $object);
+        }
     }
 }

@@ -8,61 +8,62 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Connected to concrete table DBField.
- *
- * @ingroup OSQL
- * @ingroup Module
- **/
-class SelectField extends FieldTable implements Aliased
-{
-    /** @var null  */
-    private $alias = null;
-
+namespace OnPhp {
     /**
-     * SelectField constructor.
-     * @param DialectString $field
-     * @param $alias
-     */
-    public function __construct(DialectString $field, $alias)
+     * Connected to concrete table DBField.
+     *
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    class SelectField extends FieldTable implements Aliased
     {
-        parent::__construct($field);
-        $this->alias = $alias;
-    }
+        /** @var null */
+        private $alias = null;
 
-    /**
-     * @return null
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @return null
-     */
-    public function getName()
-    {
-        if ($this->field instanceof DBField) {
-            return $this->field->getField();
+        /**
+         * SelectField constructor.
+         * @param DialectString $field
+         * @param $alias
+         */
+        public function __construct(DialectString $field, $alias)
+        {
+            parent::__construct($field);
+            $this->alias = $alias;
         }
 
-        return $this->alias;
-    }
+        /**
+         * @return null
+         */
+        public function getAlias()
+        {
+            return $this->alias;
+        }
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        return
-            parent::toDialectString($dialect)
-            . (
-            $this->alias
-                ? ' AS ' . $dialect->quoteField($this->alias)
-                : null
-            );
+        /**
+         * @return null
+         */
+        public function getName()
+        {
+            if ($this->field instanceof DBField) {
+                return $this->field->getField();
+            }
+
+            return $this->alias;
+        }
+
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            return
+                parent::toDialectString($dialect)
+                . (
+                $this->alias
+                    ? ' AS ' . $dialect->quoteField($this->alias)
+                    : null
+                );
+        }
     }
 }

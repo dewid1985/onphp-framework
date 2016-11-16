@@ -8,110 +8,111 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Criteria
- **/
-class PropertyPath
-{
-    private static $daos = array();
-    private static $protos = array();
-    private $root = null;
-    private $path = null;
-    private $properties = array(); // zergs suck anyway ;-)
-
-    public function __construct($root, $path)
+namespace OnPhp {
+    /**
+     * @ingroup Criteria
+     **/
+    class PropertyPath
     {
-        Assert::isString($path, 'non-string path given');
+        private static $daos = array();
+        private static $protos = array();
+        private $root = null;
+        private $path = null;
+        private $properties = array(); // zergs suck anyway ;-)
 
-        if (is_object($root))
-            $className = get_class($root);
-        else {
-            Assert::classExists($root);
+        public function __construct($root, $path)
+        {
+            Assert::isString($path, 'non-string path given');
 
-            $className = $root;
-        }
+            if (is_object($root))
+                $className = get_class($root);
+            else {
+                Assert::classExists($root);
 
-        $this->root = $className;
-        $this->path = $path;
+                $className = $root;
+            }
 
-        $this->fetchHelpers($className);
+            $this->root = $className;
+            $this->path = $path;
 
-        $proto = self::$protos[$className];
+            $this->fetchHelpers($className);
 
-        $path = explode('.', $path);
+            $proto = self::$protos[$className];
 
-        for ($i = 0, $size = count($path); $i < $size; ++$i) {
-            $this->properties[$i]
-                = $property
-                = $proto->getPropertyByName($path[$i]);
+            $path = explode('.', $path);
 
-            if ($className = $property->getClassName()) {
-                $this->fetchHelpers($className);
-                $proto = self::$protos[$className];
-            } elseif ($i < $size) {
-                continue;
-            } else {
-                throw new WrongArgumentException('corrupted path');
+            for ($i = 0, $size = count($path); $i < $size; ++$i) {
+                $this->properties[$i]
+                    = $property
+                    = $proto->getPropertyByName($path[$i]);
+
+                if ($className = $property->getClassName()) {
+                    $this->fetchHelpers($className);
+                    $proto = self::$protos[$className];
+                } elseif ($i < $size) {
+                    continue;
+                } else {
+                    throw new WrongArgumentException('corrupted path');
+                }
             }
         }
-    }
 
-    private function fetchHelpers($className)
-    {
-        if (isset(self::$protos[$className], self::$daos[$className]))
-            return /* boo */
-                ;
+        private function fetchHelpers($className)
+        {
+            if (isset(self::$protos[$className], self::$daos[$className]))
+                return /* boo */
+                    ;
 
-        self::$protos[$className] = call_user_func(array($className, 'proto'));
-        self::$daos[$className] =
-            ClassUtils::isInstanceOf($className, 'DAOConnected')
-                ? call_user_func(array($className, 'dao'))
-                : null;
+            self::$protos[$className] = call_user_func(array($className, 'proto'));
+            self::$daos[$className] =
+                ClassUtils::isInstanceOf($className, 'DAOConnected')
+                    ? call_user_func(array($className, 'dao'))
+                    : null;
 
-        Assert::isTrue(
-            (self::$protos[$className] instanceof AbstractProtoClass)
-            && (
-                self::$daos[$className] instanceof ProtoDAO
-                || self::$daos[$className] === null
-            )
-        );
-    }
+            Assert::isTrue(
+                (self::$protos[$className] instanceof AbstractProtoClass)
+                && (
+                    self::$daos[$className] instanceof ProtoDAO
+                    || self::$daos[$className] === null
+                )
+            );
+        }
 
-    public function getPath()
-    {
-        return $this->path;
-    }
+        public function getPath()
+        {
+            return $this->path;
+        }
 
-    public function getRoot()
-    {
-        return $this->root;
-    }
+        public function getRoot()
+        {
+            return $this->root;
+        }
 
-    /**
-     * @return AbstractProtoClass
-     **/
-    public function getFinalProto()
-    {
-        return self::$protos[$this->getFinalProperty()->getClassName()];
-    }
+        /**
+         * @return AbstractProtoClass
+         **/
+        public function getFinalProto()
+        {
+            return self::$protos[$this->getFinalProperty()->getClassName()];
+        }
 
-    /**
-     * @return LightMetaProperty
-     **/
-    public function getFinalProperty()
-    {
-        return end($this->properties);
-    }
+        /**
+         * @return LightMetaProperty
+         **/
+        public function getFinalProperty()
+        {
+            return end($this->properties);
+        }
 
-    /* void */
+        /* void */
 
-    /**
-     * @return ProtoDAO
-     **/
-    public function getFinalDao()
-    {
-        return self::$daos[$this->getFinalProperty()->getClassName()];
+        /**
+         * @return ProtoDAO
+         **/
+        public function getFinalDao()
+        {
+            return self::$daos[$this->getFinalProperty()->getClassName()];
+        }
     }
 }
 

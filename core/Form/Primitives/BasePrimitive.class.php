@@ -8,273 +8,274 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Parent of every Primitive.
- *
- * @ingroup Primitives
- * @ingroup Module
- **/
-abstract class BasePrimitive
-{
-    /** @var null  */
-    protected $name = null;
-
-    /** @var null  */
-    protected $default = null;
-
-    /** @var Date  */
-    protected $value = null;
-
-    /** @var bool  */
-    protected $required = false;
-
-    /** @var bool  */
-    protected $imported = false;
-
-    /** @var null  */
-    protected $raw = null;
-
-    /** @var null  */
-    protected $customError = null;
-
+namespace OnPhp {
     /**
-     * BasePrimitive constructor.
-     * @param $name
-     */
-    public function __construct($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return null
-     */
-    public function getDefault()
-    {
-        return $this->default;
-    }
-
-    /**
-     * @param $default
-     * @return BasePrimitive
-     */
-    public function setDefault($default)
-    {
-        $this->default = $default;
-
-        return $this;
-    }
-
-    /**
-     * @return null
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return BasePrimitive
+     * Parent of every Primitive.
+     *
+     * @ingroup Primitives
+     * @ingroup Module
      **/
-    public function setValue($value)
+    abstract class BasePrimitive
     {
-        $this->value = $value;
+        /** @var null */
+        protected $name = null;
 
-        return $this;
-    }
+        /** @var null */
+        protected $default = null;
 
-    /**
-     * @return null
-     */
-    public function getRawValue()
-    {
-        return $this->raw;
-    }
+        /** @var Date */
+        protected $value = null;
 
-    /**
-     * @return null
-     */
-    public function getValueOrDefault()
-    {
-        if ($this->value !== null) {
+        /** @var bool */
+        protected $required = false;
+
+        /** @var bool */
+        protected $imported = false;
+
+        /** @var null */
+        protected $raw = null;
+
+        /** @var null */
+        protected $customError = null;
+
+        /**
+         * BasePrimitive constructor.
+         * @param $name
+         */
+        public function __construct($name)
+        {
+            $this->name = $name;
+        }
+
+        /**
+         * @return null
+         */
+        public function getDefault()
+        {
+            return $this->default;
+        }
+
+        /**
+         * @param $default
+         * @return BasePrimitive
+         */
+        public function setDefault($default)
+        {
+            $this->default = $default;
+
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function getValue()
+        {
             return $this->value;
         }
 
-        return $this->default;
-    }
+        /**
+         * @return BasePrimitive
+         **/
+        public function setValue($value)
+        {
+            $this->value = $value;
 
-    /**
-     * @deprecated since version 1.0
-     * @see getSafeValue, getValueOrDefault
-     */
-    public function getActualValue()
-    {
-        if ($this->value !== null) {
-            return $this->value;
-        } elseif ($this->imported) {
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function getRawValue()
+        {
             return $this->raw;
         }
 
-        return $this->default;
-    }
+        /**
+         * @return null
+         */
+        public function getValueOrDefault()
+        {
+            if ($this->value !== null) {
+                return $this->value;
+            }
 
-    /**
-     * @return null
-     */
-    public function getSafeValue()
-    {
-        if ($this->imported) {
+            return $this->default;
+        }
+
+        /**
+         * @deprecated since version 1.0
+         * @see getSafeValue, getValueOrDefault
+         */
+        public function getActualValue()
+        {
+            if ($this->value !== null) {
+                return $this->value;
+            } elseif ($this->imported) {
+                return $this->raw;
+            }
+
+            return $this->default;
+        }
+
+        /**
+         * @return null
+         */
+        public function getSafeValue()
+        {
+            if ($this->imported) {
+                return $this->value;
+            }
+
+            return $this->default;
+        }
+
+        /**
+         * @return BasePrimitive
+         **/
+        public function dropValue()
+        {
+            $this->value = null;
+
+            return $this;
+        }
+
+        /**
+         * usually, you should not use this method
+         *
+         * @param $raw
+         * @return BasePrimitive
+         */
+        public function setRawValue($raw)
+        {
+            $this->raw = $raw;
+
+            return $this;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isRequired() : bool
+        {
+            return $this->required;
+        }
+
+        /**
+         * @return BasePrimitive
+         **/
+        public function setRequired($really = false)
+        {
+            $this->required = (true === $really ? true : false);
+
+            return $this;
+        }
+
+        /**
+         * @return BasePrimitive
+         **/
+        public function required()
+        {
+            $this->required = true;
+
+            return $this;
+        }
+
+        /**
+         * @return BasePrimitive
+         **/
+        public function optional()
+        {
+            $this->required = false;
+
+            return $this;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isImported()
+        {
+            return $this->imported;
+        }
+
+        /**
+         * @param $value
+         * @return bool|null
+         */
+        public function importValue($value)
+        {
+            return $this->import([$this->getName() => $value]);
+        }
+
+        /**
+         * @param $scope
+         * @return bool|null
+         */
+        public function import($scope)
+        {
+            if (
+                !empty($scope[$this->name])
+                || (
+                    isset($scope[$this->name])
+                    && $scope[$this->name] !== ''
+                )
+            ) {
+                $this->raw = $scope[$this->name];
+
+                return $this->imported = true;
+            }
+
+            $this->clean();
+
+            return null;
+        }
+
+        /**
+         * @return $this
+         */
+        public function clean()
+        {
+            $this->raw = null;
+            $this->value = null;
+            $this->imported = false;
+
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function getName()
+        {
+            return $this->name;
+        }
+
+        /**
+         * @return BasePrimitive
+         **/
+        public function setName($name)
+        {
+            $this->name = $name;
+
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function exportValue()
+        {
             return $this->value;
         }
 
-        return $this->default;
-    }
-
-    /**
-     * @return BasePrimitive
-     **/
-    public function dropValue()
-    {
-        $this->value = null;
-
-        return $this;
-    }
-
-    /**
-     * usually, you should not use this method
-     *
-     * @param $raw
-     * @return BasePrimitive
-     */
-    public function setRawValue($raw)
-    {
-        $this->raw = $raw;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRequired() : bool
-    {
-        return $this->required;
-    }
-
-    /**
-     * @return BasePrimitive
-     **/
-    public function setRequired($really = false)
-    {
-        $this->required = (true === $really ? true : false);
-
-        return $this;
-    }
-
-    /**
-     * @return BasePrimitive
-     **/
-    public function required()
-    {
-        $this->required = true;
-
-        return $this;
-    }
-
-    /**
-     * @return BasePrimitive
-     **/
-    public function optional()
-    {
-        $this->required = false;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isImported()
-    {
-        return $this->imported;
-    }
-
-    /**
-     * @param $value
-     * @return bool|null
-     */
-    public function importValue($value)
-    {
-        return $this->import([$this->getName() => $value]);
-    }
-
-    /**
-     * @param $scope
-     * @return bool|null
-     */
-    public function import($scope)
-    {
-        if (
-            !empty($scope[$this->name])
-            || (
-                isset($scope[$this->name])
-                && $scope[$this->name] !== ''
-            )
-        ) {
-            $this->raw = $scope[$this->name];
-
-            return $this->imported = true;
+        /**
+         * @return null
+         */
+        public function getCustomError()
+        {
+            return $this->customError;
         }
-
-        $this->clean();
-
-        return null;
-    }
-
-    /**
-     * @return $this
-     */
-    public function clean()
-    {
-        $this->raw = null;
-        $this->value = null;
-        $this->imported = false;
-
-        return $this;
-    }
-
-    /**
-     * @return null
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return BasePrimitive
-     **/
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return null
-     */
-    public function exportValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return null
-     */
-    public function getCustomError()
-    {
-        return $this->customError;
     }
 }

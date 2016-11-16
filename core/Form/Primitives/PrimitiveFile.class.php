@@ -8,223 +8,224 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * File uploads helper.
- *
- * @ingroup Primitives
- **/
-class PrimitiveFile extends RangedPrimitive
-{
-    /** @var null */
-    private $originalName = null;
-
-    /** @var null */
-    private $mimeType = null;
-
-    /** @var array */
-    private $allowedMimeTypes = [];
-    /** @var bool */
-    private $checkUploaded = true;
-
+namespace OnPhp {
     /**
-     * @return null
-     */
-    public function getOriginalName()
-    {
-        return $this->originalName;
-    }
-
-    /**
-     * @return null
-     */
-    public function getMimeType()
-    {
-        return $this->mimeType;
-    }
-
-    /**
-     * @return PrimitiveFile
+     * File uploads helper.
+     *
+     * @ingroup Primitives
      **/
-    public function clean()
+    class PrimitiveFile extends RangedPrimitive
     {
-        $this->originalName = null;
-        $this->mimeType = null;
+        /** @var null */
+        private $originalName = null;
 
-        return parent::clean();
-    }
+        /** @var null */
+        private $mimeType = null;
 
-    /**
-     * @param $mime
-     * @return PrimitiveFile
-     * @throws WrongArgumentException
-     */
-    public function addAllowedMimeType($mime) : PrimitiveFile
-    {
-        Assert::isString($mime);
+        /** @var array */
+        private $allowedMimeTypes = [];
+        /** @var bool */
+        private $checkUploaded = true;
 
-        $this->allowedMimeTypes[] = $mime;
+        /**
+         * @return null
+         */
+        public function getOriginalName()
+        {
+            return $this->originalName;
+        }
 
-        return $this;
-    }
+        /**
+         * @return null
+         */
+        public function getMimeType()
+        {
+            return $this->mimeType;
+        }
 
-    /**
-     * @return array
-     */
-    public function getAllowedMimeTypes() : array
-    {
-        return $this->allowedMimeTypes;
-    }
+        /**
+         * @return PrimitiveFile
+         **/
+        public function clean()
+        {
+            $this->originalName = null;
+            $this->mimeType = null;
+
+            return parent::clean();
+        }
+
+        /**
+         * @param $mime
+         * @return PrimitiveFile
+         * @throws WrongArgumentException
+         */
+        public function addAllowedMimeType($mime) : PrimitiveFile
+        {
+            Assert::isString($mime);
+
+            $this->allowedMimeTypes[] = $mime;
+
+            return $this;
+        }
+
+        /**
+         * @return array
+         */
+        public function getAllowedMimeTypes() : array
+        {
+            return $this->allowedMimeTypes;
+        }
 
 
-    /**
-     * @param $mimes
-     * @return PrimitiveFile
-     * @throws WrongArgumentException
-     */
-    public function setAllowedMimeTypes($mimes) : PrimitiveFile
-    {
-        Assert::isArray($mimes);
+        /**
+         * @param $mimes
+         * @return PrimitiveFile
+         * @throws WrongArgumentException
+         */
+        public function setAllowedMimeTypes($mimes) : PrimitiveFile
+        {
+            Assert::isArray($mimes);
 
-        $this->allowedMimeTypes = $mimes;
+            $this->allowedMimeTypes = $mimes;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @param $path
-     * @param $name
-     * @return bool
-     * @throws WrongArgumentException
-     */
-    public function copyTo($path, $name) : bool
-    {
-        return $this->copyToPath($path . $name);
-    }
+        /**
+         * @param $path
+         * @param $name
+         * @return bool
+         * @throws WrongArgumentException
+         */
+        public function copyTo($path, $name) : bool
+        {
+            return $this->copyToPath($path . $name);
+        }
 
-    /**
-     * @param $path
-     * @return bool
-     * @throws WrongArgumentException
-     */
-    public function copyToPath($path) : bool
-    {
-        if (is_readable($this->value) && is_writable(dirname($path))) {
-            if ($this->checkUploaded) {
-                return move_uploaded_file($this->value, $path);
+        /**
+         * @param $path
+         * @return bool
+         * @throws WrongArgumentException
+         */
+        public function copyToPath($path) : bool
+        {
+            if (is_readable($this->value) && is_writable(dirname($path))) {
+                if ($this->checkUploaded) {
+                    return move_uploaded_file($this->value, $path);
+                } else {
+                    return rename($this->value, $path);
+                }
             } else {
-                return rename($this->value, $path);
+                throw new WrongArgumentException(
+                    "can not move '{$this->value}' to '{$path}'"
+                );
             }
-        } else {
-            throw new WrongArgumentException(
-                "can not move '{$this->value}' to '{$path}'"
-            );
-        }
-    }
-
-    /**
-     * @param $scope
-     * @return bool|null
-     */
-    public function import($scope)
-    {
-        if (
-            !BasePrimitive::import($scope)
-            || !is_array($scope[$this->name])
-            || (
-                isset($scope[$this->name], $scope[$this->name]['error'])
-                && $scope[$this->name]['error'] == UPLOAD_ERR_NO_FILE
-            )
-        ) {
-            return null;
         }
 
-        if (isset($scope[$this->name]['tmp_name'])) {
-            $file = $scope[$this->name]['tmp_name'];
-        } else {
+        /**
+         * @param $scope
+         * @return bool|null
+         */
+        public function import($scope)
+        {
+            if (
+                !BasePrimitive::import($scope)
+                || !is_array($scope[$this->name])
+                || (
+                    isset($scope[$this->name], $scope[$this->name]['error'])
+                    && $scope[$this->name]['error'] == UPLOAD_ERR_NO_FILE
+                )
+            ) {
+                return null;
+            }
+
+            if (isset($scope[$this->name]['tmp_name'])) {
+                $file = $scope[$this->name]['tmp_name'];
+            } else {
+                return false;
+            }
+
+            if (is_readable($file) && $this->checkUploaded($file)) {
+                $size = filesize($file);
+            } else {
+                return false;
+            }
+
+            $this->mimeType = $scope[$this->name]['type'];
+
+            if (!$this->isAllowedMimeType()) {
+                return false;
+            }
+
+            if (
+                isset($scope[$this->name])
+                && !($this->max && ($size > $this->max))
+                && !($this->min && ($size < $this->min))
+            ) {
+                $this->value = $scope[$this->name]['tmp_name'];
+                $this->originalName = $scope[$this->name]['name'];
+
+                return true;
+            }
+
             return false;
         }
 
-        if (is_readable($file) && $this->checkUploaded($file)) {
-            $size = filesize($file);
-        } else {
-            return false;
+        /**
+         * @param $file
+         * @return bool
+         */
+        private function checkUploaded($file) : bool
+        {
+            return !$this->checkUploaded || is_uploaded_file($file);
         }
 
-        $this->mimeType = $scope[$this->name]['type'];
-
-        if (!$this->isAllowedMimeType()) {
-            return false;
+        /**
+         * @return bool
+         */
+        public function isAllowedMimeType() : bool
+        {
+            if (count($this->allowedMimeTypes) > 0) {
+                return in_array($this->mimeType, $this->allowedMimeTypes);
+            } else {
+                return true;
+            }
         }
 
-        if (
-            isset($scope[$this->name])
-            && !($this->max && ($size > $this->max))
-            && !($this->min && ($size < $this->min))
-        ) {
-            $this->value = $scope[$this->name]['tmp_name'];
-            $this->originalName = $scope[$this->name]['name'];
-
-            return true;
+        /**
+         * @throws UnimplementedFeatureException
+         */
+        public function exportValue()
+        {
+            throw new UnimplementedFeatureException();
         }
 
-        return false;
-    }
+        /**
+         * @return PrimitiveFile
+         */
+        public function enableCheckUploaded() : PrimitiveFile
+        {
+            $this->checkUploaded = true;
 
-    /**
-     * @param $file
-     * @return bool
-     */
-    private function checkUploaded($file) : bool
-    {
-        return !$this->checkUploaded || is_uploaded_file($file);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAllowedMimeType() : bool
-    {
-        if (count($this->allowedMimeTypes) > 0) {
-            return in_array($this->mimeType, $this->allowedMimeTypes);
-        } else {
-            return true;
+            return $this;
         }
-    }
 
-    /**
-     * @throws UnimplementedFeatureException
-     */
-    public function exportValue()
-    {
-        throw new UnimplementedFeatureException();
-    }
+        /**
+         * @return PrimitiveFile
+         */
+        public function disableCheckUploaded() : PrimitiveFile
+        {
+            $this->checkUploaded = false;
 
-    /**
-     * @return PrimitiveFile
-     */
-    public function enableCheckUploaded() : PrimitiveFile
-    {
-        $this->checkUploaded = true;
+            return $this;
+        }
 
-        return $this;
-    }
-
-    /**
-     * @return PrimitiveFile
-     */
-    public function disableCheckUploaded() : PrimitiveFile
-    {
-        $this->checkUploaded = false;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCheckUploaded()
-    {
-        return $this->checkUploaded;
+        /**
+         * @return bool
+         */
+        public function isCheckUploaded()
+        {
+            return $this->checkUploaded;
+        }
     }
 }

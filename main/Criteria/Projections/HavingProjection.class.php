@@ -8,27 +8,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class HavingProjection implements ObjectProjection
-{
-    private $logic = null;
-
-    public function __construct(LogicalObject $logic)
-    {
-        $this->logic = $logic;
-    }
-
+namespace OnPhp {
     /**
-     * @return JoinCapableQuery
+     * @ingroup Projections
      **/
-    public function process(Criteria $criteria, JoinCapableQuery $query)
+    class HavingProjection implements ObjectProjection
     {
-        return
-            $query->having(
-                $this->logic->toMapped($criteria->getDao(), $query)
-            );
+        private $logic = null;
+
+        public function __construct(LogicalObject $logic)
+        {
+            $this->logic = $logic;
+        }
+
+        /**
+         * @return JoinCapableQuery
+         **/
+        public function process(Criteria $criteria, JoinCapableQuery $query)
+        {
+            return
+                $query->having(
+                    $this->logic->toMapped($criteria->getDao(), $query)
+                );
+        }
     }
 }

@@ -8,28 +8,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Html
- * @ingroup Module
- **/
-abstract class SgmlTag extends SgmlToken
-{
-    private $id = null;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
+namespace OnPhp {
     /**
-     * @return SgmlTag
+     * @ingroup Html
+     * @ingroup Module
      **/
-    public function setId($id)
+    abstract class SgmlTag extends SgmlToken
     {
-        $this->id = $id;
+        private $id = null;
 
-        return $this;
+        public function getId()
+        {
+            return $this->id;
+        }
+
+        /**
+         * @return SgmlTag
+         **/
+        public function setId($id)
+        {
+            $this->id = $id;
+
+            return $this;
+        }
     }
 }
-

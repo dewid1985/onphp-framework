@@ -8,35 +8,36 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- * @ingroup Module
- **/
-abstract class QueryIdentification implements Query
-{
+namespace OnPhp {
     /**
-     * @return string
-     */
-    public function getId()
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    abstract class QueryIdentification implements Query
     {
-        return sha1($this->toString());
-    }
+        /**
+         * @return string
+         */
+        public function getId()
+        {
+            return sha1($this->toString());
+        }
 
-    /**
-     * @return mixed
-     */
-    public function toString(): string
-    {
-        return $this->toDialectString(ImaginaryDialect::me());
-    }
+        /**
+         * @return mixed
+         */
+        public function toString(): string
+        {
+            return $this->toDialectString(ImaginaryDialect::me());
+        }
 
-    /**
-     * @param $id
-     * @throws UnsupportedMethodException
-     */
-    final public function setId($id)
-    {
-        throw new UnsupportedMethodException();
+        /**
+         * @param $id
+         * @throws UnsupportedMethodException
+         */
+        final public function setId($id)
+        {
+            throw new UnsupportedMethodException();
+        }
     }
 }

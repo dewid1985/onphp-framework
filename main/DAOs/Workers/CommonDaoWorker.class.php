@@ -8,105 +8,239 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * Tunable (aka manual) caching DAO worker.
- *
- * @see SmartDaoWorker for auto-caching one.
- *
- * @ingroup DAOs
- **/
-class CommonDaoWorker extends BaseDaoWorker
-{
-    /// single object getters
-    //@{
-    public function getById($id, $expires = Cache::EXPIRES_MEDIUM)
+namespace OnPhp {
+    /**
+     * Tunable (aka manual) caching DAO worker.
+     *
+     * @see SmartDaoWorker for auto-caching one.
+     *
+     * @ingroup DAOs
+     **/
+    class CommonDaoWorker extends BaseDaoWorker
     {
-        if (
-            ($expires !== Cache::DO_NOT_CACHE)
-            && ($object = $this->getCachedById($id))
-        ) {
-            if ($object === Cache::NOT_FOUND) {
-                throw new CachedObjectNotFoundException(
-                    "there is no such object for '"
-                    . $this->dao->getObjectName() . "' with id=" . $id
-                );
-            }
+        /// single object getters
+        //@{
+        public function getById($id, $expires = Cache::EXPIRES_MEDIUM)
+        {
+            if (
+                ($expires !== Cache::DO_NOT_CACHE)
+                && ($object = $this->getCachedById($id))
+            ) {
+                if ($object === Cache::NOT_FOUND) {
+                    throw new CachedObjectNotFoundException(
+                        "there is no such object for '"
+                        . $this->dao->getObjectName() . "' with id=" . $id
+                    );
+                }
 
-            return $this->dao->completeObject($object);
-        } else {
-            $query =
-                $this->dao
-                    ->makeSelectHead()
-                    ->andWhere(
-                        Expression::eq(
-                            new DBField(
-                                $this->dao->getIdName(),
-                                $this->dao->getTable()
-                            ),
-                            $id
+                return $this->dao->completeObject($object);
+            } else {
+                $query =
+                    $this->dao
+                        ->makeSelectHead()
+                        ->andWhere(
+                            Expression::eq(
+                                new DBField(
+                                    $this->dao->getIdName(),
+                                    $this->dao->getTable()
+                                ),
+                                $id
+                            )
+                        );
+
+                if ($expires === Cache::DO_NOT_CACHE) {
+                    $object = $this->fetchObject($query);
+                } else {
+                    $object = $this->cachedFetchObject($query, $expires, true);
+                }
+
+                if ($object) {
+                    return $object;
+                } else {
+                    throw new ObjectNotFoundException(
+                        "there is no such object for '" . $this->dao->getObjectName()
+                        . "' with query == "
+                        . $query->toDialectString(
+                            DBPool::me()->getByDao($this->dao)->getDialect()
                         )
                     );
-
-            if ($expires === Cache::DO_NOT_CACHE) {
-                $object = $this->fetchObject($query);
-            } else {
-                $object = $this->cachedFetchObject($query, $expires, true);
-            }
-
-            if ($object) {
-                return $object;
-            } else {
-                throw new ObjectNotFoundException(
-                    "there is no such object for '" . $this->dao->getObjectName()
-                    . "' with query == "
-                    . $query->toDialectString(
-                        DBPool::me()->getByDao($this->dao)->getDialect()
-                    )
-                );
+                }
             }
         }
-    }
 
-    public function getByLogic(
-        LogicalObject $logic,
-        $expires = Cache::DO_NOT_CACHE
-    ) {
-        return
-            $this->getByQuery(
-                $this->dao->makeSelectHead()->andWhere($logic), $expires
-            );
-    }
+        public function getByLogic(
+            LogicalObject $logic,
+            $expires = Cache::DO_NOT_CACHE
+        )
+        {
+            return
+                $this->getByQuery(
+                    $this->dao->makeSelectHead()->andWhere($logic), $expires
+                );
+        }
 
-    public function getByQuery(
-        SelectQuery $query,
-        $expires = Cache::DO_NOT_CACHE
-    ) {
-        if (
-            ($expires !== Cache::DO_NOT_CACHE)
-            && ($object = $this->getCachedByQuery($query))
-        ) {
-            if ($object === Cache::NOT_FOUND) {
-                throw new CachedObjectNotFoundException();
-            }
+        public function getByQuery(
+            SelectQuery $query,
+            $expires = Cache::DO_NOT_CACHE
+        )
+        {
+            if (
+                ($expires !== Cache::DO_NOT_CACHE)
+                && ($object = $this->getCachedByQuery($query))
+            ) {
+                if ($object === Cache::NOT_FOUND) {
+                    throw new CachedObjectNotFoundException();
+                }
 
-            return $this->dao->completeObject($object);
-        } else {
-            if ($expires === Cache::DO_NOT_CACHE) {
-                $object = $this->fetchObject($query);
+                return $this->dao->completeObject($object);
             } else {
-                $object = $this->cachedFetchObject($query, $expires, false);
+                if ($expires === Cache::DO_NOT_CACHE) {
+                    $object = $this->fetchObject($query);
+                } else {
+                    $object = $this->cachedFetchObject($query, $expires, false);
+                }
+
+                if ($object) {
+                    return $object;
+                } else {
+                    throw new ObjectNotFoundException(
+                        "there is no such object for '" . $this->dao->getObjectName()
+                        . (
+                        defined('__LOCAL_DEBUG__')
+                            ?
+                            "' with query == "
+                            . $query->toDialectString(
+                                DBPool::me()->getByDao($this->dao)
+                                    ->getDialect()
+                            )
+                            : null
+                        )
+                    );
+                }
+            }
+        }
+
+        public function getListByIds(
+            array $ids,
+            $expires = Cache::EXPIRES_MEDIUM
+        )
+        {
+            $list = [];
+
+            // dupes, if any, will be resolved later @ ArrayUtils::regularizeList
+            $ids = array_unique($ids);
+
+            if ($expires !== Cache::DO_NOT_CACHE) {
+                $toFetch = [];
+                $prefixed = [];
+
+                foreach ($ids as $id) {
+                    $prefixed[$id] = $this->makeIdKey($id);
+                }
+
+                if (
+                $cachedList
+                    = Cache::me()->mark($this->className)->getList($prefixed)
+                ) {
+                    $proto = $this->dao->getProtoClass();
+
+                    $proto->beginPrefetch();
+
+                    foreach ($cachedList as $cached) {
+                        if ($cached && ($cached !== Cache::NOT_FOUND)) {
+                            $list[] = $this->dao->completeObject($cached);
+
+                            unset($prefixed[$cached->getId()]);
+                        }
+                    }
+
+                    $proto->endPrefetch($list);
+                }
+
+                $toFetch += array_keys($prefixed);
+
+                if ($toFetch) {
+                    try {
+                        $list =
+                            array_merge(
+                                $list,
+                                $this->getListByLogic(
+                                    Expression::in(
+                                        new DBField(
+                                            $this->dao->getIdName(),
+                                            $this->dao->getTable()
+                                        ),
+                                        $toFetch
+                                    ),
+                                    Cache::DO_NOT_CACHE
+                                )
+                            );
+                    } catch (ObjectNotFoundException $e) {
+                        // nothing to fetch
+                    }
+                }
+            } elseif (count($ids)) {
+                try {
+                    $list =
+                        $this->getListByLogic(
+                            Expression::in(
+                                new DBField(
+                                    $this->dao->getIdName(),
+                                    $this->dao->getTable()
+                                ),
+                                $ids
+                            ),
+                            Cache::DO_NOT_CACHE
+                        );
+                } catch (ObjectNotFoundException $e) {/*_*/
+                }
             }
 
-            if ($object) {
-                return $object;
+            return $list;
+        }
+        //@}
+
+        /// object's list getters
+        //@{
+
+        public function getListByLogic(
+            LogicalObject $logic,
+            $expires = Cache::DO_NOT_CACHE
+        )
+        {
+            return
+                $this->getListByQuery(
+                    $this->dao->makeSelectHead()->andWhere($logic), $expires
+                );
+        }
+
+        public function getListByQuery(
+            SelectQuery $query,
+            $expires = Cache::DO_NOT_CACHE
+        )
+        {
+            if (
+                ($expires !== Cache::DO_NOT_CACHE)
+                && ($list = $this->getCachedByQuery($query))
+            ) {
+                if ($list === Cache::NOT_FOUND) {
+                    throw new CachedObjectNotFoundException();
+                }
+
+                return $list;
+            } elseif ($list = $this->fetchList($query)) {
+                if (Cache::DO_NOT_CACHE === $expires) {
+                    return $list;
+                } else {
+                    return $this->cacheByQuery($query, $list, $expires);
+                }
             } else {
                 throw new ObjectNotFoundException(
-                    "there is no such object for '" . $this->dao->getObjectName()
+                    "empty list"
                     . (
                     defined('__LOCAL_DEBUG__')
                         ?
-                        "' with query == "
+                        " for such query - "
                         . $query->toDialectString(
                             DBPool::me()->getByDao($this->dao)
                                 ->getDialect()
@@ -116,428 +250,307 @@ class CommonDaoWorker extends BaseDaoWorker
                 );
             }
         }
-    }
 
-    public function getListByIds(
-        array $ids,
-        $expires = Cache::EXPIRES_MEDIUM
-    ) {
-        $list = [];
+        protected function cacheByQuery(
+            SelectQuery $query,
+            /* Identifiable */
+            $object,
+            $expires = Cache::DO_NOT_CACHE
+        )
+        {
+            if ($expires !== Cache::DO_NOT_CACHE) {
 
-        // dupes, if any, will be resolved later @ ArrayUtils::regularizeList
-        $ids = array_unique($ids);
-
-        if ($expires !== Cache::DO_NOT_CACHE) {
-            $toFetch = [];
-            $prefixed = [];
-
-            foreach ($ids as $id) {
-                $prefixed[$id] = $this->makeIdKey($id);
-            }
-
-            if (
-            $cachedList
-                = Cache::me()->mark($this->className)->getList($prefixed)
-            ) {
-                $proto = $this->dao->getProtoClass();
-
-                $proto->beginPrefetch();
-
-                foreach ($cachedList as $cached) {
-                    if ($cached && ($cached !== Cache::NOT_FOUND)) {
-                        $list[] = $this->dao->completeObject($cached);
-
-                        unset($prefixed[$cached->getId()]);
-                    }
-                }
-
-                $proto->endPrefetch($list);
-            }
-
-            $toFetch += array_keys($prefixed);
-
-            if ($toFetch) {
-                try {
-                    $list =
-                        array_merge(
-                            $list,
-                            $this->getListByLogic(
-                                Expression::in(
-                                    new DBField(
-                                        $this->dao->getIdName(),
-                                        $this->dao->getTable()
-                                    ),
-                                    $toFetch
-                                ),
-                                Cache::DO_NOT_CACHE
-                            )
-                        );
-                } catch (ObjectNotFoundException $e) {
-                    // nothing to fetch
-                }
-            }
-        } elseif (count($ids)) {
-            try {
-                $list =
-                    $this->getListByLogic(
-                        Expression::in(
-                            new DBField(
-                                $this->dao->getIdName(),
-                                $this->dao->getTable()
-                            ),
-                            $ids
-                        ),
-                        Cache::DO_NOT_CACHE
+                Cache::me()->mark($this->className)
+                    ->add(
+                        $this->makeQueryKey($query, self::SUFFIX_QUERY),
+                        $object,
+                        $expires
                     );
-            } catch (ObjectNotFoundException $e) {/*_*/
-            }
-        }
-
-        return $list;
-    }
-    //@}
-
-    /// object's list getters
-    //@{
-
-    public function getListByLogic(
-        LogicalObject $logic,
-        $expires = Cache::DO_NOT_CACHE
-    ) {
-        return
-            $this->getListByQuery(
-                $this->dao->makeSelectHead()->andWhere($logic), $expires
-            );
-    }
-
-    public function getListByQuery(
-        SelectQuery $query,
-        $expires = Cache::DO_NOT_CACHE
-    ) {
-        if (
-            ($expires !== Cache::DO_NOT_CACHE)
-            && ($list = $this->getCachedByQuery($query))
-        ) {
-            if ($list === Cache::NOT_FOUND) {
-                throw new CachedObjectNotFoundException();
-            }
-
-            return $list;
-        } elseif ($list = $this->fetchList($query)) {
-            if (Cache::DO_NOT_CACHE === $expires) {
-                return $list;
-            } else {
-                return $this->cacheByQuery($query, $list, $expires);
-            }
-        } else {
-            throw new ObjectNotFoundException(
-                "empty list"
-                . (
-                defined('__LOCAL_DEBUG__')
-                    ?
-                    " for such query - "
-                    . $query->toDialectString(
-                        DBPool::me()->getByDao($this->dao)
-                            ->getDialect()
-                    )
-                    : null
-                )
-            );
-        }
-    }
-
-    protected function cacheByQuery(
-        SelectQuery $query,
-        /* Identifiable */
-        $object,
-        $expires = Cache::DO_NOT_CACHE
-    ) {
-        if ($expires !== Cache::DO_NOT_CACHE) {
-
-            Cache::me()->mark($this->className)
-                ->add(
-                    $this->makeQueryKey($query, self::SUFFIX_QUERY),
-                    $object,
-                    $expires
-                );
-        }
-
-        return $object;
-    }
-
-    public function getPlainList($expires = Cache::EXPIRES_MEDIUM)
-    {
-        return $this->getListByQuery(
-            $this->dao->makeSelectHead(), $expires
-        );
-    }
-
-    public function getTotalCount($expires = Cache::DO_NOT_CACHE)
-    {
-        $count = $this->getCustom(
-            $this->dao->makeTotalCountQuery(), $expires
-        );
-
-        return current($count);
-    }
-    //@}
-
-    /// custom list getters
-    //@{
-
-    public function getCustom(
-        SelectQuery $query,
-        $expires = Cache::DO_NOT_CACHE
-    ) {
-        if ($query->getLimit() > 1) {
-            throw new WrongArgumentException(
-                'can not handle non-single row queries'
-            );
-        }
-
-        $db = DBPool::getByDao($this->dao);
-
-        if (
-            ($expires !== Cache::DO_NOT_CACHE)
-            && ($object = $this->getCachedByQuery($query))
-        ) {
-            if ($object === Cache::NOT_FOUND) {
-                throw new CachedObjectNotFoundException();
             }
 
             return $object;
+        }
 
-        } elseif ($object = $db->queryRow($query)) {
-            if ($expires === Cache::DO_NOT_CACHE) {
+        public function getPlainList($expires = Cache::EXPIRES_MEDIUM)
+        {
+            return $this->getListByQuery(
+                $this->dao->makeSelectHead(), $expires
+            );
+        }
+
+        public function getTotalCount($expires = Cache::DO_NOT_CACHE)
+        {
+            $count = $this->getCustom(
+                $this->dao->makeTotalCountQuery(), $expires
+            );
+
+            return current($count);
+        }
+        //@}
+
+        /// custom list getters
+        //@{
+
+        public function getCustom(
+            SelectQuery $query,
+            $expires = Cache::DO_NOT_CACHE
+        )
+        {
+            if ($query->getLimit() > 1) {
+                throw new WrongArgumentException(
+                    'can not handle non-single row queries'
+                );
+            }
+
+            $db = DBPool::getByDao($this->dao);
+
+            if (
+                ($expires !== Cache::DO_NOT_CACHE)
+                && ($object = $this->getCachedByQuery($query))
+            ) {
+                if ($object === Cache::NOT_FOUND) {
+                    throw new CachedObjectNotFoundException();
+                }
+
                 return $object;
+
+            } elseif ($object = $db->queryRow($query)) {
+                if ($expires === Cache::DO_NOT_CACHE) {
+                    return $object;
+                } else {
+                    return $this->cacheByQuery($query, $object, $expires);
+                }
             } else {
-                return $this->cacheByQuery($query, $object, $expires);
-            }
-        } else {
-            throw new ObjectNotFoundException(
-                "zero"
-                . (
-                defined('__LOCAL_DEBUG__')
-                    ?
-                    "for query == "
-                    . $query->toDialectString(
-                        DBPool::me()
-                            ->getByDao($this->dao)
-                            ->getDialect()
-                    )
-                    : null
-                )
-            );
-        }
-    }
-
-    public function getCustomList(
-        SelectQuery $query,
-        $expires = Cache::DO_NOT_CACHE
-    ) {
-        if (
-            ($expires !== Cache::DO_NOT_CACHE)
-            && ($list = $this->getCachedByQuery($query))
-        ) {
-            if ($list === Cache::NOT_FOUND) {
-                throw new CachedObjectNotFoundException();
-            }
-
-            return $list;
-        } elseif ($list = DBPool::getByDao($this->dao)->querySet($query)) {
-            if (Cache::DO_NOT_CACHE === $expires) {
-                return $list;
-            } else {
-                return $this->cacheByQuery($query, $list, $expires);
-            }
-        } else {
-            throw new ObjectNotFoundException(
-                "empty list"
-                . (
-                defined('__LOCAL_DEBUG__')
-                    ?
-                    " for such query - "
-                    . $query->toDialectString(
-                        DBPool::me()
-                            ->getByDao($this->dao)
-                            ->getDialect()
-                    )
-                    : null
-                )
-            );
-        }
-    }
-    //@}
-
-    /// query result getters
-    //@{
-
-    public function getCustomRowList(
-        SelectQuery $query,
-        $expires = Cache::DO_NOT_CACHE
-    ) {
-        if ($query->getFieldsCount() !== 1) {
-            throw new WrongArgumentException(
-                'you should select only one row when using this method'
-            );
-        }
-
-        if (
-            ($expires !== Cache::DO_NOT_CACHE)
-            && ($list = $this->getCachedByQuery($query))
-        ) {
-            if ($list === Cache::NOT_FOUND) {
-                throw new CachedObjectNotFoundException();
-            }
-
-            return $list;
-        } elseif ($list = DBPool::getByDao($this->dao)->queryColumn($query)) {
-            if (Cache::DO_NOT_CACHE === $expires) {
-                return $list;
-            } else {
-                return $this->cacheByQuery($query, $list, $expires);
-            }
-        } else {
-            throw new ObjectNotFoundException(
-                "empty list"
-                . (
-                defined('__LOCAL_DEBUG__')
-                    ?
-                    " for such query - "
-                    . $query->toDialectString(
-                        DBPool::me()
-                            ->getByDao($this->dao)
-                            ->getDialect()
-                    )
-                    : null
-                )
-            );
-        }
-    }
-    //@}
-
-    /// cachers
-    //@{
-
-    public function getQueryResult(
-        SelectQuery $query,
-        $expires = Cache::DO_NOT_CACHE
-    ) {
-        if (
-            ($expires !== Cache::DO_NOT_CACHE)
-            && ($list = $this->getCachedByQuery($query))
-        ) {
-            return $list;
-        } else {
-            $list = $this->fetchList($query);
-
-            $count = clone $query;
-
-            $count =
-                DBPool::getByDao($this->dao)->queryRow(
-                    $count
-                        ->dropFields()
-                        ->dropOrder()
-                        ->limit(null, null)
-                        ->get(
-                            (new SQLFunction('COUNT', '*'))
-                                ->setAlias('count')
-                        )
-                );
-
-            return
-                $this->cacheByQuery(
-                    $query,
-
-                    $list
+                throw new ObjectNotFoundException(
+                    "zero"
+                    . (
+                    defined('__LOCAL_DEBUG__')
                         ?
-                        (new QueryResult())
-                            ->setList($list)
-                            ->setCount($count['count'])
-                            ->setQuery($query)
-                        :
-                        new QueryResult(),
-
-                    $expires
+                        "for query == "
+                        . $query->toDialectString(
+                            DBPool::me()
+                                ->getByDao($this->dao)
+                                ->getDialect()
+                        )
+                        : null
+                    )
                 );
-        }
-    }
-
-    public function dropById($id)
-    {
-        $result = parent::dropById($id);
-
-        $this->dao->uncacheLists();
-
-        return $result;
-    }
-
-    public function uncacheByIds($ids)
-    {
-        if (empty($ids)) {
-            return;
+            }
         }
 
-        $uncacher = $this->getUncacherById(array_shift($ids));
+        public function getCustomList(
+            SelectQuery $query,
+            $expires = Cache::DO_NOT_CACHE
+        )
+        {
+            if (
+                ($expires !== Cache::DO_NOT_CACHE)
+                && ($list = $this->getCachedByQuery($query))
+            ) {
+                if ($list === Cache::NOT_FOUND) {
+                    throw new CachedObjectNotFoundException();
+                }
 
-        foreach ($ids as $id) {
-            $uncacher->merge($this->getUncacherById($id));
-        }
-
-        return $this->registerUncacher($uncacher->uncache());
-    }
-    //@}
-
-    /// erasers
-    //@{
-
-    /**
-     * @return UncacherBase
-     */
-    public function getUncacherById($id)
-    {
-        return new UncacherCommonDaoWorker(
-            $this->className,
-            $this->makeIdKey($id)
-        );
-    }
-    //@}
-
-    /// uncachers
-    //@{
-
-    public function uncacheLists()
-    {
-        // wipes getPlainList result, if any
-        return $this->uncacheByQuery($this->dao->makeSelectHead());
-    }
-
-    protected function cacheById(
-        Identifiable $object,
-        $expires = Cache::EXPIRES_MEDIUM
-    ) {
-        if ($expires !== Cache::DO_NOT_CACHE) {
-
-            Cache::me()
-                ->mark($this->className)
-                ->add(
-                    $this->makeIdKey($object->getId()),
-                    $object,
-                    $expires
+                return $list;
+            } elseif ($list = DBPool::getByDao($this->dao)->querySet($query)) {
+                if (Cache::DO_NOT_CACHE === $expires) {
+                    return $list;
+                } else {
+                    return $this->cacheByQuery($query, $list, $expires);
+                }
+            } else {
+                throw new ObjectNotFoundException(
+                    "empty list"
+                    . (
+                    defined('__LOCAL_DEBUG__')
+                        ?
+                        " for such query - "
+                        . $query->toDialectString(
+                            DBPool::me()
+                                ->getByDao($this->dao)
+                                ->getDialect()
+                        )
+                        : null
+                    )
                 );
+            }
+        }
+        //@}
+
+        /// query result getters
+        //@{
+
+        public function getCustomRowList(
+            SelectQuery $query,
+            $expires = Cache::DO_NOT_CACHE
+        )
+        {
+            if ($query->getFieldsCount() !== 1) {
+                throw new WrongArgumentException(
+                    'you should select only one row when using this method'
+                );
+            }
+
+            if (
+                ($expires !== Cache::DO_NOT_CACHE)
+                && ($list = $this->getCachedByQuery($query))
+            ) {
+                if ($list === Cache::NOT_FOUND) {
+                    throw new CachedObjectNotFoundException();
+                }
+
+                return $list;
+            } elseif ($list = DBPool::getByDao($this->dao)->queryColumn($query)) {
+                if (Cache::DO_NOT_CACHE === $expires) {
+                    return $list;
+                } else {
+                    return $this->cacheByQuery($query, $list, $expires);
+                }
+            } else {
+                throw new ObjectNotFoundException(
+                    "empty list"
+                    . (
+                    defined('__LOCAL_DEBUG__')
+                        ?
+                        " for such query - "
+                        . $query->toDialectString(
+                            DBPool::me()
+                                ->getByDao($this->dao)
+                                ->getDialect()
+                        )
+                        : null
+                    )
+                );
+            }
+        }
+        //@}
+
+        /// cachers
+        //@{
+
+        public function getQueryResult(
+            SelectQuery $query,
+            $expires = Cache::DO_NOT_CACHE
+        )
+        {
+            if (
+                ($expires !== Cache::DO_NOT_CACHE)
+                && ($list = $this->getCachedByQuery($query))
+            ) {
+                return $list;
+            } else {
+                $list = $this->fetchList($query);
+
+                $count = clone $query;
+
+                $count =
+                    DBPool::getByDao($this->dao)->queryRow(
+                        $count
+                            ->dropFields()
+                            ->dropOrder()
+                            ->limit(null, null)
+                            ->get(
+                                (new SQLFunction('COUNT', '*'))
+                                    ->setAlias('count')
+                            )
+                    );
+
+                return
+                    $this->cacheByQuery(
+                        $query,
+
+                        $list
+                            ?
+                            (new QueryResult())
+                                ->setList($list)
+                                ->setCount($count['count'])
+                                ->setQuery($query)
+                            :
+                            new QueryResult(),
+
+                        $expires
+                    );
+            }
         }
 
-        return $object;
-    }
+        public function dropById($id)
+        {
+            $result = parent::dropById($id);
 
-    // quite useless here
+            $this->dao->uncacheLists();
 
-    protected function cacheListByQuery(
-        SelectQuery $query,
-        /* array || Cache::NOT_FOUND */
-        $array
-    ) {
-        throw new UnimplementedFeatureException();
+            return $result;
+        }
+
+        public function uncacheByIds($ids)
+        {
+            if (empty($ids)) {
+                return;
+            }
+
+            $uncacher = $this->getUncacherById(array_shift($ids));
+
+            foreach ($ids as $id) {
+                $uncacher->merge($this->getUncacherById($id));
+            }
+
+            return $this->registerUncacher($uncacher->uncache());
+        }
+        //@}
+
+        /// erasers
+        //@{
+
+        /**
+         * @return UncacherBase
+         */
+        public function getUncacherById($id)
+        {
+            return new UncacherCommonDaoWorker(
+                $this->className,
+                $this->makeIdKey($id)
+            );
+        }
+        //@}
+
+        /// uncachers
+        //@{
+
+        public function uncacheLists()
+        {
+            // wipes getPlainList result, if any
+            return $this->uncacheByQuery($this->dao->makeSelectHead());
+        }
+
+        protected function cacheById(
+            Identifiable $object,
+            $expires = Cache::EXPIRES_MEDIUM
+        )
+        {
+            if ($expires !== Cache::DO_NOT_CACHE) {
+
+                Cache::me()
+                    ->mark($this->className)
+                    ->add(
+                        $this->makeIdKey($object->getId()),
+                        $object,
+                        $expires
+                    );
+            }
+
+            return $object;
+        }
+
+        // quite useless here
+
+        protected function cacheListByQuery(
+            SelectQuery $query,
+            /* array || Cache::NOT_FOUND */
+            $array
+        )
+        {
+            throw new UnimplementedFeatureException();
+        }
+        //@}
     }
-    //@}
 }

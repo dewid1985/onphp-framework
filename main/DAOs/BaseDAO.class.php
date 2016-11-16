@@ -8,68 +8,69 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup DAOs
- **/
-interface BaseDAO
-{
-    /// single object getters
-    //@{
-    public function getById($id);
-
-    public function getByLogic(LogicalObject $logic);
-
-    public function getByQuery(SelectQuery $query);
-
-    public function getCustom(SelectQuery $query);
-    //@}
-
-    /// object's list getters
-    //@{
-    public function getListByIds(array $ids);
-
-    public function getListByQuery(SelectQuery $query);
-
-    public function getListByLogic(LogicalObject $logic);
-
-    public function getPlainList();
-    //@}
-
-    /// custom list getters
-    //@{
-    public function getCustomList(SelectQuery $query);
-
-    public function getCustomRowList(SelectQuery $query);
-    //@}
-
-    /// query result getter
-    //@{
-    public function getQueryResult(SelectQuery $query);
-    //@}
-
-    /// erasers
-    //@{
-    public function drop(Identifiable $object);
-
-    public function dropById($id);
-
-    public function dropByIds(array $ids);
-    //@}
-
-    /// uncachers
-    //@{
-    public function uncacheById($id);
-
+namespace OnPhp {
     /**
-     * @return UncacherBase
-     */
-    public function getUncacherById($id);
+     * @ingroup DAOs
+     **/
+    interface BaseDAO
+    {
+        /// single object getters
+        //@{
+        public function getById($id);
 
-    public function uncacheByIds($ids);
+        public function getByLogic(LogicalObject $logic);
 
-    public function uncacheLists();
-    //@}
+        public function getByQuery(SelectQuery $query);
+
+        public function getCustom(SelectQuery $query);
+        //@}
+
+        /// object's list getters
+        //@{
+        public function getListByIds(array $ids);
+
+        public function getListByQuery(SelectQuery $query);
+
+        public function getListByLogic(LogicalObject $logic);
+
+        public function getPlainList();
+        //@}
+
+        /// custom list getters
+        //@{
+        public function getCustomList(SelectQuery $query);
+
+        public function getCustomRowList(SelectQuery $query);
+        //@}
+
+        /// query result getter
+        //@{
+        public function getQueryResult(SelectQuery $query);
+        //@}
+
+        /// erasers
+        //@{
+        public function drop(Identifiable $object);
+
+        public function dropById($id);
+
+        public function dropByIds(array $ids);
+        //@}
+
+        /// uncachers
+        //@{
+        public function uncacheById($id);
+
+        /**
+         * @return UncacherBase
+         */
+        public function getUncacherById($id);
+
+        public function uncacheByIds($ids);
+
+        public function uncacheLists();
+        //@}
+    }
 }
 
 

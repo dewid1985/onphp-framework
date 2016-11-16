@@ -8,83 +8,86 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class Model implements SimplifiedArrayAccess
-{
-    private $vars = [];
-
+namespace OnPhp {
     /**
-     * @return Model
-     **/
-    public function clean()
+     * Class Model
+     * @ingroup Flow
+     * @package OnPhp
+     */
+    class Model implements SimplifiedArrayAccess
     {
-        $this->vars = [];
+        private $vars = [];
 
-        return $this;
-    }
+        /**
+         * @return Model
+         **/
+        public function clean()
+        {
+            $this->vars = [];
 
-    public function get($name)
-    {
-        if (!$this->has($name))
-            throw new MissingElementException('Unknown var "' . $name . '"');
-
-        return $this->vars[$name];
-    }
-
-    public function has($name)
-    {
-        return isset($this->vars[$name]);
-    }
-
-    /**
-     * @return Model
-     **/
-    public function drop($name)
-    {
-        unset($this->vars[$name]);
-
-        return $this;
-    }
-
-    /**
-     * @return Model
-     **/
-    public function merge(Model $model, $overwrite = false)
-    {
-        if (!$model->isEmpty()) {
-
-            $vars = $model->getList();
-            foreach ($vars as $name => $value) {
-                if (!$overwrite && $this->has($name))
-                    continue;
-                $this->set($name, $value);
-            }
-
+            return $this;
         }
 
-        return $this;
-    }
+        public function get($name)
+        {
+            if (!$this->has($name))
+                throw new MissingElementException('Unknown var "' . $name . '"');
 
-    public function isEmpty()
-    {
-        return ($this->vars === []);
-    }
+            return $this->vars[$name];
+        }
 
-    public function getList()
-    {
-        return $this->vars;
-    }
+        public function has($name)
+        {
+            return isset($this->vars[$name]);
+        }
 
-    /**
-     * @return Model
-     **/
-    public function set($name, $var)
-    {
-        $this->vars[$name] = $var;
+        /**
+         * @return Model
+         **/
+        public function drop($name)
+        {
+            unset($this->vars[$name]);
 
-        return $this;
+            return $this;
+        }
+
+        /**
+         * @return Model
+         **/
+        public function merge(Model $model, $overwrite = false)
+        {
+            if (!$model->isEmpty()) {
+
+                $vars = $model->getList();
+                foreach ($vars as $name => $value) {
+                    if (!$overwrite && $this->has($name))
+                        continue;
+                    $this->set($name, $value);
+                }
+
+            }
+
+            return $this;
+        }
+
+        public function isEmpty()
+        {
+            return ($this->vars === []);
+        }
+
+        public function getList()
+        {
+            return $this->vars;
+        }
+
+        /**
+         * @return Model
+         **/
+        public function set($name, $var)
+        {
+            $this->vars[$name] = $var;
+
+            return $this;
+        }
     }
 }

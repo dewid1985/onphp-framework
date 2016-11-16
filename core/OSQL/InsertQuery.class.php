@@ -8,162 +8,163 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class InsertQuery extends InsertOrUpdateQuery
-{
+namespace OnPhp {
     /**
-     * @var SelectQuery
+     * @ingroup OSQL
      **/
-    protected $select = null;
-
-    /**
-     * Just an alias to behave like UpdateQuery.
-     *
-     * @param $table
-     * @return InsertQuery
-     */
-    public function setTable($table) : InsertQuery
+    class InsertQuery extends InsertOrUpdateQuery
     {
-        return $this->into($table);
-    }
+        /**
+         * @var SelectQuery
+         **/
+        protected $select = null;
 
-    /**
-     * @param $table
-     * @return InsertQuery
-     */
-    public function into($table) : InsertQuery
-    {
-        $this->table = $table;
-
-        return $this;
-    }
-
-    /**
-     * @param SelectQuery $select
-     * @return InsertQuery
-     */
-    public function setSelect(SelectQuery $select) : InsertQuery
-    {
-        $this->select = $select;
-
-        return $this;
-    }
-
-    /**
-     * @param Dialect $dialect
-     * @return string
-     * @throws WrongStateException
-     */
-    public function toDialectString(Dialect $dialect) : string
-    {
-        $query = 'INSERT INTO ' . $dialect->quoteTable($this->table) . ' ';
-
-        if ($this->select === null) {
-            $query = $this->toDialectStringValues($query, $dialect);
-        } else {
-            $query = $this->toDialectStringSelect($query, $dialect);
+        /**
+         * Just an alias to behave like UpdateQuery.
+         *
+         * @param $table
+         * @return InsertQuery
+         */
+        public function setTable($table) : InsertQuery
+        {
+            return $this->into($table);
         }
 
-        $query .= parent::toDialectString($dialect);
+        /**
+         * @param $table
+         * @return InsertQuery
+         */
+        public function into($table) : InsertQuery
+        {
+            $this->table = $table;
 
-        return $query;
-    }
+            return $this;
+        }
 
-    /**
-     * @param $query
-     * @param Dialect $dialect
-     * @return string
-     * @throws WrongStateException
-     */
-    protected function toDialectStringValues($query, Dialect $dialect) : string
-    {
-        $fields = [];
-        $values = [];
+        /**
+         * @param SelectQuery $select
+         * @return InsertQuery
+         */
+        public function setSelect(SelectQuery $select) : InsertQuery
+        {
+            $this->select = $select;
 
-        foreach ($this->fields as $var => $val) {
-            $fields[] = $dialect->quoteField($var);
+            return $this;
+        }
 
-            if ($val === null) {
-                $values[] = $dialect->literalToString(Dialect::LITERAL_NULL);
-            } elseif (true === $val) {
-                $values[] = $dialect->literalToString(Dialect::LITERAL_TRUE);
-            } elseif (false === $val) {
-                $values[] = $dialect->literalToString(Dialect::LITERAL_FALSE);
-            } elseif ($val instanceof DialectString) {
-                $values[] = $val->toDialectString($dialect);
+        /**
+         * @param Dialect $dialect
+         * @return string
+         * @throws WrongStateException
+         */
+        public function toDialectString(Dialect $dialect) : string
+        {
+            $query = 'INSERT INTO ' . $dialect->quoteTable($this->table) . ' ';
+
+            if ($this->select === null) {
+                $query = $this->toDialectStringValues($query, $dialect);
             } else {
-                $values[] = $dialect->quoteValue($val);
+                $query = $this->toDialectStringSelect($query, $dialect);
             }
+
+            $query .= parent::toDialectString($dialect);
+
+            return $query;
         }
 
-        if (!$fields || !$values) {
-            throw new WrongStateException('what should i insert?');
+        /**
+         * @param $query
+         * @param Dialect $dialect
+         * @return string
+         * @throws WrongStateException
+         */
+        protected function toDialectStringValues($query, Dialect $dialect) : string
+        {
+            $fields = [];
+            $values = [];
+
+            foreach ($this->fields as $var => $val) {
+                $fields[] = $dialect->quoteField($var);
+
+                if ($val === null) {
+                    $values[] = $dialect->literalToString(Dialect::LITERAL_NULL);
+                } elseif (true === $val) {
+                    $values[] = $dialect->literalToString(Dialect::LITERAL_TRUE);
+                } elseif (false === $val) {
+                    $values[] = $dialect->literalToString(Dialect::LITERAL_FALSE);
+                } elseif ($val instanceof DialectString) {
+                    $values[] = $val->toDialectString($dialect);
+                } else {
+                    $values[] = $dialect->quoteValue($val);
+                }
+            }
+
+            if (!$fields || !$values) {
+                throw new WrongStateException('what should i insert?');
+            }
+
+            $fields = implode(', ', $fields);
+            $values = implode(', ', $values);
+
+            return $query . "({$fields}) VALUES ({$values})";
         }
 
-        $fields = implode(', ', $fields);
-        $values = implode(', ', $values);
+        /**
+         * @param $query
+         * @param Dialect $dialect
+         * @return string
+         * @throws WrongStateException
+         */
+        protected function toDialectStringSelect($query, Dialect $dialect) : string
+        {
+            $fields = [];
 
-        return $query . "({$fields}) VALUES ({$values})";
-    }
+            foreach ($this->fields as $var => $val) {
+                $fields[] = $dialect->quoteField($var);
+            }
 
-    /**
-     * @param $query
-     * @param Dialect $dialect
-     * @return string
-     * @throws WrongStateException
-     */
-    protected function toDialectStringSelect($query, Dialect $dialect) : string
-    {
-        $fields = [];
+            if (!$fields) {
+                throw new WrongStateException('what should i insert?');
+            }
+            if ($this->select->getFieldsCount() != count($fields)) {
+                throw new WrongStateException('count of select fields must be equal with count of insert fields');
+            }
 
-        foreach ($this->fields as $var => $val) {
-            $fields[] = $dialect->quoteField($var);
+            $fields = implode(', ', $fields);
+
+            return $query . "({$fields}) ("
+            . $this->select->toDialectString($dialect) . ")";
         }
 
-        if (!$fields) {
-            throw new WrongStateException('what should i insert?');
+        /**
+         * @param LogicalObject $exp
+         * @param null $logic
+         * @return QuerySkeleton|void
+         * @throws UnsupportedMethodException
+         */
+        public function where(LogicalObject $exp, $logic = null)
+        {
+            throw new UnsupportedMethodException();
         }
-        if ($this->select->getFieldsCount() != count($fields)) {
-            throw new WrongStateException('count of select fields must be equal with count of insert fields');
+
+        /**
+         * @param LogicalObject $exp
+         * @return QuerySkeleton|void
+         * @throws UnsupportedMethodException
+         */
+        public function andWhere(LogicalObject $exp)
+        {
+            throw new UnsupportedMethodException();
         }
 
-        $fields = implode(', ', $fields);
-
-        return $query . "({$fields}) ("
-        . $this->select->toDialectString($dialect) . ")";
-    }
-
-    /**
-     * @param LogicalObject $exp
-     * @param null $logic
-     * @return QuerySkeleton|void
-     * @throws UnsupportedMethodException
-     */
-    public function where(LogicalObject $exp, $logic = null)
-    {
-        throw new UnsupportedMethodException();
-    }
-
-    /**
-     * @param LogicalObject $exp
-     * @return QuerySkeleton|void
-     * @throws UnsupportedMethodException
-     */
-    public function andWhere(LogicalObject $exp)
-    {
-        throw new UnsupportedMethodException();
-    }
-
-    /**
-     * @param LogicalObject $exp
-     * @return QuerySkeleton|void
-     * @throws UnsupportedMethodException
-     */
-    public function orWhere(LogicalObject $exp)
-    {
-        throw new UnsupportedMethodException();
+        /**
+         * @param LogicalObject $exp
+         * @return QuerySkeleton|void
+         * @throws UnsupportedMethodException
+         */
+        public function orWhere(LogicalObject $exp)
+        {
+            throw new UnsupportedMethodException();
+        }
     }
 }

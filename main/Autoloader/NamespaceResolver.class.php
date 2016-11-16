@@ -9,51 +9,53 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface NamespaceResolver
-{
-    const DS = DIRECTORY_SEPARATOR;
+namespace OnPhp {
+    interface NamespaceResolver
+    {
+        const DS = DIRECTORY_SEPARATOR;
 
-    /**
-     * @param string $path
-     * @return NamespaceResolverOnPHP
-     */
-    public function addPath($path, $namespace = null);
+        /**
+         * @param string $path
+         * @return NamespaceResolverOnPHP
+         */
+        public function addPath($path, $namespace = null);
 
-    /**
-     * @param array $pathList
-     * @param null $namespace
-     * @return mixed
-     */
-    public function addPaths(array $pathList, $namespace = null);
+        /**
+         * @param array $pathList
+         * @param null $namespace
+         * @return mixed
+         */
+        public function addPaths(array $pathList, $namespace = null);
 
-    /**
-     * @return array
-     */
-    public function getPaths();
+        /**
+         * @return array
+         */
+        public function getPaths();
 
-    /**
-     * @param string $classExtension
-     * @return NamespaceResolverOnPHP
-     */
-    public function setClassExtension($classExtension);
+        /**
+         * @param string $classExtension
+         * @return NamespaceResolverOnPHP
+         */
+        public function setClassExtension($classExtension);
 
-    /**
-     * @return string
-     */
-    public function getClassExtension();
+        /**
+         * @return string
+         */
+        public function getClassExtension();
 
-    /**
-     * Return path to className or null if path not found
-     *
-     * @param string $className
-     * @return string
-     */
-    public function getClassPath($className);
+        /**
+         * Return path to className or null if path not found
+         *
+         * @param string $className
+         * @return string
+         */
+        public function getClassPath($className);
 
-    /**
-     * Return special array numeric keys contains directories paths
-     * and other keys (className keys) contains keys of directories
-     * @return array
-     */
-    public function getClassPathList();
+        /**
+         * Return special array numeric keys contains directories paths
+         * and other keys (className keys) contains keys of directories
+         * @return array
+         */
+        public function getClassPathList();
+    }
 }

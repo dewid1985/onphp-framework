@@ -8,88 +8,89 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class StringReplaceFilter implements Filtrator
-{
-    private $search = null;
-    private $replace = null;
-
-    private $count = null;
-
+namespace OnPhp {
     /**
-     * StringReplaceFilter constructor.
-     * @param null $search
-     * @param null $replace
-     */
-    public function __construct($search = null, $replace = null)
-    {
-        $this->search = $search;
-        $this->replace = $replace;
-    }
-
-    /**
-     * @return null
-     */
-    public function getSearch()
-    {
-        return $this->search;
-    }
-
-    /**
-     * @return StringReplaceFilter
+     * @ingroup Filters
      **/
-    public function setSearch($search)
+    class StringReplaceFilter implements Filtrator
     {
-        $this->search = $search;
+        private $search = null;
+        private $replace = null;
 
-        return $this;
-    }
+        private $count = null;
 
-    /**
-     * @return null
-     */
-    public function getReplace()
-    {
-        return $this->replace;
-    }
-
-    /**
-     * @return StringReplaceFilter
-     **/
-    public function setReplace($replace)
-    {
-        $this->replace = $replace;
-
-        return $this;
-    }
-
-    /**
-     * @return null
-     */
-    public function getCount()
-    {
-        return $this->count;
-    }
-
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function apply($value)
-    {
-        if ($this->search === $this->replace) {
-            return $value;
+        /**
+         * StringReplaceFilter constructor.
+         * @param null $search
+         * @param null $replace
+         */
+        public function __construct($search = null, $replace = null)
+        {
+            $this->search = $search;
+            $this->replace = $replace;
         }
 
-        return
-            str_replace(
-                $this->search,
-                $this->replace,
-                $value,
-                $this->count
-            );
+        /**
+         * @return null
+         */
+        public function getSearch()
+        {
+            return $this->search;
+        }
+
+        /**
+         * @return StringReplaceFilter
+         **/
+        public function setSearch($search)
+        {
+            $this->search = $search;
+
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function getReplace()
+        {
+            return $this->replace;
+        }
+
+        /**
+         * @return StringReplaceFilter
+         **/
+        public function setReplace($replace)
+        {
+            $this->replace = $replace;
+
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function getCount()
+        {
+            return $this->count;
+        }
+
+        /**
+         * @param $value
+         * @return mixed
+         */
+        public function apply($value)
+        {
+            if ($this->search === $this->replace) {
+                return $value;
+            }
+
+            return
+                str_replace(
+                    $this->search,
+                    $this->replace,
+                    $value,
+                    $this->count
+                );
+        }
     }
 }

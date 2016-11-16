@@ -8,75 +8,76 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Factory for OSQL's queries.
- *
- * @ingroup OSQL
- *
- * @see http://onphp.org/examples.OSQL.en.html
- **/
-class OSQL
-{
+namespace OnPhp {
     /**
+     * Factory for OSQL's queries.
      *
-     * @return SelectQuery
+     * @ingroup OSQL
+     *
+     * @see http://onphp.org/examples.OSQL.en.html
      **/
-    public function select()
+    class OSQL
     {
-        return new SelectQuery();
-    }
+        /**
+         *
+         * @return SelectQuery
+         **/
+        public function select()
+        {
+            return new SelectQuery();
+        }
 
-    /**
-     * @return InsertQuery
-     **/
-    public function insert()
-    {
-        return new InsertQuery();
-    }
+        /**
+         * @return InsertQuery
+         **/
+        public function insert()
+        {
+            return new InsertQuery();
+        }
 
-    /**
-     * @param null $table
-     * @return UpdateQuery
-     */
-    public function update($table = null)
-    {
-        return new UpdateQuery($table);
-    }
+        /**
+         * @param null $table
+         * @return UpdateQuery
+         */
+        public function update($table = null)
+        {
+            return new UpdateQuery($table);
+        }
 
-    /**
-     * @return DeleteQuery
-     */
-    public function delete()
-    {
-        return new DeleteQuery();
-    }
+        /**
+         * @return DeleteQuery
+         */
+        public function delete()
+        {
+            return new DeleteQuery();
+        }
 
-    /**
-     * @param null $whom
-     * @return TruncateQuery
-     */
-    public function truncate($whom = null)
-    {
-        return new TruncateQuery($whom);
-    }
+        /**
+         * @param null $whom
+         * @return TruncateQuery
+         */
+        public function truncate($whom = null)
+        {
+            return new TruncateQuery($whom);
+        }
 
-    /**
-     * @param DBTable $table
-     * @return CreateTableQuery
-     */
-    public function createTable(DBTable $table)
-    {
-        return new CreateTableQuery($table);
-    }
+        /**
+         * @param DBTable $table
+         * @return CreateTableQuery
+         */
+        public function createTable(DBTable $table)
+        {
+            return new CreateTableQuery($table);
+        }
 
-    /**
-     * @param $name
-     * @param bool $cascade
-     * @return DropTableQuery
-     */
-    public function dropTable($name, $cascade = false)
-    {
-        return new DropTableQuery($name, $cascade);
+        /**
+         * @param $name
+         * @param bool $cascade
+         * @return DropTableQuery
+         */
+        public function dropTable($name, $cascade = false)
+        {
+            return new DropTableQuery($name, $cascade);
+        }
     }
 }

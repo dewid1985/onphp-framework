@@ -8,51 +8,52 @@
  *   License, or (at your option) any later version.                         *
  *                                                                           *
  *****************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveEnumerationByValue extends PrimitiveEnumeration
-{
+namespace OnPhp {
     /**
-     * @param $scope
-     * @return bool|null
-     * @throws WrongStateException
-     */
-    public function import($scope) : bool
+     * @ingroup Primitives
+     **/
+    class PrimitiveEnumerationByValue extends PrimitiveEnumeration
     {
-        if (!$this->className) {
-            throw new WrongStateException(
-                "no class defined for PrimitiveEnumeration '{$this->name}'"
-            );
-        }
-
-        if (isset($scope[$this->name])) {
-            $scopedValue = urldecode($scope[$this->name]);
-
-            $anyId =
-                ClassUtils::callStaticMethod($this->className . '::getAnyId');
-
-            $object = new $this->className($anyId);
-
-            $names = $object->getNameList();
-
-            foreach ($names as $key => $value) {
-                if ($value == $scopedValue) {
-                    try {
-                        $this->value = new $this->className($key);
-                    } catch (MissingElementException $e) {
-                        $this->value = null;
-                        return false;
-                    }
-
-                    return true;
-                }
+        /**
+         * @param $scope
+         * @return bool|null
+         * @throws WrongStateException
+         */
+        public function import($scope) : bool
+        {
+            if (!$this->className) {
+                throw new WrongStateException(
+                    "no class defined for PrimitiveEnumeration '{$this->name}'"
+                );
             }
 
-            return false;
-        }
+            if (isset($scope[$this->name])) {
+                $scopedValue = urldecode($scope[$this->name]);
 
-        return null;
+                $anyId =
+                    ClassUtils::callStaticMethod($this->className . '::getAnyId');
+
+                $object = new $this->className($anyId);
+
+                $names = $object->getNameList();
+
+                foreach ($names as $key => $value) {
+                    if ($value == $scopedValue) {
+                        try {
+                            $this->value = new $this->className($key);
+                        } catch (MissingElementException $e) {
+                            $this->value = null;
+                            return false;
+                        }
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return null;
+        }
     }
 }

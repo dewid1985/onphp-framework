@@ -9,29 +9,31 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class DirectoryMutator extends PrototypedSetter
-{
-    private $getter = null;
-
-    public function __construct(EntityProto $proto, &$object)
+namespace OnPhp {
+    abstract class DirectoryMutator extends PrototypedSetter
     {
-        Assert::isTrue(
-            is_dir($object) && is_writable($object),
-            'object must be a writeble directory'
-        );
+        private $getter = null;
 
-        return parent::__construct($proto, $object);
-    }
+        public function __construct(EntityProto $proto, &$object)
+        {
+            Assert::isTrue(
+                is_dir($object) && is_writable($object),
+                'object must be a writeble directory'
+            );
 
-    /**
-     * @return FormGetter
-     **/
-    public function getGetter()
-    {
-        if (!$this->getter) {
-            $this->getter = new DirectoryGetter($this->proto, $this->object);
+            return parent::__construct($proto, $object);
         }
 
-        return $this->getter;
+        /**
+         * @return FormGetter
+         **/
+        public function getGetter()
+        {
+            if (!$this->getter) {
+                $this->getter = new DirectoryGetter($this->proto, $this->object);
+            }
+
+            return $this->getter;
+        }
     }
 }

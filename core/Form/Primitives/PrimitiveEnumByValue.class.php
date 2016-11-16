@@ -8,46 +8,47 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveEnumByValue extends PrimitiveEnum
-{
+namespace OnPhp {
     /**
-     * @param $scope
-     * @return bool|null
-     * @throws WrongStateException
-     */
-    public function import($scope)
+     * @ingroup Primitives
+     **/
+    class PrimitiveEnumByValue extends PrimitiveEnum
     {
-        if (!$this->className) {
-            throw new WrongStateException(
-                "no class defined for PrimitiveEnum '{$this->name}'"
-            );
-        }
-
-        if (isset($scope[$this->name])) {
-            $scopedValue = urldecode($scope[$this->name]);
-
-            $names = ClassUtils::callStaticMethod($this->className . '::getNameList');
-
-            foreach ($names as $key => $value) {
-                if ($value == $scopedValue) {
-                    try {
-                        $this->value = new $this->className($key);
-                    } catch (MissingElementException $e) {
-                        $this->value = null;
-                        return false;
-                    }
-
-                    return true;
-                }
+        /**
+         * @param $scope
+         * @return bool|null
+         * @throws WrongStateException
+         */
+        public function import($scope)
+        {
+            if (!$this->className) {
+                throw new WrongStateException(
+                    "no class defined for PrimitiveEnum '{$this->name}'"
+                );
             }
 
-            return false;
-        }
+            if (isset($scope[$this->name])) {
+                $scopedValue = urldecode($scope[$this->name]);
 
-        return null;
+                $names = ClassUtils::callStaticMethod($this->className . '::getNameList');
+
+                foreach ($names as $key => $value) {
+                    if ($value == $scopedValue) {
+                        try {
+                            $this->value = new $this->className($key);
+                        } catch (MissingElementException $e) {
+                            $this->value = null;
+                            return false;
+                        }
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return null;
+        }
     }
 }

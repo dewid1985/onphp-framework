@@ -8,29 +8,32 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class NullController implements Controller
-{
-    private $model = null;
-
-    public function __construct(Model $model = null)
-    {
-        $this->model = $model;
-    }
-
+namespace OnPhp {
     /**
-     * @return ModelAndView
-     **/
-    public function handleRequest(HttpRequest $request)
+     * Class NullController
+     * @ingroup Flow
+     * @package OnPhp
+     */
+    class NullController implements Controller
     {
-        $result = new ModelAndView();
+        private $model = null;
 
-        if ($this->model)
-            $result->setModel($this->model);
+        public function __construct(Model $model = null)
+        {
+            $this->model = $model;
+        }
 
-        return $result;
+        /**
+         * @return ModelAndView
+         **/
+        public function handleRequest(HttpRequest $request)
+        {
+            $result = new ModelAndView();
+
+            if ($this->model)
+                $result->setModel($this->model);
+
+            return $result;
+        }
     }
 }

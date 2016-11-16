@@ -8,38 +8,41 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Feed
- **/
-class AtomFeedFormat extends FeedFormat
-{
+namespace OnPhp {
     /**
-     * @return AtomFeedFormat
-     **/
-    public static function me()
+     * Class AtomFeedFormat
+     * @ingroup Feed
+     * @package OnPhp
+     */
+    class AtomFeedFormat extends FeedFormat
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return AtomFeedFormat
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @return AtomChannelWorker
-     **/
-    public function getChannelWorker()
-    {
-        return AtomChannelWorker::me();
-    }
+        /**
+         * @return AtomChannelWorker
+         **/
+        public function getChannelWorker()
+        {
+            return AtomChannelWorker::me();
+        }
 
-    /**
-     * @return AtomItemWorker
-     **/
-    public function getItemWorker()
-    {
-        return AtomItemWorker::me();
-    }
+        /**
+         * @return AtomItemWorker
+         **/
+        public function getItemWorker()
+        {
+            return AtomItemWorker::me();
+        }
 
-    public function isAcceptable(SimpleXMLElement $xmlFeed)
-    {
-        return ($xmlFeed->getName() == 'feed');
+        public function isAcceptable(SimpleXMLElement $xmlFeed)
+        {
+            return ($xmlFeed->getName() == 'feed');
+        }
     }
 }

@@ -8,12 +8,13 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- * @ingroup Module
- **/
-interface SQLTableName extends DialectString
-{
-    public function getTable();
+namespace OnPhp {
+    /**
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    interface SQLTableName extends DialectString
+    {
+        public function getTable();
+    }
 }

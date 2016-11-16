@@ -8,87 +8,88 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveHttpUrl extends PrimitiveString
-{
+namespace OnPhp {
     /**
-     * @var bool
-     */
-    private $checkPrivilegedPorts = false;
-
-    /**
-     * @param bool $check
-     * @return PrimitiveHttpUrl
-     */
-    public function setCheckPrivilegedPorts($check = true) : PrimitiveHttpUrl
+     * @ingroup Primitives
+     **/
+    class PrimitiveHttpUrl extends PrimitiveString
     {
-        $this->checkPrivilegedPorts = $check ? true : false;
+        /**
+         * @var bool
+         */
+        private $checkPrivilegedPorts = false;
 
-        return $this;
-    }
+        /**
+         * @param bool $check
+         * @return PrimitiveHttpUrl
+         */
+        public function setCheckPrivilegedPorts($check = true) : PrimitiveHttpUrl
+        {
+            $this->checkPrivilegedPorts = $check ? true : false;
 
-    /**
-     * @param $value
-     * @return bool|null
-     */
-    public function importValue($value)
-    {
-        if ($value instanceof HttpUrl) {
-
-            return
-                $this->import(
-                    [$this->getName() => $value->toString()]
-                );
-        } elseif (is_scalar($value)) {
-            return parent::importValue($value);
+            return $this;
         }
 
-        return parent::importValue(null);
-    }
+        /**
+         * @param $value
+         * @return bool|null
+         */
+        public function importValue($value)
+        {
+            if ($value instanceof HttpUrl) {
 
-    /**
-     * @param $scope
-     * @return bool|null
-     */
-    public function import($scope)
-    {
-        if (!$result = parent::import($scope)) {
-            return $result;
+                return
+                    $this->import(
+                        [$this->getName() => $value->toString()]
+                    );
+            } elseif (is_scalar($value)) {
+                return parent::importValue($value);
+            }
+
+            return parent::importValue(null);
         }
 
-        try {
-            $this->value =
-                (new HttpUrl())
-                    ->parse($this->value)
-                    ->setCheckPrivilegedPorts($this->checkPrivilegedPorts);
-        } catch (WrongArgumentException $e) {
-            $this->value = null;
+        /**
+         * @param $scope
+         * @return bool|null
+         */
+        public function import($scope)
+        {
+            if (!$result = parent::import($scope)) {
+                return $result;
+            }
 
-            return false;
+            try {
+                $this->value =
+                    (new HttpUrl())
+                        ->parse($this->value)
+                        ->setCheckPrivilegedPorts($this->checkPrivilegedPorts);
+            } catch (WrongArgumentException $e) {
+                $this->value = null;
+
+                return false;
+            }
+
+            if (!$this->value->isValid()) {
+                $this->value = null;
+                return false;
+            }
+
+            $this->value->normalize();
+
+            return true;
         }
 
-        if (!$this->value->isValid()) {
-            $this->value = null;
-            return false;
+        /**
+         * @return null|string
+         */
+        public function exportValue()
+        {
+            if (!$this->value) {
+                return null;
+            }
+
+            return $this->value->toString();
         }
-
-        $this->value->normalize();
-
-        return true;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function exportValue()
-    {
-        if (!$this->value) {
-            return null;
-        }
-
-        return $this->value->toString();
     }
 }

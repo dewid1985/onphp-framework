@@ -8,56 +8,56 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Html
- * @ingroup Module
- **/
-class Cdata extends SgmlToken
-{
-    private $data = null;
-
-    private $strict = false;
-
-    public function getData()
+namespace OnPhp {
+    /**
+     * @ingroup Html
+     * @ingroup Module
+     **/
+    class Cdata extends SgmlToken
     {
-        if ($this->strict) {
-            return '<![CDATA[' . $this->data . ']]>';
-        } else {
+        private $data = null;
+
+        private $strict = false;
+
+        public function getData()
+        {
+            if ($this->strict) {
+                return '<![CDATA[' . $this->data . ']]>';
+            } else {
+                return $this->data;
+            }
+        }
+
+        /**
+         * @return Cdata
+         **/
+        public function setData($data)
+        {
+            $this->data = $data;
+
+            return $this;
+        }
+
+        public function getRawData()
+        {
             return $this->data;
         }
-    }
 
-    /**
-     * @return Cdata
-     **/
-    public function setData($data)
-    {
-        $this->data = $data;
+        public function isStrict()
+        {
+            return $this->strict;
+        }
 
-        return $this;
-    }
+        /**
+         * @return Cdata
+         **/
+        public function setStrict($isStrict)
+        {
+            Assert::isBoolean($isStrict);
 
-    public function getRawData()
-    {
-        return $this->data;
-    }
+            $this->strict = $isStrict;
 
-    public function isStrict()
-    {
-        return $this->strict;
-    }
-
-    /**
-     * @return Cdata
-     **/
-    public function setStrict($isStrict)
-    {
-        Assert::isBoolean($isStrict);
-
-        $this->strict = $isStrict;
-
-        return $this;
+            return $this;
+        }
     }
 }
-

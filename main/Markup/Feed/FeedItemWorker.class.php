@@ -8,14 +8,17 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * Interface FeedItemWorker
+     * @ingroup Feed
+     * @package OnPhp
+     */
+    interface FeedItemWorker extends Instantiatable
+    {
+        public function makeItems(SimpleXMLElement $xmlFeed);
 
-/**
- * @ingroup Feed
- **/
-interface FeedItemWorker extends Instantiatable
-{
-    public function makeItems(SimpleXMLElement $xmlFeed);
-
-    public function toXml(FeedItem $item);
+        public function toXml(FeedItem $item);
+    }
 }
 

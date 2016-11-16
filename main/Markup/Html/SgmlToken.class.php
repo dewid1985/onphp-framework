@@ -8,28 +8,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Html
- * @ingroup Module
- **/
-class SgmlToken
-{
-    private $value = null;
-
-    public function getValue()
-    {
-        return $this->value;
-    }
-
+namespace OnPhp {
     /**
-     * @return SgmlToken
+     * @ingroup Html
+     * @ingroup Module
      **/
-    public function setValue($value)
+    class SgmlToken
     {
-        $this->value = $value;
+        private $value = null;
 
-        return $this;
+        public function getValue()
+        {
+            return $this->value;
+        }
+
+        /**
+         * @return SgmlToken
+         **/
+        public function setValue($value)
+        {
+            $this->value = $value;
+
+            return $this;
+        }
     }
 }
-

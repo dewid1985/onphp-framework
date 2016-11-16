@@ -9,26 +9,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class FormMutator extends PrototypedSetter
-{
-    private $getter = null;
-
-    public function __construct(EntityProto $proto, &$object)
+namespace OnPhp {
+    abstract class FormMutator extends PrototypedSetter
     {
-        Assert::isInstance($object, 'Form');
+        private $getter = null;
 
-        return parent::__construct($proto, $object);
-    }
+        public function __construct(EntityProto $proto, &$object)
+        {
+            Assert::isInstance($object, 'Form');
 
-    /**
-     * @return FormGetter
-     **/
-    public function getGetter()
-    {
-        if (!$this->getter) {
-            $this->getter = new FormGetter($this->proto, $this->object);
+            return parent::__construct($proto, $object);
         }
 
-        return $this->getter;
+        /**
+         * @return FormGetter
+         **/
+        public function getGetter()
+        {
+            if (!$this->getter) {
+                $this->getter = new FormGetter($this->proto, $this->object);
+            }
+
+            return $this->getter;
+        }
     }
 }

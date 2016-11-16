@@ -13,37 +13,39 @@
  * Abstract class to scan directories,
  *    see NamespaceDirScanerPSR0 and NamespaceDirScanerOnPHP
  */
-abstract class NamespaceDirScaner
-{
-    protected $classExtension = EXT_CLASS;
-    protected $list = array();
-    protected $dirCount = 0;
-
-    public function __construct()
+namespace OnPhp {
+    abstract class NamespaceDirScaner
     {
-        ;
-    }
+        protected $classExtension = EXT_CLASS;
+        protected $list = array();
+        protected $dirCount = 0;
 
-    abstract public function scan($directory, $namespace = '');
+        public function __construct()
+        {
+            ;
+        }
 
-    /**
-     * @param string $classExtension
-     * @return NamespaceDirScaner
-     */
-    public function setClassExtension($classExtension)
-    {
-        $this->classExtension = $classExtension;
-        return $this;
-    }
+        abstract public function scan($directory, $namespace = '');
 
-    public function clear()
-    {
-        $this->list = array();
-        $this->dirCount = 0;
-    }
+        /**
+         * @param string $classExtension
+         * @return NamespaceDirScaner
+         */
+        public function setClassExtension($classExtension)
+        {
+            $this->classExtension = $classExtension;
+            return $this;
+        }
 
-    public function getList()
-    {
-        return $this->list;
+        public function clear()
+        {
+            $this->list = array();
+            $this->dirCount = 0;
+        }
+
+        public function getList()
+        {
+            return $this->list;
+        }
     }
 }

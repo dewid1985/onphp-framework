@@ -9,7 +9,10 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class CollectionItem extends IdentifiableObject
-{
-    /*_*/
+
+namespace OnPhp {
+    class CollectionItem extends IdentifiableObject
+    {
+        /*_*/
+    }
 }

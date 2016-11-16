@@ -8,81 +8,82 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Logic
- * @see http://www.postgresql.org/docs/8.3/interactive/hstore.html
- **/
-class HstoreExpression extends StaticFactory
-{
-    const
-        CONTAIN = '?',
-        GET_VALUE = '->',
-        LEFT_CONTAIN = '@>',
-        CONCAT = '||';
-
+namespace OnPhp {
     /**
-     * @param $field
-     * @param $key
-     * @return BinaryExpression
-     */
-    public static function containKey($field, $key) : BinaryExpression
+     * @ingroup Logic
+     * @see http://www.postgresql.org/docs/8.3/interactive/hstore.html
+     **/
+    class HstoreExpression extends StaticFactory
     {
-        return new BinaryExpression($field, $key, self::CONTAIN);
-    }
+        const
+            CONTAIN = '?',
+            GET_VALUE = '->',
+            LEFT_CONTAIN = '@>',
+            CONCAT = '||';
 
-    /**
-     * @param $field
-     * @param $key
-     * @return BinaryExpression
-     */
-    public static function getValueByKey($field, $key) : BinaryExpression
-    {
-        return new BinaryExpression($field, $key, self::GET_VALUE);
-    }
+        /**
+         * @param $field
+         * @param $key
+         * @return BinaryExpression
+         */
+        public static function containKey($field, $key) : BinaryExpression
+        {
+            return new BinaryExpression($field, $key, self::CONTAIN);
+        }
 
-    /**
-     * @param $field
-     * @param $key
-     * @param $value
-     * @return BinaryExpression
-     */
-    public static function containValue($field, $key, $value) : BinaryExpression
-    {
-        return new BinaryExpression($field, "{$key}=>{$value}", self::LEFT_CONTAIN);
-    }
+        /**
+         * @param $field
+         * @param $key
+         * @return BinaryExpression
+         */
+        public static function getValueByKey($field, $key) : BinaryExpression
+        {
+            return new BinaryExpression($field, $key, self::GET_VALUE);
+        }
 
-    /**
-     * @param $field
-     * @param $value
-     * @return BinaryExpression
-     */
-    public static function concat($field, $value) : BinaryExpression
-    {
-        return new BinaryExpression($field, $value, self::CONCAT);
-    }
+        /**
+         * @param $field
+         * @param $key
+         * @param $value
+         * @return BinaryExpression
+         */
+        public static function containValue($field, $key, $value) : BinaryExpression
+        {
+            return new BinaryExpression($field, "{$key}=>{$value}", self::LEFT_CONTAIN);
+        }
 
-    /**
-     * @param $field
-     * @param Hstore $hstore
-     * @return BinaryExpression
-     */
-    public static function containHstore($field, Hstore $hstore) : BinaryExpression
-    {
-        return new BinaryExpression($field, $hstore->toString(), self::LEFT_CONTAIN);
-    }
+        /**
+         * @param $field
+         * @param $value
+         * @return BinaryExpression
+         */
+        public static function concat($field, $value) : BinaryExpression
+        {
+            return new BinaryExpression($field, $value, self::CONCAT);
+        }
 
-    /**
-     * @param $field
-     * @param array $list
-     * @return BinaryExpression
-     */
-    public static function containValueList($field, array $list) : BinaryExpression
-    {
-        return
-            self::containHstore(
-                $field,
-                Hstore::make($list)
-            );
+        /**
+         * @param $field
+         * @param Hstore $hstore
+         * @return BinaryExpression
+         */
+        public static function containHstore($field, Hstore $hstore) : BinaryExpression
+        {
+            return new BinaryExpression($field, $hstore->toString(), self::LEFT_CONTAIN);
+        }
+
+        /**
+         * @param $field
+         * @param array $list
+         * @return BinaryExpression
+         */
+        public static function containValueList($field, array $list) : BinaryExpression
+        {
+            return
+                self::containHstore(
+                    $field,
+                    Hstore::make($list)
+                );
+        }
     }
 }

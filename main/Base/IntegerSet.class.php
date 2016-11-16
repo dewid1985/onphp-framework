@@ -8,29 +8,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Integer's set.
- *
- * @ingroup Helpers
- **/
-class IntegerSet extends Range
-{
-
-    function __construct($min, $max)
+namespace OnPhp {
+    /**
+     * Integer's set.
+     *
+     * @ingroup Helpers
+     **/
+    class IntegerSet extends Range
     {
-        parent::__construct($min, $max);
-    }
 
-    public function contains($value)
-    {
-        if (
-            $this->getMin() <= $value
-            && $value <= $this->getMax()
-        )
-            return true;
-        else
-            return false;
+        function __construct($min, $max)
+        {
+            parent::__construct($min, $max);
+        }
+
+        public function contains($value)
+        {
+            if (
+                $this->getMin() <= $value
+                && $value <= $this->getMax()
+            )
+                return true;
+            else
+                return false;
+        }
     }
 }
-

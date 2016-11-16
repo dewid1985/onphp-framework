@@ -8,15 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Helper for identifying object's DAO.
- *
- * @ingroup DAOs
- * @ingroup Module
- **/
-interface DAOConnected extends Identifiable
-{
-    public static function dao();
+namespace OnPhp {
+    /**
+     * Helper for identifying object's DAO.
+     *
+     * @ingroup DAOs
+     * @ingroup Module
+     **/
+    interface DAOConnected extends Identifiable
+    {
+        public static function dao();
+    }
 }
 

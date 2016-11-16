@@ -8,65 +8,65 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Not for onPHP but if you want to use it in your project
- */
-class NamespaceResolverPSR0 extends NamespaceResolverOnPHP
-{
-    private $allowedUnderline = false;
-
+namespace OnPhp {
     /**
-     * @param boolean $allowedUnderline
-     * @return NamespaceResolverPSR0
+     * Not for onPHP but if you want to use it in your project
      */
-    public function setAllowedUnderline($allowedUnderline)
+    class NamespaceResolverPSR0 extends NamespaceResolverOnPHP
     {
-        $this->allowedUnderline = ($allowedUnderline === true);
-        return $this;
-    }
+        private $allowedUnderline = false;
 
-    /**
-     * @param $className
-     * @param $namespace
-     * @param $paths
-     * @return mixed
-     */
-    protected function searchClass($className, $namespace, $paths)
-    {
-        $splitPattern = $this->allowedUnderline ? '~(\\\\+|_+)~' : '~(\\\\+)~';
-        $classParts = preg_split($splitPattern, $className);
-        $onlyClassName = array_pop($classParts);
+        /**
+         * @param boolean $allowedUnderline
+         * @return NamespaceResolverPSR0
+         */
+        public function setAllowedUnderline($allowedUnderline)
+        {
+            $this->allowedUnderline = ($allowedUnderline === true);
+            return $this;
+        }
 
-        $requiredNamespace = implode('\\', $classParts);
-        if (
-            empty($namespace)
-            || $requiredNamespace == $namespace
-            || mb_strpos($requiredNamespace, $namespace) == 0
-        ) {
-            $subPath = preg_replace('~\\\\~', self::DS, trim(
-                mb_substr($requiredNamespace, mb_strlen($namespace)),
-                '\\'
-            ));
+        /**
+         * @param $className
+         * @param $namespace
+         * @param $paths
+         * @return mixed
+         */
+        protected function searchClass($className, $namespace, $paths)
+        {
+            $splitPattern = $this->allowedUnderline ? '~(\\\\+|_+)~' : '~(\\\\+)~';
+            $classParts = preg_split($splitPattern, $className);
+            $onlyClassName = array_pop($classParts);
 
-            $checkPath = ($subPath ? ($subPath . self::DS) : '') . $onlyClassName
-                . $this->getClassExtension();
+            $requiredNamespace = implode('\\', $classParts);
+            if (
+                empty($namespace)
+                || $requiredNamespace == $namespace
+                || mb_strpos($requiredNamespace, $namespace) == 0
+            ) {
+                $subPath = preg_replace('~\\\\~', self::DS, trim(
+                    mb_substr($requiredNamespace, mb_strlen($namespace)),
+                    '\\'
+                ));
 
-            foreach ($paths as $directory) {
-                if ($paths = glob($directory . $checkPath)) {
-                    return $paths[0];
+                $checkPath = ($subPath ? ($subPath . self::DS) : '') . $onlyClassName
+                    . $this->getClassExtension();
+
+                foreach ($paths as $directory) {
+                    if ($paths = glob($directory . $checkPath)) {
+                        return $paths[0];
+                    }
                 }
             }
         }
-    }
 
-    /**
-     * @return NamespaceDirScaner
-     */
-    protected function getDirScaner()
-    {
-        $dirScaner = new NamespaceDirScanerPSR0();
-        return $dirScaner->setAllowedUnderline($this->allowedUnderline);
+        /**
+         * @return NamespaceDirScaner
+         */
+        protected function getDirScaner()
+        {
+            $dirScaner = new NamespaceDirScanerPSR0();
+            return $dirScaner->setAllowedUnderline($this->allowedUnderline);
+        }
     }
 }
-

@@ -9,114 +9,116 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-class FormCollection implements Iterator
-{
-    /** @var Form|null */
-    private $sampleForm = null;
-
-    /** @var array */
-    private $primitiveNames = [];
-
-    /** @var bool */
-    private $imported = false;
-
-    /** @var array */
-    private $formList = [];
-
-    /**
-     * FormCollection constructor.
-     * @param Form $sample
-     */
-    public function __construct(Form $sample)
+namespace OnPhp {
+    class FormCollection implements Iterator
     {
-        $this->sampleForm = $sample;
-    }
+        /** @var Form|null */
+        private $sampleForm = null;
 
-    /**
-     * from http request
-     * looks like foo[1]=42&bar[1]=test&foo[2]=44&bar[2]=anothertest
-     *
-     * @param array $scope
-     * @return FormCollection
-     * @throws WrongArgumentException
-     */
-    public function import(array $scope) : FormCollection
-    {
-        $this->imported = true;
+        /** @var array */
+        private $primitiveNames = [];
 
-        foreach ($scope as $name => $paramList) {
+        /** @var bool */
+        private $imported = false;
 
-            /**
-             * @var array $paramList
-             * looks like array(1 => 42, 2 => 44)
-             */
-            Assert::isArray($paramList);
+        /** @var array */
+        private $formList = [];
 
-            foreach ($paramList as $key => $value) {
-                if (!isset($this->formList[$key])) {
-                    $this->formList[$key] = clone $this->sampleForm;
-                }
-                $this->formList[$key]->importMore([$name => $value]);
-            }
+        /**
+         * FormCollection constructor.
+         * @param Form $sample
+         */
+        public function __construct(Form $sample)
+        {
+            $this->sampleForm = $sample;
         }
 
-        reset($this->formList);
+        /**
+         * from http request
+         * looks like foo[1]=42&bar[1]=test&foo[2]=44&bar[2]=anothertest
+         *
+         * @param array $scope
+         * @return FormCollection
+         * @throws WrongArgumentException
+         */
+        public function import(array $scope) : FormCollection
+        {
+            $this->imported = true;
 
-        return $this;
-    }
+            foreach ($scope as $name => $paramList) {
 
-    /**
-     * @return mixed
-     * @throws WrongArgumentException
-     */
-    public function current()
-    {
-        Assert::isTrue($this->imported, "Import scope in me before try to iterate");
+                /**
+                 * @var array $paramList
+                 * looks like array(1 => 42, 2 => 44)
+                 */
+                Assert::isArray($paramList);
 
-        return current($this->formList);
-    }
+                foreach ($paramList as $key => $value) {
+                    if (!isset($this->formList[$key])) {
+                        $this->formList[$key] = clone $this->sampleForm;
+                    }
+                    $this->formList[$key]->importMore([$name => $value]);
+                }
+            }
 
-    /**
-     * @return mixed
-     * @throws WrongArgumentException
-     */
-    public function key()
-    {
-        Assert::isTrue($this->imported, "Import scope in me before try to iterate");
+            reset($this->formList);
 
-        return key($this->formList);
-    }
+            return $this;
+        }
 
-    /**
-     * @return mixed
-     * @throws WrongArgumentException
-     */
-    public function next()
-    {
-        Assert::isTrue($this->imported, "Import scope in me before try to iterate");
+        /**
+         * @return mixed
+         * @throws WrongArgumentException
+         */
+        public function current()
+        {
+            Assert::isTrue($this->imported, "Import scope in me before try to iterate");
 
-        return next($this->formList);
-    }
+            return current($this->formList);
+        }
 
-    /**
-     * @return mixed
-     * @throws WrongArgumentException
-     */
-    public function rewind()
-    {
-        Assert::isTrue($this->imported, "Import scope in me before try to iterate");
+        /**
+         * @return mixed
+         * @throws WrongArgumentException
+         */
+        public function key()
+        {
+            Assert::isTrue($this->imported, "Import scope in me before try to iterate");
 
-        return reset($this->formList);
-    }
+            return key($this->formList);
+        }
 
-    /**
-     * @return bool
-     * @throws WrongArgumentException
-     */
-    public function valid()
-    {
-        Assert::isTrue($this->imported, "Import scope in me before try to iterate");
+        /**
+         * @return mixed
+         * @throws WrongArgumentException
+         */
+        public function next()
+        {
+            Assert::isTrue($this->imported, "Import scope in me before try to iterate");
 
-        return (key($this->formList) !== null);
+            return next($this->formList);
+        }
+
+        /**
+         * @return mixed
+         * @throws WrongArgumentException
+         */
+        public function rewind()
+        {
+            Assert::isTrue($this->imported, "Import scope in me before try to iterate");
+
+            return reset($this->formList);
+        }
+
+        /**
+         * @return bool
+         * @throws WrongArgumentException
+         */
+        public function valid()
+        {
+            Assert::isTrue($this->imported, "Import scope in me before try to iterate");
+
+            return (key($this->formList) !== null);
+        }
     }
 }

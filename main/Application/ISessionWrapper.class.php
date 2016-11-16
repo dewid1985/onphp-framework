@@ -9,86 +9,87 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Interface of dynamic wrapper around session_*() functions.
- **/
-interface ISessionWrapper
-{
+namespace OnPhp {
     /**
-     * @return void
-     */
-    public function start();
-
-    /**
-     * @throws SessionWrapperNotStartedException
-     * @return void
+     * Interface of dynamic wrapper around session_*() functions.
      **/
-    public function destroy();
+    interface ISessionWrapper
+    {
+        /**
+         * @return void
+         */
+        public function start();
 
-    /**
-     * @return void
-     **/
-    public function flush();
+        /**
+         * @throws SessionWrapperNotStartedException
+         * @return void
+         **/
+        public function destroy();
 
-    /**
-     * @throws SessionWrapperNotStartedException
-     * @return void
-     **/
-    public function assign($var, $val);
+        /**
+         * @return void
+         **/
+        public function flush();
 
-    /**
-     * @throws WrongArgumentException
-     * @throws SessionWrapperNotStartedException
-     * @return boolean
-     **/
-    public function exist(/* ... */);
+        /**
+         * @throws SessionWrapperNotStartedException
+         * @return void
+         **/
+        public function assign($var, $val);
 
-    /**
-     * @throws SessionWrapperNotStartedException
-     * @return any
-     **/
-    public function get($var);
+        /**
+         * @throws WrongArgumentException
+         * @throws SessionWrapperNotStartedException
+         * @return boolean
+         **/
+        public function exist(/* ... */);
 
-    /**
-     * @throws SessionWrapperNotStartedException
-     * @return array
-     **/
-    public function &getAll();
+        /**
+         * @throws SessionWrapperNotStartedException
+         * @return any
+         **/
+        public function get($var);
 
-    /**
-     * @throws WrongArgumentException
-     * @throws SessionWrapperNotStartedException
-     * @return void
-     **/
-    public function drop(/* ... */);
+        /**
+         * @throws SessionWrapperNotStartedException
+         * @return array
+         **/
+        public function &getAll();
 
-    /**
-     * @throws SessionWrapperNotStartedException
-     * @return void
-     **/
-    public function dropAll();
+        /**
+         * @throws WrongArgumentException
+         * @throws SessionWrapperNotStartedException
+         * @return void
+         **/
+        public function drop(/* ... */);
 
-    /**
-     * @return boolean
-     */
-    public function isStarted();
+        /**
+         * @throws SessionWrapperNotStartedException
+         * @return void
+         **/
+        public function dropAll();
 
-    /**
-     * assigns to $_SESSION scope variables defined in given array
-     * @return void
-     **/
-    public function arrayAssign($scope, $array);
+        /**
+         * @return boolean
+         */
+        public function isStarted();
 
-    /**
-     * @throws SessionWrapperNotStartedException
-     * @return string
-     **/
-    public function getName();
+        /**
+         * assigns to $_SESSION scope variables defined in given array
+         * @return void
+         **/
+        public function arrayAssign($scope, $array);
 
-    /**
-     * @throws SessionWrapperNotStartedException
-     * @return string
-     **/
-    public function getId();
+        /**
+         * @throws SessionWrapperNotStartedException
+         * @return string
+         **/
+        public function getName();
+
+        /**
+         * @throws SessionWrapperNotStartedException
+         * @return string
+         **/
+        public function getId();
+    }
 }

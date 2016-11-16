@@ -9,24 +9,26 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class FormGetter extends PrototypedGetter
-{
-    public function __construct(EntityProto $proto, &$object)
+namespace OnPhp {
+    class FormGetter extends PrototypedGetter
     {
-        Assert::isInstance($object, 'Form');
+        public function __construct(EntityProto $proto, &$object)
+        {
+            Assert::isInstance($object, 'Form');
 
-        return parent::__construct($proto, $object);
-    }
+            return parent::__construct($proto, $object);
+        }
 
-    public function get($name)
-    {
-        if (!isset($this->mapping[$name]))
-            throw new WrongArgumentException(
-                "knows nothing about property '{$name}'"
-            );
+        public function get($name)
+        {
+            if (!isset($this->mapping[$name]))
+                throw new WrongArgumentException(
+                    "knows nothing about property '{$name}'"
+                );
 
-        $primitive = $this->mapping[$name];
+            $primitive = $this->mapping[$name];
 
-        return $this->object->getValue($primitive->getName());
+            return $this->object->getValue($primitive->getName());
+        }
     }
 }

@@ -8,139 +8,140 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveFormsList extends PrimitiveForm
-{
-    protected $value = [];
-
+namespace OnPhp {
     /**
-     * @return PrimitiveFormsList
+     * @ingroup Primitives
      **/
-    public function clean() : PrimitiveFormsList
+    class PrimitiveFormsList extends PrimitiveForm
     {
-        parent::clean();
+        protected $value = [];
 
-        $this->value = [];
+        /**
+         * @return PrimitiveFormsList
+         **/
+        public function clean() : PrimitiveFormsList
+        {
+            parent::clean();
 
-        return $this;
-    }
+            $this->value = [];
 
-    /**
-     * @param bool $composite
-     * @return PrimitiveForm|void
-     * @throws UnsupportedMethodException
-     */
-    public function setComposite($composite = true)
-    {
-        throw new UnsupportedMethodException(
-            'composition is not supported for lists'
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function getInnerErrors() : array
-    {
-        $result = [];
-
-        foreach ($this->getValue() as $id => $form) {
-            if ($errors = $form->getInnerErrors()) {
-                $result[$id] = $errors;
-            }
+            return $this;
         }
 
-        return $result;
-    }
-
-    /**
-     * @param $scope
-     * @return bool|null
-     * @throws WrongStateException
-     */
-    public function import($scope)
-    {
-        if (!$this->proto) {
-            throw new WrongStateException(
-                "no proto defined for PrimitiveFormsList '{$this->name}'"
+        /**
+         * @param bool $composite
+         * @return PrimitiveForm|void
+         * @throws UnsupportedMethodException
+         */
+        public function setComposite($composite = true)
+        {
+            throw new UnsupportedMethodException(
+                'composition is not supported for lists'
             );
         }
 
-        if (!BasePrimitive::import($scope)) {
-            return null;
-        }
+        /**
+         * @return array
+         */
+        public function getInnerErrors() : array
+        {
+            $result = [];
 
-        if (!is_array($scope[$this->name])) {
-            return false;
-        }
-
-        $error = false;
-
-        $this->value = [];
-
-        foreach ($scope[$this->name] as $id => $value) {
-            $this->value[$id] =
-                $this->proto->makeForm()
-                    ->import($value);
-
-            if ($this->value[$id]->getErrors()) {
-                $error = true;
+            foreach ($this->getValue() as $id => $form) {
+                if ($errors = $form->getInnerErrors()) {
+                    $result[$id] = $errors;
+                }
             }
+
+            return $result;
         }
 
-        return !$error;
-    }
-
-    /**
-     * @param $value
-     * @return bool|null
-     * @throws WrongArgumentException
-     */
-    public function importValue($value)
-    {
-        if ($value !== null) {
-            Assert::isArray($value);
-        } else {
-            return null;
-        }
-
-        $result = true;
-
-        $resultValue = [];
-
-        foreach ($value as $id => $form) {
-            Assert::isInstance($form, 'Form');
-
-            $resultValue[$id] = $form;
-
-            if ($form->getErrors()) {
-                $result = false;
+        /**
+         * @param $scope
+         * @return bool|null
+         * @throws WrongStateException
+         */
+        public function import($scope)
+        {
+            if (!$this->proto) {
+                throw new WrongStateException(
+                    "no proto defined for PrimitiveFormsList '{$this->name}'"
+                );
             }
+
+            if (!BasePrimitive::import($scope)) {
+                return null;
+            }
+
+            if (!is_array($scope[$this->name])) {
+                return false;
+            }
+
+            $error = false;
+
+            $this->value = [];
+
+            foreach ($scope[$this->name] as $id => $value) {
+                $this->value[$id] =
+                    $this->proto->makeForm()
+                        ->import($value);
+
+                if ($this->value[$id]->getErrors()) {
+                    $error = true;
+                }
+            }
+
+            return !$error;
         }
 
-        $this->value = $resultValue;
+        /**
+         * @param $value
+         * @return bool|null
+         * @throws WrongArgumentException
+         */
+        public function importValue($value)
+        {
+            if ($value !== null) {
+                Assert::isArray($value);
+            } else {
+                return null;
+            }
 
-        return $result;
-    }
+            $result = true;
 
-    /**
-     * @return array|null
-     */
-    public function exportValue()
-    {
-        if (!$this->isImported()) {
-            return null;
+            $resultValue = [];
+
+            foreach ($value as $id => $form) {
+                Assert::isInstance($form, 'Form');
+
+                $resultValue[$id] = $form;
+
+                if ($form->getErrors()) {
+                    $result = false;
+                }
+            }
+
+            $this->value = $resultValue;
+
+            return $result;
         }
 
-        $result = [];
+        /**
+         * @return array|null
+         */
+        public function exportValue()
+        {
+            if (!$this->isImported()) {
+                return null;
+            }
 
-        foreach ($this->value as $id => $form) {
-            $result[$id] = $form->export();
+            $result = [];
+
+            foreach ($this->value as $id => $form) {
+                $result[$id] = $form->export();
+            }
+
+            return $result;
         }
-
-        return $result;
     }
 }

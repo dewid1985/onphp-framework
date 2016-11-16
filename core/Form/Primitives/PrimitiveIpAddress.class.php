@@ -8,12 +8,13 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveIpAddress extends BaseObjectPrimitive
-{
-    protected $className = 'IpAddress';
+namespace OnPhp {
+    /**
+     * @ingroup Primitives
+     **/
+    class PrimitiveIpAddress extends BaseObjectPrimitive
+    {
+        protected $className = 'IpAddress';
+    }
 }
 

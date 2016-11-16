@@ -9,25 +9,27 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Projections
- **/
-abstract class AggregateProjection extends BaseProjection
-{
+namespace OnPhp {
     /**
-     * @return JoinCapableQuery
+     * @ingroup Projections
      **/
-    public function process(Criteria $criteria, JoinCapableQuery $query)
+    abstract class AggregateProjection extends BaseProjection
     {
-        Assert::isNotNull($this->property);
+        /**
+         * @return JoinCapableQuery
+         **/
+        public function process(Criteria $criteria, JoinCapableQuery $query)
+        {
+            Assert::isNotNull($this->property);
 
-        return
-            $query
-                ->get(
-                    (new SQLFunction($this->getFunctionName(), $criteria->getDao()->guessAtom($this->property, $query)))
-                        ->setAlias($this->alias)
-                );
+            return
+                $query
+                    ->get(
+                        (new SQLFunction($this->getFunctionName(), $criteria->getDao()->guessAtom($this->property, $query)))
+                            ->setAlias($this->alias)
+                    );
+        }
+
+        abstract public function getFunctionName();
     }
-
-    abstract public function getFunctionName();
 }

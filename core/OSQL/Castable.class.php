@@ -8,24 +8,25 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * Cast-able SQL parts.
- *
- * @ingroup OSQL
- * @ingroup Module
- **/
-abstract class Castable implements DialectString
-{
-    protected $cast = null;
-
+namespace OnPhp {
     /**
-     * @return Castable
+     * Cast-able SQL parts.
+     *
+     * @ingroup OSQL
+     * @ingroup Module
      **/
-    public function castTo($cast)
+    abstract class Castable implements DialectString
     {
-        $this->cast = $cast;
+        protected $cast = null;
 
-        return $this;
+        /**
+         * @return Castable
+         **/
+        public function castTo($cast)
+        {
+            $this->cast = $cast;
+
+            return $this;
+        }
     }
 }

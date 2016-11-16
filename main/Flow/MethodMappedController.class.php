@@ -8,108 +8,111 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-abstract class MethodMappedController implements Controller
-{
-    private $methodMap = array();
-    private $defaultAction = null;
-
+namespace OnPhp {
     /**
-     * @return ModelAndView
-     **/
-    public function handleRequest(HttpRequest $request)
+     * Class MethodMappedController
+     * @ingroup Flow
+     * @package OnPhp
+     */
+    abstract class MethodMappedController implements Controller
     {
-        if ($action = $this->chooseAction($request)) {
+        private $methodMap = array();
+        private $defaultAction = null;
 
-            $method = $this->methodMap[$action];
-            /** @var ModelAndView $mav */
-            $mav = $this->{$method}($request);
+        /**
+         * @return ModelAndView
+         **/
+        public function handleRequest(HttpRequest $request)
+        {
+            if ($action = $this->chooseAction($request)) {
 
-            if ($mav->viewIsRedirect())
+                $method = $this->methodMap[$action];
+                /** @var ModelAndView $mav */
+                $mav = $this->{$method}($request);
+
+                if ($mav->viewIsRedirect())
+                    return $mav;
+
+                $mav->getModel()->set('action', $action);
+
                 return $mav;
 
-            $mav->getModel()->set('action', $action);
+            } else
+                return new ModelAndView();
 
-            return $mav;
+            Assert::isUnreachable();
+        }
 
-        } else
-            return new ModelAndView();
+        public function chooseAction(HttpRequest $request)
+        {
+            $action =
+                (new Primitive())
+                    ->choice('action')
+                    ->setList($this->methodMap);
 
-        Assert::isUnreachable();
-    }
+            if ($this->getDefaultAction())
+                $action->setDefault($this->getDefaultAction());
 
-    public function chooseAction(HttpRequest $request)
-    {
-        $action =
-            (new Primitive())
-                ->choice('action')
-                ->setList($this->methodMap);
+            (new Form())
+                ->add($action)
+                ->import($request->getGet())
+                ->importMore($request->getPost())
+                ->importMore($request->getAttached());
 
-        if ($this->getDefaultAction())
-            $action->setDefault($this->getDefaultAction());
+            if (!$command = $action->getValue())
+                return $action->getDefault();
 
-        (new Form())
-            ->add($action)
-            ->import($request->getGet())
-            ->importMore($request->getPost())
-            ->importMore($request->getAttached());
+            return $command;
+        }
 
-        if (!$command = $action->getValue())
-            return $action->getDefault();
+        public function getDefaultAction()
+        {
+            return $this->defaultAction;
+        }
 
-        return $command;
-    }
+        /**
+         * @return MethodMappedController
+         **/
+        public function setDefaultAction($action)
+        {
+            $this->defaultAction = $action;
 
-    public function getDefaultAction()
-    {
-        return $this->defaultAction;
-    }
+            return $this;
+        }
 
-    /**
-     * @return MethodMappedController
-     **/
-    public function setDefaultAction($action)
-    {
-        $this->defaultAction = $action;
+        /**
+         * @return MethodMappedController
+         **/
+        public function dropMethodMapping($action)
+        {
+            unset($this->methodMap[$action]);
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return MethodMappedController
-     **/
-    public function dropMethodMapping($action)
-    {
-        unset($this->methodMap[$action]);
+        public function getMethodMapping()
+        {
+            return $this->methodMap;
+        }
 
-        return $this;
-    }
+        /**
+         * @return MethodMappedController
+         **/
+        public function setMethodMappingList($array)
+        {
+            foreach ($array as $action => $methodName)
+                $this->setMethodMapping($action, $methodName);
 
-    public function getMethodMapping()
-    {
-        return $this->methodMap;
-    }
+            return $this;
+        }
 
-    /**
-     * @return MethodMappedController
-     **/
-    public function setMethodMappingList($array)
-    {
-        foreach ($array as $action => $methodName)
-            $this->setMethodMapping($action, $methodName);
-
-        return $this;
-    }
-
-    /**
-     * @return MethodMappedController
-     **/
-    public function setMethodMapping($action, $methodName)
-    {
-        $this->methodMap[$action] = $methodName;
-        return $this;
+        /**
+         * @return MethodMappedController
+         **/
+        public function setMethodMapping($action, $methodName)
+        {
+            $this->methodMap[$action] = $methodName;
+            return $this;
+        }
     }
 }

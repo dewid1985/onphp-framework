@@ -8,126 +8,127 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveEnumerationList extends PrimitiveEnumeration
-{
-    protected $value = [];
-
+namespace OnPhp {
     /**
-     * @return PrimitiveEnumerationList
-     */
-    public function clean() : PrimitiveEnumerationList
+     * @ingroup Primitives
+     **/
+    class PrimitiveEnumerationList extends PrimitiveEnumeration
     {
-        parent::clean();
+        protected $value = [];
 
-        // restoring our very own default
-        $this->value = [];
+        /**
+         * @return PrimitiveEnumerationList
+         */
+        public function clean() : PrimitiveEnumerationList
+        {
+            parent::clean();
 
-        return $this;
-    }
+            // restoring our very own default
+            $this->value = [];
 
-
-    /**
-     * @param Enumeration $value
-     * @return PrimitiveEnumerationList
-     * @throws WrongArgumentException
-     */
-    public function setValue($value) : PrimitiveEnumerationList
-    {
-        if ($value) {
-            Assert::isArray($value);
-            Assert::isInstance(current($value), 'Enumeration');
+            return $this;
         }
 
-        $this->value = $value;
 
-        return $this;
-    }
+        /**
+         * @param Enumeration $value
+         * @return PrimitiveEnumerationList
+         * @throws WrongArgumentException
+         */
+        public function setValue($value) : PrimitiveEnumerationList
+        {
+            if ($value) {
+                Assert::isArray($value);
+                Assert::isInstance(current($value), 'Enumeration');
+            }
 
-    /**
-     * @param $value
-     * @return bool|null
-     * @throws WrongStateException
-     */
-    public function importValue($value)
-    {
-        if (is_array($value)) {
-            try {
-                Assert::isInteger(current($value));
+            $this->value = $value;
 
-                return $this->import(
-                    [$this->name => $value]
-                );
-            } catch (WrongArgumentException $e) {
-                return $this->import(
-                    [$this->name => ArrayUtils::getIdsArray($value)]
+            return $this;
+        }
+
+        /**
+         * @param $value
+         * @return bool|null
+         * @throws WrongStateException
+         */
+        public function importValue($value)
+        {
+            if (is_array($value)) {
+                try {
+                    Assert::isInteger(current($value));
+
+                    return $this->import(
+                        [$this->name => $value]
+                    );
+                } catch (WrongArgumentException $e) {
+                    return $this->import(
+                        [$this->name => ArrayUtils::getIdsArray($value)]
+                    );
+                }
+            }
+
+            return parent::importValue($value);
+        }
+
+        /**
+         * @param $scope
+         * @return bool|null
+         * @throws WrongStateException
+         */
+        public function import($scope)
+        {
+            if (!$this->className) {
+                throw new WrongStateException(
+                    "no class defined for PrimitiveIdentifierList '{$this->name}'"
                 );
             }
-        }
 
-        return parent::importValue($value);
-    }
+            if (!BasePrimitive::import($scope)) {
+                return null;
+            }
 
-    /**
-     * @param $scope
-     * @return bool|null
-     * @throws WrongStateException
-     */
-    public function import($scope)
-    {
-        if (!$this->className) {
-            throw new WrongStateException(
-                "no class defined for PrimitiveIdentifierList '{$this->name}'"
-            );
-        }
-
-        if (!BasePrimitive::import($scope)) {
-            return null;
-        }
-
-        if (!is_array($scope[$this->name])) {
-            return false;
-        }
-
-        $list = array_unique($scope[$this->name]);
-
-        $values = [];
-
-        foreach ($list as $id) {
-            if (!Assert::checkInteger($id)) {
+            if (!is_array($scope[$this->name])) {
                 return false;
             }
 
-            $values[] = $id;
+            $list = array_unique($scope[$this->name]);
+
+            $values = [];
+
+            foreach ($list as $id) {
+                if (!Assert::checkInteger($id)) {
+                    return false;
+                }
+
+                $values[] = $id;
+            }
+
+            $objectList = [];
+
+            foreach ($values as $value) {
+                $className = $this->className;
+                $objectList[] = new $className($value);
+            }
+
+            if (count($objectList) == count($values)) {
+                $this->value = $objectList;
+                return true;
+            }
+
+            return false;
         }
 
-        $objectList = [];
+        /**
+         * @return array|null
+         */
+        public function exportValue()
+        {
+            if (!$this->value) {
+                return null;
+            }
 
-        foreach ($values as $value) {
-            $className = $this->className;
-            $objectList[] = new $className($value);
+            return ArrayUtils::getIdsArray($this->value);
         }
-
-        if (count($objectList) == count($values)) {
-            $this->value = $objectList;
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return array|null
-     */
-    public function exportValue()
-    {
-        if (!$this->value) {
-            return null;
-        }
-
-        return ArrayUtils::getIdsArray($this->value);
     }
 }

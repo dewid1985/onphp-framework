@@ -8,18 +8,19 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Uncachers
- **/
-interface UncacherBase
-{
+namespace OnPhp {
     /**
-     * @param $uncacher BaseUncacher same as self class
-     * @return BaseUncacher (this)
-     */
-    public function merge(UncacherBase $uncacher);
+     * @ingroup Uncachers
+     **/
+    interface UncacherBase
+    {
+        /**
+         * @param $uncacher BaseUncacher same as self class
+         * @return BaseUncacher (this)
+         */
+        public function merge(UncacherBase $uncacher);
 
-    public function uncache();
+        public function uncache();
+    }
 }
 

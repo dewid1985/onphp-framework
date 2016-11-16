@@ -8,19 +8,20 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Crypto
- **/
-interface KeyPair
-{
+namespace OnPhp {
     /**
-     * @return BigInteger
+     * @ingroup Crypto
      **/
-    public function getPublic();
+    interface KeyPair
+    {
+        /**
+         * @return BigInteger
+         **/
+        public function getPublic();
 
-    /**
-     * @return BigInteger
-     **/
-    public function getPrivate();
+        /**
+         * @return BigInteger
+         **/
+        public function getPrivate();
+    }
 }

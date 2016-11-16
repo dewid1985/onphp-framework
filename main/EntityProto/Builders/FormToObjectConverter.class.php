@@ -9,27 +9,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class FormToObjectConverter extends ObjectBuilder
-{
-
-    function __construct(EntityProto $proto)
+namespace OnPhp {
+    class FormToObjectConverter extends ObjectBuilder
     {
-        parent::__construct($proto);
-    }
 
-    /**
-     * @return FormGetter
-     **/
-    protected function getGetter($object)
-    {
-        return new FormGetter($this->proto, $object);
-    }
+        function __construct(EntityProto $proto)
+        {
+            parent::__construct($proto);
+        }
 
-    /**
-     * @return ObjectSetter
-     **/
-    protected function getSetter(&$object)
-    {
-        return new ObjectSetter($this->proto, $object);
+        /**
+         * @return FormGetter
+         **/
+        protected function getGetter($object)
+        {
+            return new FormGetter($this->proto, $object);
+        }
+
+        /**
+         * @return ObjectSetter
+         **/
+        protected function getSetter(&$object)
+        {
+            return new ObjectSetter($this->proto, $object);
+        }
     }
 }

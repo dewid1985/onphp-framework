@@ -8,14 +8,17 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * Interface FeedChannelWorker
+     * @ingroup Feed
+     * @package OnPhp
+     */
+    interface FeedChannelWorker
+    {
+        public function makeChannel(SimpleXMLElement $xmlFeed);
 
-/**
- * @ingroup Feed
- **/
-interface FeedChannelWorker
-{
-    public function makeChannel(SimpleXMLElement $xmlFeed);
-
-    public function toXml(FeedChannel $channel, $itemsXml);
+        public function toXml(FeedChannel $channel, $itemsXml);
+    }
 }
 

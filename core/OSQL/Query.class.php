@@ -8,12 +8,13 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- * @ingroup Module
- **/
-interface Query extends DialectString, Identifiable, Stringable
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    interface Query extends DialectString, Identifiable, Stringable
+    {
+        /*_*/
+    }
 }

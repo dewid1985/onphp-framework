@@ -9,14 +9,15 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Html
- * @ingroup Module
- **/
-class SgmlEndTag extends SgmlTag
-{
+namespace OnPhp {
     /**
-     *
+     * @ingroup Html
+     * @ingroup Module
      **/
+    class SgmlEndTag extends SgmlTag
+    {
+        /**
+         *
+         **/
+    }
 }
-

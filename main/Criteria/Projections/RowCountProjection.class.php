@@ -8,11 +8,12 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class RowCountProjection extends CountProjection
-{
-    /*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Projections
+     **/
+    class RowCountProjection extends CountProjection
+    {
+        /*_*/
+    }
 }

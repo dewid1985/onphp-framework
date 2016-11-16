@@ -8,106 +8,107 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Helpers
- **/
-class RequestType extends Enumeration
-{
-    const GET = 1;
-    const POST = 2;
-    const FILES = 3;
-    const COOKIE = 4;
-    const SESSION = 5;
-    const ATTACHED = 6;
-    const SERVER = 7;
-
-    protected $names = array(
-        self::GET => 'get',
-        self::POST => 'post',
-        self::FILES => 'files',
-        self::COOKIE => 'cookie',
-        self::SESSION => 'session',
-        self::ATTACHED => 'attached',
-        self::SERVER => 'server'
-    );
-
+namespace OnPhp {
     /**
-     * @return RequestType
+     * @ingroup Helpers
      **/
-    public static function get()
+    class RequestType extends Enumeration
     {
-        return self::getInstance(self::GET);
-    }
+        const GET = 1;
+        const POST = 2;
+        const FILES = 3;
+        const COOKIE = 4;
+        const SESSION = 5;
+        const ATTACHED = 6;
+        const SERVER = 7;
 
-    /**
-     * @return RequestType
-     **/
-    private static function getInstance($id)
-    {
-        static $instances = array();
+        protected $names = array(
+            self::GET => 'get',
+            self::POST => 'post',
+            self::FILES => 'files',
+            self::COOKIE => 'cookie',
+            self::SESSION => 'session',
+            self::ATTACHED => 'attached',
+            self::SERVER => 'server'
+        );
 
-        if (!isset($instances[$id]))
-            $instances[$id] = new self($id);
+        /**
+         * @return RequestType
+         **/
+        public static function get()
+        {
+            return self::getInstance(self::GET);
+        }
 
-        return $instances[$id];
-    }
+        /**
+         * @return RequestType
+         **/
+        private static function getInstance($id)
+        {
+            static $instances = array();
 
-    /**
-     * @return RequestType
-     **/
-    public static function post()
-    {
-        return self::getInstance(self::POST);
-    }
+            if (!isset($instances[$id]))
+                $instances[$id] = new self($id);
 
-    /**
-     * @return RequestType
-     **/
-    public static function files()
-    {
-        return self::getInstance(self::FILES);
-    }
+            return $instances[$id];
+        }
 
-    /**
-     * @return RequestType
-     **/
-    public static function cookie()
-    {
-        return self::getInstance(self::COOKIE);
-    }
+        /**
+         * @return RequestType
+         **/
+        public static function post()
+        {
+            return self::getInstance(self::POST);
+        }
 
-    /**
-     * @return RequestType
-     **/
-    public static function session()
-    {
-        return self::getInstance(self::SESSION);
-    }
+        /**
+         * @return RequestType
+         **/
+        public static function files()
+        {
+            return self::getInstance(self::FILES);
+        }
 
-    /**
-     * @return RequestType
-     **/
-    public static function attached()
-    {
-        return self::getInstance(self::ATTACHED);
-    }
+        /**
+         * @return RequestType
+         **/
+        public static function cookie()
+        {
+            return self::getInstance(self::COOKIE);
+        }
 
-    /**
-     * @return RequestType
-     **/
-    public static function server()
-    {
-        return self::getInstance(self::SERVER);
-    }
+        /**
+         * @return RequestType
+         **/
+        public static function session()
+        {
+            return self::getInstance(self::SESSION);
+        }
 
-    /**
-     * @return RequestType
-     **/
-    public function setId($id)
-    {
-        Assert::isNull($this->id, 'i am immutable one!');
+        /**
+         * @return RequestType
+         **/
+        public static function attached()
+        {
+            return self::getInstance(self::ATTACHED);
+        }
 
-        return parent::setId($id);
+        /**
+         * @return RequestType
+         **/
+        public static function server()
+        {
+            return self::getInstance(self::SERVER);
+        }
+
+        /**
+         * @return RequestType
+         **/
+        public function setId($id)
+        {
+            Assert::isNull($this->id, 'i am immutable one!');
+
+            return parent::setId($id);
+        }
     }
 }

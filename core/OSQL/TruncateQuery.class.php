@@ -8,110 +8,111 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class TruncateQuery extends QueryIdentification
-{
-    /** @var array|null */
-    private $targets = [];
-
+namespace OnPhp {
     /**
-     * TruncateQuery constructor.
-     * @param null $whom
-     */
-    public function __construct($whom = null)
+     * @ingroup OSQL
+     **/
+    class TruncateQuery extends QueryIdentification
     {
-        if ($whom) {
-            if (is_array($whom)) {
-                $this->targets = $whom;
-            } else {
-                $this->targets[] = $whom;
+        /** @var array|null */
+        private $targets = [];
+
+        /**
+         * TruncateQuery constructor.
+         * @param null $whom
+         */
+        public function __construct($whom = null)
+        {
+            if ($whom) {
+                if (is_array($whom)) {
+                    $this->targets = $whom;
+                } else {
+                    $this->targets[] = $whom;
+                }
             }
         }
-    }
 
-    /**
-     * @throws UnsupportedMethodException
-     */
-    public function getId()
-    {
-        throw new UnsupportedMethodException();
-    }
-
-    /**
-     * @param $table
-     * @return TruncateQuery
-     */
-    public function table($table) : TruncateQuery
-    {
-        if ($table instanceof SQLTableName) {
-            $this->targets[] = $table->getTable();
-        } else {
-            $this->targets[] = $table;
+        /**
+         * @throws UnsupportedMethodException
+         */
+        public function getId()
+        {
+            throw new UnsupportedMethodException();
         }
 
-        return $this;
-    }
+        /**
+         * @param $table
+         * @return TruncateQuery
+         */
+        public function table($table) : TruncateQuery
+        {
+            if ($table instanceof SQLTableName) {
+                $this->targets[] = $table->getTable();
+            } else {
+                $this->targets[] = $table;
+            }
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     * @throws WrongArgumentException
-     */
-    public function toDialectString(Dialect $dialect) : string
-    {
-        Assert::isTrue(
-            ($this->targets !== []),
-            'do not know who should i truncate'
-        );
-
-        if ($dialect->hasTruncate()) {
-            $head = 'TRUNCATE TABLE ';
-        } else {
-            $head = 'DELETE FROM ';
+            return $this;
         }
 
-        if ($dialect->hasMultipleTruncate()) {
-            $query = $head . $this->dumpTargets($dialect, null, ',');
-        } else {
-            $query = $this->dumpTargets($dialect, $head, ';');
+        /**
+         * @param Dialect $dialect
+         * @return string
+         * @throws WrongArgumentException
+         */
+        public function toDialectString(Dialect $dialect) : string
+        {
+            Assert::isTrue(
+                ($this->targets !== []),
+                'do not know who should i truncate'
+            );
+
+            if ($dialect->hasTruncate()) {
+                $head = 'TRUNCATE TABLE ';
+            } else {
+                $head = 'DELETE FROM ';
+            }
+
+            if ($dialect->hasMultipleTruncate()) {
+                $query = $head . $this->dumpTargets($dialect, null, ',');
+            } else {
+                $query = $this->dumpTargets($dialect, $head, ';');
+            }
+
+            return $query . ';';
         }
 
-        return $query . ';';
-    }
+        /**
+         * @param Dialect $dialect
+         * @param null $prepend
+         * @param null $append
+         * @return string
+         * @throws WrongArgumentException
+         */
+        private function dumpTargets(Dialect $dialect, $prepend = null, $append = null) : string
+        {
+            if (count($this->targets) == 1) {
+                return $prepend . $dialect->quoteTable(reset($this->targets));
+            } else {
+                $tables = [];
 
-    /**
-     * @param Dialect $dialect
-     * @param null $prepend
-     * @param null $append
-     * @return string
-     * @throws WrongArgumentException
-     */
-    private function dumpTargets(Dialect $dialect, $prepend = null, $append = null) : string
-    {
-        if (count($this->targets) == 1) {
-            return $prepend . $dialect->quoteTable(reset($this->targets));
-        } else {
-            $tables = [];
+                foreach ($this->targets as $target) {
+                    if ($target instanceof DialectString) {
+                        $table =
+                            $dialect->quoteTable(
+                                $target->toDialectString($dialect)
+                            );
+                    } else {
+                        $table = $dialect->quoteTable($target);
+                    }
 
-            foreach ($this->targets as $target) {
-                if ($target instanceof DialectString) {
-                    $table =
-                        $dialect->quoteTable(
-                            $target->toDialectString($dialect)
-                        );
-                } else {
-                    $table = $dialect->quoteTable($target);
+                    $tables[] = $prepend . $table;
                 }
 
-                $tables[] = $prepend . $table;
+                return implode($append . ' ', $tables);
             }
 
-            return implode($append . ' ', $tables);
+            Assert::isUnreachable();
         }
-
-        Assert::isUnreachable();
     }
 }

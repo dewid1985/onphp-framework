@@ -8,69 +8,70 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Rules support for final Form.
- *
- * @ingroup Form
- * @ingroup Module
- **/
-abstract class RegulatedForm extends PlainForm
-{
-    /** @var array  */
-    protected $rules = []; // forever
-    /** @var array  */
-    protected $violated = []; // rules
-
+namespace OnPhp {
     /**
-     * @throws WrongArgumentException
-     * @return Form
+     * Rules support for final Form.
+     *
+     * @ingroup Form
+     * @ingroup Module
      **/
-    public function addRule($name, LogicalObject $rule)
+    abstract class RegulatedForm extends PlainForm
     {
-        Assert::isString($name);
+        /** @var array */
+        protected $rules = []; // forever
+        /** @var array */
+        protected $violated = []; // rules
 
-        $this->rules[$name] = $rule;
+        /**
+         * @throws WrongArgumentException
+         * @return Form
+         **/
+        public function addRule($name, LogicalObject $rule)
+        {
+            Assert::isString($name);
 
-        return $this;
-    }
+            $this->rules[$name] = $rule;
 
-    /**
-     * @throws MissingElementException
-     * @return Form
-     **/
-    public function dropRuleByName($name)
-    {
-        if (isset($this->rules[$name])) {
-            unset($this->rules[$name]);
             return $this;
         }
 
-        throw new MissingElementException(
-            "no such rule with '{$name}' name"
-        );
-    }
-
-    /**
-     * @param $name
-     * @return bool
-     */
-    public function ruleExists($name)
-    {
-        return isset($this->rules[$name]);
-    }
-
-    /**
-     * @return $this
-     */
-    public function checkRules()
-    {
-        foreach ($this->rules as $name => $logicalObject) {
-            if (!$logicalObject->toBoolean($this)) {
-                $this->violated[$name] = Form::WRONG;
+        /**
+         * @throws MissingElementException
+         * @return Form
+         **/
+        public function dropRuleByName($name)
+        {
+            if (isset($this->rules[$name])) {
+                unset($this->rules[$name]);
+                return $this;
             }
+
+            throw new MissingElementException(
+                "no such rule with '{$name}' name"
+            );
         }
 
-        return $this;
+        /**
+         * @param $name
+         * @return bool
+         */
+        public function ruleExists($name)
+        {
+            return isset($this->rules[$name]);
+        }
+
+        /**
+         * @return $this
+         */
+        public function checkRules()
+        {
+            foreach ($this->rules as $name => $logicalObject) {
+                if (!$logicalObject->toBoolean($this)) {
+                    $this->violated[$name] = Form::WRONG;
+                }
+            }
+
+            return $this;
+        }
     }
 }

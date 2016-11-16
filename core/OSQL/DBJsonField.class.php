@@ -8,63 +8,64 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Reference for actual DB-table Json field.
- *
- * @ingroup OSQL
- * @ingroup Module
- **/
-class DBJsonField extends DBField
-{
+namespace OnPhp {
     /**
-     * @var null|string
-     */
-    private $key = null;
-
-    /**
-     * DBJsonField constructor.
-     * @param $field
-     * @param null $table
-     * @param null $key
-     */
-    function __construct($field, $table = null, $key = null)
+     * Reference for actual DB-table Json field.
+     *
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    class DBJsonField extends DBField
     {
-        if (!is_null($key)) $this->setKey($key);
-        parent::__construct($field, $table);
+        /**
+         * @var null|string
+         */
+        private $key = null;
 
-    }
+        /**
+         * DBJsonField constructor.
+         * @param $field
+         * @param null $table
+         * @param null $key
+         */
+        function __construct($field, $table = null, $key = null)
+        {
+            if (!is_null($key)) $this->setKey($key);
+            parent::__construct($field, $table);
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        $field =
-            (
-            $this->getTable()
-                ? $this->getTable()->toDialectString($dialect) . '.'
-                : null
-            )
-            . $dialect->quoteField($this->getField());
-        if ($this->key) {
-            $field .= '->>\'' . $this->key . '\'';
         }
-        $field = '(' . $field . ')';
-        return
-            $this->cast
-                ? $dialect->toCasted($field, $this->cast)
-                : $field;
-    }
 
-    /**
-     * @param string $key
-     * @return $this
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-        return $this;
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            $field =
+                (
+                $this->getTable()
+                    ? $this->getTable()->toDialectString($dialect) . '.'
+                    : null
+                )
+                . $dialect->quoteField($this->getField());
+            if ($this->key) {
+                $field .= '->>\'' . $this->key . '\'';
+            }
+            $field = '(' . $field . ')';
+            return
+                $this->cast
+                    ? $dialect->toCasted($field, $this->cast)
+                    : $field;
+        }
+
+        /**
+         * @param string $key
+         * @return $this
+         */
+        public function setKey($key)
+        {
+            $this->key = $key;
+            return $this;
+        }
     }
 }

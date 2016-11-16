@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-interface Controller
-{
+namespace OnPhp {
     /**
-     * @return ModelAndView
+     * @ingroup Flow
      **/
-    public function handleRequest(HttpRequest $request);
+    interface Controller
+    {
+        /**
+         * @return ModelAndView
+         **/
+        public function handleRequest(HttpRequest $request);
+    }
 }

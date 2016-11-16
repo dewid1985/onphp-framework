@@ -8,136 +8,137 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Calendar month representation splitted by weeks.
- *
- * @ingroup Calendar
- **/
-class CalendarMonthWeekly
-{
-    private $monthRange = null;
-    private $fullRange = null;
-    private $fullLength = null;
-
-    private $weeks = [];
-    private $days = [];
-
-    public function __construct(
-        Date $base, $weekStart = Timestamp::WEEKDAY_MONDAY
-    )
+namespace OnPhp {
+    /**
+     * Calendar month representation splitted by weeks.
+     *
+     * @ingroup Calendar
+     **/
+    class CalendarMonthWeekly
     {
-        $firstDayOfMonth = new Date(
-            $base->getYear() . '-' . $base->getMonth() . '-01'
-        );
+        private $monthRange = null;
+        private $fullRange = null;
+        private $fullLength = null;
 
-        $lastDayOfMonth = new Date(
-            $base->getYear() . '-' . $base->getMonth() . '-'
-            . date('t', $base->toStamp()));
+        private $weeks = [];
+        private $days = [];
 
-        $start = $firstDayOfMonth->getFirstDayOfWeek($weekStart);
+        public function __construct(
+            Date $base, $weekStart = Timestamp::WEEKDAY_MONDAY
+        )
+        {
+            $firstDayOfMonth = new Date(
+                $base->getYear() . '-' . $base->getMonth() . '-01'
+            );
 
-        $end = $lastDayOfMonth->getLastDayOfWeek($weekStart);
+            $lastDayOfMonth = new Date(
+                $base->getYear() . '-' . $base->getMonth() . '-'
+                . date('t', $base->toStamp()));
 
-        $this->monthRange = (new DateRange())->lazySet(
-            $firstDayOfMonth, $lastDayOfMonth
-        );
+            $start = $firstDayOfMonth->getFirstDayOfWeek($weekStart);
 
-        $this->fullRange = (new DateRange())->lazySet(
-            $start, $end
-        );
+            $end = $lastDayOfMonth->getLastDayOfWeek($weekStart);
 
-        $rawDays = $this->fullRange->split();
-        $this->fullLength = 0;
+            $this->monthRange = (new DateRange())->lazySet(
+                $firstDayOfMonth, $lastDayOfMonth
+            );
 
-        foreach ($rawDays as $rawDay) {
-            $day = new CalendarDay($rawDay->toStamp());
+            $this->fullRange = (new DateRange())->lazySet(
+                $start, $end
+            );
 
-            if ($this->monthRange->contains($day))
-                $day->setOutside(false);
-            else
-                $day->setOutside(true);
+            $rawDays = $this->fullRange->split();
+            $this->fullLength = 0;
 
-            $this->days[$day->toDate()] = $day;
+            foreach ($rawDays as $rawDay) {
+                $day = new CalendarDay($rawDay->toStamp());
 
-            $weekNumber = floor($this->fullLength / 7);
+                if ($this->monthRange->contains($day))
+                    $day->setOutside(false);
+                else
+                    $day->setOutside(true);
 
-            if (!isset($this->weeks[$weekNumber]))
-                $this->weeks[$weekNumber] = new CalendarWeek();
+                $this->days[$day->toDate()] = $day;
 
-            $this->weeks[$weekNumber]->addDay($day);
+                $weekNumber = floor($this->fullLength / 7);
+
+                if (!isset($this->weeks[$weekNumber]))
+                    $this->weeks[$weekNumber] = new CalendarWeek();
+
+                $this->weeks[$weekNumber]->addDay($day);
+                ++$this->fullLength;
+            }
+
             ++$this->fullLength;
         }
 
-        ++$this->fullLength;
-    }
+        public function getWeeks()
+        {
+            return $this->weeks;
+        }
 
-    public function getWeeks()
-    {
-        return $this->weeks;
-    }
+        public function getDays()
+        {
+            return $this->days;
+        }
 
-    public function getDays()
-    {
-        return $this->days;
-    }
+        /**
+         * @return DateRange
+         **/
+        public function getFullRange()
+        {
+            return $this->fullRange;
+        }
 
-    /**
-     * @return DateRange
-     **/
-    public function getFullRange()
-    {
-        return $this->fullRange;
-    }
+        public function getFullLength()
+        {
+            return $this->fullLength;
+        }
 
-    public function getFullLength()
-    {
-        return $this->fullLength;
-    }
+        /**
+         * @return DateRange
+         **/
+        public function getMonthRange()
+        {
+            return $this->monthRange;
+        }
 
-    /**
-     * @return DateRange
-     **/
-    public function getMonthRange()
-    {
-        return $this->monthRange;
-    }
+        /**
+         * @throws WrongArgumentException
+         * @return CalendarMonthWeekly
+         **/
+        public function setSelected(Date $day)
+        {
+            if (!isset($this->days[$day->toDate()]))
+                throw new WrongArgumentException($day->toDate() . ' not in calendar');
 
-    /**
-     * @throws WrongArgumentException
-     * @return CalendarMonthWeekly
-     **/
-    public function setSelected(Date $day)
-    {
-        if (!isset($this->days[$day->toDate()]))
-            throw new WrongArgumentException($day->toDate() . ' not in calendar');
+            $this->days[$day->toDate()]->setSelected(true);
 
-        $this->days[$day->toDate()]->setSelected(true);
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return Date
+         **/
+        public function getNextMonthBase()
+        {
+            return $this->monthRange->getEnd()->spawn('+1 day');
+        }
 
-    /**
-     * @return Date
-     **/
-    public function getNextMonthBase()
-    {
-        return $this->monthRange->getEnd()->spawn('+1 day');
-    }
+        /**
+         * @return Date
+         **/
+        public function getPrevMonthBase()
+        {
+            return $this->monthRange->getStart()->spawn('-1 day');
+        }
 
-    /**
-     * @return Date
-     **/
-    public function getPrevMonthBase()
-    {
-        return $this->monthRange->getStart()->spawn('-1 day');
-    }
-
-    /**
-     * @return Date
-     **/
-    public function getBase()
-    {
-        return $this->monthRange->getStart();
+        /**
+         * @return Date
+         **/
+        public function getBase()
+        {
+            return $this->monthRange->getStart();
+        }
     }
 }

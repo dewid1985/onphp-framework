@@ -8,61 +8,62 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Uncachers
- **/
-class UncachersPool implements UncacherBase
-{
-    private $uncachers = [];
-
-    public function __construct(UncacherBase $uncacher = null)
-    {
-        if ($uncacher)
-            $this->merge($uncacher);
-    }
-
+namespace OnPhp {
     /**
-     * @param UncacherBase $uncacher
-     * @return UncachersPool
-     */
-    public function merge(UncacherBase $uncacher)
+     * @ingroup Uncachers
+     **/
+    class UncachersPool implements UncacherBase
     {
-        if ($uncacher instanceof UncachersPool) {
-            return $this->mergeSelf($uncacher);
+        private $uncachers = [];
+
+        public function __construct(UncacherBase $uncacher = null)
+        {
+            if ($uncacher)
+                $this->merge($uncacher);
         }
-        return $this->mergeInstance($uncacher);
-    }
 
-    private function mergeSelf(UncachersPool $uncacher)
-    {
-        foreach ($uncacher->getUncachers() as $subUncacher) {
-            $this->merge($subUncacher);
+        /**
+         * @param UncacherBase $uncacher
+         * @return UncachersPool
+         */
+        public function merge(UncacherBase $uncacher)
+        {
+            if ($uncacher instanceof UncachersPool) {
+                return $this->mergeSelf($uncacher);
+            }
+            return $this->mergeInstance($uncacher);
         }
-        return $this;
-    }
 
-    public function getUncachers()
-    {
-        return $this->uncachers;
-    }
-
-    private function mergeInstance(UncacherBase $uncacher)
-    {
-        $class = get_class($uncacher);
-        if (isset($this->uncachers[$class])) {
-            $this->uncachers[$class]->merge($uncacher);
-        } else {
-            $this->uncachers[$class] = $uncacher;
+        private function mergeSelf(UncachersPool $uncacher)
+        {
+            foreach ($uncacher->getUncachers() as $subUncacher) {
+                $this->merge($subUncacher);
+            }
+            return $this;
         }
-        return $this;
-    }
 
-    public function uncache()
-    {
-        foreach ($this->uncachers as $uncacher) {
-            /* @var $uncacher UncacherBase */
-            $uncacher->uncache();
+        public function getUncachers()
+        {
+            return $this->uncachers;
+        }
+
+        private function mergeInstance(UncacherBase $uncacher)
+        {
+            $class = get_class($uncacher);
+            if (isset($this->uncachers[$class])) {
+                $this->uncachers[$class]->merge($uncacher);
+            } else {
+                $this->uncachers[$class] = $uncacher;
+            }
+            return $this;
+        }
+
+        public function uncache()
+        {
+            foreach ($this->uncachers as $uncacher) {
+                /* @var $uncacher UncacherBase */
+                $uncacher->uncache();
+            }
         }
     }
 }

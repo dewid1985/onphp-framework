@@ -9,42 +9,44 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class ScopeSetter extends PrototypedSetter
-{
-    private $getter = null;
-
-    public function __construct(EntityProto $proto, &$object)
+namespace OnPhp {
+    class ScopeSetter extends PrototypedSetter
     {
-        Assert::isArray($object);
+        private $getter = null;
 
-        return parent::__construct($proto, $object);
-    }
+        public function __construct(EntityProto $proto, &$object)
+        {
+            Assert::isArray($object);
 
-    public function set($name, $value)
-    {
-        if (!isset($this->mapping[$name]))
-            throw new WrongArgumentException(
-                "knows nothing about property '{$name}'"
-            );
-
-        Assert::isTrue(!is_object($value), 'cannot put objects into scope');
-
-        $primitive = $this->mapping[$name];
-
-        $this->object[$primitive->getName()] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return ScopeGetter
-     **/
-    public function getGetter()
-    {
-        if (!$this->getter) {
-            $this->getter = new ScopeGetter($this->proto, $this->object);
+            return parent::__construct($proto, $object);
         }
 
-        return $this->getter;
+        public function set($name, $value)
+        {
+            if (!isset($this->mapping[$name]))
+                throw new WrongArgumentException(
+                    "knows nothing about property '{$name}'"
+                );
+
+            Assert::isTrue(!is_object($value), 'cannot put objects into scope');
+
+            $primitive = $this->mapping[$name];
+
+            $this->object[$primitive->getName()] = $value;
+
+            return $this;
+        }
+
+        /**
+         * @return ScopeGetter
+         **/
+        public function getGetter()
+        {
+            if (!$this->getter) {
+                $this->getter = new ScopeGetter($this->proto, $this->object);
+            }
+
+            return $this->getter;
+        }
     }
 }

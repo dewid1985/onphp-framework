@@ -8,26 +8,27 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Filters
- **/
-class UrlDecodeFilter extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return UrlDecodeFilter
+     * @ingroup Filters
      **/
-    public static function me()
+    class UrlDecodeFilter extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return UrlDecodeFilter
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value)
-    {
-        return urldecode($value);
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value)
+        {
+            return urldecode($value);
+        }
     }
 }

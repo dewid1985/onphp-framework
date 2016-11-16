@@ -8,37 +8,38 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OSQL
- * @ingroup Module
- **/
-class GroupBy extends FieldTable implements MappableObject
-{
-
+namespace OnPhp {
     /**
-     * @param ProtoDAO $dao
-     * @param JoinCapableQuery $query
-     * @return GroupBy
-     */
-    public function toMapped(ProtoDAO $dao, JoinCapableQuery $query)
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    class GroupBy extends FieldTable implements MappableObject
     {
-        return new self($dao->guessAtom($this->field, $query));
-    }
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect) : string
-    {
-        if (
-            $this->field instanceof SelectQuery
-            || $this->field instanceof LogicalObject
-        ) {
-            return '(' . $dialect->fieldToString($this->field) . ')';
-        } else {
-            return parent::toDialectString($dialect);
+        /**
+         * @param ProtoDAO $dao
+         * @param JoinCapableQuery $query
+         * @return GroupBy
+         */
+        public function toMapped(ProtoDAO $dao, JoinCapableQuery $query)
+        {
+            return new self($dao->guessAtom($this->field, $query));
+        }
+
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect) : string
+        {
+            if (
+                $this->field instanceof SelectQuery
+                || $this->field instanceof LogicalObject
+            ) {
+                return '(' . $dialect->fieldToString($this->field) . ')';
+            } else {
+                return parent::toDialectString($dialect);
+            }
         }
     }
 }

@@ -8,44 +8,44 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see http://pecl.php.net/package/APC
- *
- * @ingroup DAOs
- **/
-class ApcSegmentHandler extends OptimizerSegmentHandler
-{
-    public function __construct($segmentId)
+namespace OnPhp {
+    /**
+     * @see http://pecl.php.net/package/APC
+     *
+     * @ingroup DAOs
+     **/
+    class ApcSegmentHandler extends OptimizerSegmentHandler
     {
-        parent::__construct($segmentId);
+        public function __construct($segmentId)
+        {
+            parent::__construct($segmentId);
 
-        $this->locker = SemaphorePool::me();
-    }
-
-    public function drop()
-    {
-        return apc_delete($this->id);
-    }
-
-    protected function getMap()
-    {
-        $this->locker->get($this->id);
-
-        if (!$map = apc_fetch($this->id)) {
-            $map = array();
+            $this->locker = SemaphorePool::me();
         }
 
-        return $map;
-    }
+        public function drop()
+        {
+            return apc_delete($this->id);
+        }
 
-    protected function storeMap(array $map)
-    {
-        $result = apc_store($this->id, $map, Cache::EXPIRES_FOREVER);
+        protected function getMap()
+        {
+            $this->locker->get($this->id);
 
-        $this->locker->free($this->id);
+            if (!$map = apc_fetch($this->id)) {
+                $map = array();
+            }
 
-        return $result;
+            return $map;
+        }
+
+        protected function storeMap(array $map)
+        {
+            $result = apc_store($this->id, $map, Cache::EXPIRES_FOREVER);
+
+            $this->locker->free($this->id);
+
+            return $result;
+        }
     }
 }
-

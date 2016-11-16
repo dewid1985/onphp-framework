@@ -8,15 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * @ingroup Helpers
+     **/
+    interface SingleRange
+    {
+        public function getStart();
 
-/**
- * @ingroup Helpers
- **/
-interface SingleRange
-{
-    public function getStart();
+        public function getEnd();
 
-    public function getEnd();
-
-    public function contains($probe);
+        public function contains($probe);
+    }
 }

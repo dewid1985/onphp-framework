@@ -9,17 +9,18 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see Session
- **/
-class SessionWrapperNotStartedException extends BaseException
-{
-    public function __construct()
+namespace OnPhp {
+    /**
+     * @see Session
+     **/
+    class SessionWrapperNotStartedException extends BaseException
     {
-        return
-            parent::__construct(
-                'start session before assign or access session variables'
-            );
+        public function __construct()
+        {
+            return
+                parent::__construct(
+                    'start session before assign or access session variables'
+                );
+        }
     }
 }

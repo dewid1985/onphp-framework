@@ -8,11 +8,12 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveAnyType extends BasePrimitive
-{
-    /* nop */
+namespace OnPhp {
+    /**
+     * @ingroup Primitives
+     **/
+    class PrimitiveAnyType extends BasePrimitive
+    {
+        /* nop */
+    }
 }

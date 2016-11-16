@@ -8,40 +8,41 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-abstract class CountProjection extends BaseProjection
-{
+namespace OnPhp {
     /**
-     * @return JoinCapableQuery
+     * @ingroup Projections
      **/
-    public function process(Criteria $criteria, JoinCapableQuery $query)
+    abstract class CountProjection extends BaseProjection
     {
-        return
-            $query->get(
-                $this->getFunction($criteria, $query),
-                $this->alias
-            );
-    }
+        /**
+         * @return JoinCapableQuery
+         **/
+        public function process(Criteria $criteria, JoinCapableQuery $query)
+        {
+            return
+                $query->get(
+                    $this->getFunction($criteria, $query),
+                    $this->alias
+                );
+        }
 
-    /**
-     * @return SQLFunction
-     **/
-    protected function getFunction(
-        Criteria $criteria,
-        JoinCapableQuery $query
-    )
-    {
-        Assert::isNotNull($this->property);
+        /**
+         * @return SQLFunction
+         **/
+        protected function getFunction(
+            Criteria $criteria,
+            JoinCapableQuery $query
+        )
+        {
+            Assert::isNotNull($this->property);
 
-        return
-            new SQLFunction(
-                'count',
-                $this->property
-                    ? $criteria->getDao()->guessAtom($this->property, $query)
-                    : $criteria->getDao()->getIdName()
-            );
+            return
+                new SQLFunction(
+                    'count',
+                    $this->property
+                        ? $criteria->getDao()->guessAtom($this->property, $query)
+                        : $criteria->getDao()->getIdName()
+                );
+        }
     }
 }

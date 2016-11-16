@@ -9,7 +9,9 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface AutoloaderRecachable extends Autoloader
-{
-    public function autoloadWithRecache($className);
+namespace OnPhp {
+    interface AutoloaderRecachable extends Autoloader
+    {
+        public function autoloadWithRecache($className);
+    }
 }

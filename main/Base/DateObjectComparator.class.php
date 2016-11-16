@@ -9,27 +9,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class DateObjectComparator extends Singleton
-    implements Comparator, Instantiatable
-{
-    public static function me()
+namespace OnPhp {
+    class DateObjectComparator extends Singleton
+        implements Comparator, Instantiatable
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    public function compare(/*Date*/
-        $one,/*Date*/
-        $two)
-    {
-        Assert::isInstance($one, 'Date');
-        Assert::isInstance($two, 'Date');
+        public function compare(/*Date*/
+            $one,/*Date*/
+            $two)
+        {
+            Assert::isInstance($one, 'Date');
+            Assert::isInstance($two, 'Date');
 
-        $stamp1 = $one->toStamp();
-        $stamp2 = $two->toStamp();
+            $stamp1 = $one->toStamp();
+            $stamp2 = $two->toStamp();
 
-        if ($stamp1 == $stamp2)
-            return 0;
+            if ($stamp1 == $stamp2)
+                return 0;
 
-        return ($stamp1 < $stamp2) ? -1 : 1;
+            return ($stamp1 < $stamp2) ? -1 : 1;
+        }
     }
 }

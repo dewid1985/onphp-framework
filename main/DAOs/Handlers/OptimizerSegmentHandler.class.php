@@ -8,60 +8,61 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup DAOs
- **/
-abstract class OptimizerSegmentHandler implements SegmentHandler
-{
-    protected $id = null;
-    protected $locker = null;
-
-    public function __construct($segmentId)
+namespace OnPhp {
+    /**
+     * @ingroup DAOs
+     **/
+    abstract class OptimizerSegmentHandler implements SegmentHandler
     {
-        $this->id = $segmentId;
-    }
+        protected $id = null;
+        protected $locker = null;
 
-    public function touch($key)
-    {
-        $map = $this->getMap();
-
-        if (!isset($map[$key])) {
-            $map[$key] = true;
-            return $this->storeMap($map);
+        public function __construct($segmentId)
+        {
+            $this->id = $segmentId;
         }
 
-        $this->locker->free($this->id);
-        return true;
-    }
+        public function touch($key)
+        {
+            $map = $this->getMap();
 
-    abstract protected function getMap();
+            if (!isset($map[$key])) {
+                $map[$key] = true;
+                return $this->storeMap($map);
+            }
 
-    abstract protected function storeMap(array $map);
-
-    public function unlink($key)
-    {
-        $map = $this->getMap();
-
-        if (isset($map[$key])) {
-            unset($map[$key]);
-            return $this->storeMap($map);
-        }
-
-        $this->locker->free($this->id);
-        return true;
-    }
-
-    public function ping($key)
-    {
-        $map = $this->getMap();
-
-        $this->locker->free($this->id);
-
-        if (isset($map[$key])) {
+            $this->locker->free($this->id);
             return true;
-        } else {
-            return false;
+        }
+
+        abstract protected function getMap();
+
+        abstract protected function storeMap(array $map);
+
+        public function unlink($key)
+        {
+            $map = $this->getMap();
+
+            if (isset($map[$key])) {
+                unset($map[$key]);
+                return $this->storeMap($map);
+            }
+
+            $this->locker->free($this->id);
+            return true;
+        }
+
+        public function ping($key)
+        {
+            $map = $this->getMap();
+
+            $this->locker->free($this->id);
+
+            if (isset($map[$key])) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }

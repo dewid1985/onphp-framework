@@ -8,25 +8,26 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Uncachers
- **/
-class UncacherNullDaoWorker implements UncacherBase
-{
+namespace OnPhp {
     /**
-     * @param UncacherBase $uncacher
-     * @return $this
-     * @throws WrongArgumentException
-     */
-    public function merge(UncacherBase $uncacher)
+     * @ingroup Uncachers
+     **/
+    class UncacherNullDaoWorker implements UncacherBase
     {
-        Assert::isInstance($uncacher, 'UncacherNullDaoWorker');
-        return $this;
-    }
+        /**
+         * @param UncacherBase $uncacher
+         * @return $this
+         * @throws WrongArgumentException
+         */
+        public function merge(UncacherBase $uncacher)
+        {
+            Assert::isInstance($uncacher, 'UncacherNullDaoWorker');
+            return $this;
+        }
 
-    public function uncache()
-    {
-        /* do nothing */
+        public function uncache()
+        {
+            /* do nothing */
+        }
     }
 }

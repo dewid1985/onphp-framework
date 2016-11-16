@@ -9,12 +9,14 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class ObjectGetter extends PrototypedGetter
-{
-    public function get($name)
+namespace OnPhp {
+    class ObjectGetter extends PrototypedGetter
     {
-        $method = 'get' . ucfirst($name);
+        public function get($name)
+        {
+            $method = 'get' . ucfirst($name);
 
-        return $this->object->$method();
+            return $this->object->$method();
+        }
     }
 }

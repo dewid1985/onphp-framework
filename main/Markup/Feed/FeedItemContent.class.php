@@ -8,46 +8,48 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Feed
- **/
-class FeedItemContent
-{
-    private $type = null;
-    private $body = null;
-
+namespace OnPhp {
     /**
-     * @return FeedItemContentType
-     **/
-    public function getType()
+     * Class FeedItemContent
+     * @ingroup Feed
+     * @package OnPhp
+     */
+    class FeedItemContent
     {
-        return $this->type;
-    }
+        private $type = null;
+        private $body = null;
 
-    /**
-     * @return FeedItemContent
-     **/
-    public function setType(FeedItemContentType $type)
-    {
-        $this->type = $type;
+        /**
+         * @return FeedItemContentType
+         **/
+        public function getType()
+        {
+            return $this->type;
+        }
 
-        return $this;
-    }
+        /**
+         * @return FeedItemContent
+         **/
+        public function setType(FeedItemContentType $type)
+        {
+            $this->type = $type;
 
-    public function getBody()
-    {
-        return $this->body;
-    }
+            return $this;
+        }
 
-    /**
-     * @return FeedItemContent
-     **/
-    public function setBody($body)
-    {
-        $this->body = $body;
+        public function getBody()
+        {
+            return $this->body;
+        }
 
-        return $this;
+        /**
+         * @return FeedItemContent
+         **/
+        public function setBody($body)
+        {
+            $this->body = $body;
+
+            return $this;
+        }
     }
 }
-

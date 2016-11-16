@@ -9,45 +9,47 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class FormBuilder extends PrototypedBuilder
-{
-    /**
-     * @return Form
-     **/
-    public function fillOwn($object, &$result)
+namespace OnPhp {
+    abstract class FormBuilder extends PrototypedBuilder
     {
-        Assert::isInstance($result, 'Form');
-        /** @var  Form $result */
-        foreach ($this->getFormMapping() as $primitive) {
-            if (
-                $primitive instanceof PrimitiveForm
-                && $result->exists($primitive->getName())
-                && $primitive->isComposite()
-            ) {
+        /**
+         * @return Form
+         **/
+        public function fillOwn($object, &$result)
+        {
+            Assert::isInstance($result, 'Form');
+            /** @var  Form $result */
+            foreach ($this->getFormMapping() as $primitive) {
+                if (
+                    $primitive instanceof PrimitiveForm
+                    && $result->exists($primitive->getName())
+                    && $primitive->isComposite()
+                ) {
 
-                Assert::isEqual(
-                    $primitive->getProto(),
-                    $result->get($primitive->getName())->getProto()
-                );
+                    Assert::isEqual(
+                        $primitive->getProto(),
+                        $result->get($primitive->getName())->getProto()
+                    );
 
-                continue;
+                    continue;
+                }
+
+                $result->add($primitive);
             }
 
-            $result->add($primitive);
+            $result = parent::fillOwn($object, $result);
+
+            $result->setProto($this->proto);
+
+            return $result;
         }
 
-        $result = parent::fillOwn($object, $result);
-
-        $result->setProto($this->proto);
-
-        return $result;
-    }
-
-    /**
-     * @return Form
-     **/
-    protected function createEmpty()
-    {
-        return new Form();
+        /**
+         * @return Form
+         **/
+        protected function createEmpty()
+        {
+            return new Form();
+        }
     }
 }

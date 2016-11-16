@@ -8,31 +8,32 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Crypto
- **/
-class CryptoFunctions extends StaticFactory
-{
-    const SHA1_BLOCK_SIZE = 64;
-
+namespace OnPhp {
     /**
-     * @see http://tools.ietf.org/html/rfc2104
+     * @ingroup Crypto
      **/
-    public static function hmacsha1($key, $message)
+    class CryptoFunctions extends StaticFactory
     {
-        if (strlen($key) > self::SHA1_BLOCK_SIZE)
-            $key = sha1($key, true);
+        const SHA1_BLOCK_SIZE = 64;
 
-        $key = str_pad($key, self::SHA1_BLOCK_SIZE, "\x00", STR_PAD_RIGHT);
+        /**
+         * @see http://tools.ietf.org/html/rfc2104
+         **/
+        public static function hmacsha1($key, $message)
+        {
+            if (strlen($key) > self::SHA1_BLOCK_SIZE)
+                $key = sha1($key, true);
 
-        $ipad = null;
-        $opad = null;
-        for ($i = 0; $i < self::SHA1_BLOCK_SIZE; $i++) {
-            $ipad .= "\x36" ^ $key[$i];
-            $opad .= "\x5c" ^ $key[$i];
+            $key = str_pad($key, self::SHA1_BLOCK_SIZE, "\x00", STR_PAD_RIGHT);
+
+            $ipad = null;
+            $opad = null;
+            for ($i = 0; $i < self::SHA1_BLOCK_SIZE; $i++) {
+                $ipad .= "\x36" ^ $key[$i];
+                $opad .= "\x5c" ^ $key[$i];
+            }
+
+            return sha1($opad . sha1($ipad . $message, true), true);
         }
-
-        return sha1($opad . sha1($ipad . $message, true), true);
     }
 }

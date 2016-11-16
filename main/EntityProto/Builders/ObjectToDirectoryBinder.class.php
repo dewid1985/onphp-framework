@@ -9,116 +9,118 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class ObjectToDirectoryBinder extends DirectoryBuilder
-{
-    function __construct(EntityProto $proto)
+namespace OnPhp {
+    class ObjectToDirectoryBinder extends DirectoryBuilder
     {
-        parent::__construct($proto);
-    }
-
-    public function make($object, $recursive = true)
-    {
-        $this->checkDirectory();
-
-        if (!$object) {
-            $this->safeClean();
-
-            return $this->directory;
+        function __construct(EntityProto $proto)
+        {
+            parent::__construct($proto);
         }
 
-        $realDirectory = null;
+        public function make($object, $recursive = true)
+        {
+            $this->checkDirectory();
 
-        if (is_link($this->directory)) {
-            $realDirectory = readlink($this->directory);
-
-            if ($realDirectory === false)
-                throw new WrongStateException(
-                    'invalid pointer: ' . $this->directory
-                );
-        }
-
-        $reversePath = $this->identityMap->reverseLookup($object);
-
-        if (
-            !$reversePath
-            && is_link($this->directory)
-        ) {
-            throw new WrongStateException(
-                'you must always store your object somewhere '
-                . 'before you going to update pointer '
-                . $this->directory
-            );
-        }
-
-        if (
-            $reversePath
-            && file_exists($this->directory)
-            && !$realDirectory
-            && $this->directory != $reversePath
-        ) {
-            throw new WrongStateException(
-                'you should relocate object '
-                . $this->directory . ' to '
-                . $reversePath
-                . ' by yourself.'
-                . ' cannot replace object with a link'
-            );
-        }
-
-        if (
-            $reversePath
-            && (
-                !file_exists($this->directory)
-                || $realDirectory
-            )
-        ) {
-            if (
-                !$realDirectory
-                || $realDirectory != $reversePath
-            ) {
+            if (!$object) {
                 $this->safeClean();
 
-                $status = symlink($reversePath, $this->directory);
+                return $this->directory;
+            }
 
-                if ($status !== true)
+            $realDirectory = null;
+
+            if (is_link($this->directory)) {
+                $realDirectory = readlink($this->directory);
+
+                if ($realDirectory === false)
                     throw new WrongStateException(
-                        'error creating symlink'
+                        'invalid pointer: ' . $this->directory
                     );
             }
 
-            return $reversePath;
+            $reversePath = $this->identityMap->reverseLookup($object);
+
+            if (
+                !$reversePath
+                && is_link($this->directory)
+            ) {
+                throw new WrongStateException(
+                    'you must always store your object somewhere '
+                    . 'before you going to update pointer '
+                    . $this->directory
+                );
+            }
+
+            if (
+                $reversePath
+                && file_exists($this->directory)
+                && !$realDirectory
+                && $this->directory != $reversePath
+            ) {
+                throw new WrongStateException(
+                    'you should relocate object '
+                    . $this->directory . ' to '
+                    . $reversePath
+                    . ' by yourself.'
+                    . ' cannot replace object with a link'
+                );
+            }
+
+            if (
+                $reversePath
+                && (
+                    !file_exists($this->directory)
+                    || $realDirectory
+                )
+            ) {
+                if (
+                    !$realDirectory
+                    || $realDirectory != $reversePath
+                ) {
+                    $this->safeClean();
+
+                    $status = symlink($reversePath, $this->directory);
+
+                    if ($status !== true)
+                        throw new WrongStateException(
+                            'error creating symlink'
+                        );
+                }
+
+                return $reversePath;
+            }
+
+            $result = parent::make($object, $recursive);
+
+            $this->identityMap->bind($result, $object);
+
+            return $result;
         }
 
-        $result = parent::make($object, $recursive);
+        /**
+         * @return PrototypedBuilder
+         **/
+        public function makeReverseBuilder()
+        {
+            return
+                (new DirectoryToObjectBinder($this->proto))
+                    ->setIdentityMap($this->identityMap);
+        }
 
-        $this->identityMap->bind($result, $object);
+        /**
+         * @return ObjectGetter
+         **/
+        protected function getGetter($object)
+        {
+            return new ObjectGetter($this->proto, $object);
+        }
 
-        return $result;
-    }
-
-    /**
-     * @return PrototypedBuilder
-     **/
-    public function makeReverseBuilder()
-    {
-        return
-            (new DirectoryToObjectBinder($this->proto))
-                ->setIdentityMap($this->identityMap);
-    }
-
-    /**
-     * @return ObjectGetter
-     **/
-    protected function getGetter($object)
-    {
-        return new ObjectGetter($this->proto, $object);
-    }
-
-    /**
-     * @return FormSetter
-     **/
-    protected function getSetter(&$object)
-    {
-        return new DirectorySetter($this->proto, $object);
+        /**
+         * @return FormSetter
+         **/
+        protected function getSetter(&$object)
+        {
+            return new DirectorySetter($this->proto, $object);
+        }
     }
 }

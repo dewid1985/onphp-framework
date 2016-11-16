@@ -8,68 +8,69 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-abstract class BaseObjectPrimitive extends BasePrimitive
-{
-    /** @var null  */
-    protected $className = null;
-
+namespace OnPhp {
     /**
-     * @param $scope
-     * @return bool|null
-     * @throws WrongArgumentException
-     */
-    public function import($scope)
+     * @ingroup Primitives
+     **/
+    abstract class BaseObjectPrimitive extends BasePrimitive
     {
-        if (!BasePrimitive::import($scope)) {
-            return null;
+        /** @var null */
+        protected $className = null;
+
+        /**
+         * @param $scope
+         * @return bool|null
+         * @throws WrongArgumentException
+         */
+        public function import($scope)
+        {
+            if (!BasePrimitive::import($scope)) {
+                return null;
+            }
+
+            if ($scope[$this->getName()] instanceof $this->className) {
+                $this->value = $scope[$this->getName()];
+
+                return true;
+            }
+
+            try {
+                $this->value = new $this->className($scope[$this->getName()]);
+
+                return true;
+            } catch (WrongArgumentException $e) {
+                return false;
+            }
+
+            Assert::isUnreachable();
         }
 
-        if ($scope[$this->getName()] instanceof $this->className) {
-            $this->value = $scope[$this->getName()];
+        /**
+         * @param $value
+         * @return BaseObjectPrimitive
+         * @throws WrongArgumentException
+         */
+        public function setValue($value)
+        {
+            Assert::isInstance($value, $this->className);
 
-            return true;
+            $this->value = $value;
+
+            return $this;
         }
 
-        try {
-            $this->value = new $this->className($scope[$this->getName()]);
+        /**
+         * @param $default
+         * @return BaseObjectPrimitive
+         * @throws WrongArgumentException
+         */
+        public function setDefault($default)
+        {
+            Assert::isInstance($default, $this->className);
 
-            return true;
-        } catch (WrongArgumentException $e) {
-            return false;
+            $this->default = $default;
+
+            return $this;
         }
-
-        Assert::isUnreachable();
-    }
-
-    /**
-     * @param $value
-     * @return BaseObjectPrimitive
-     * @throws WrongArgumentException
-     */
-    public function setValue($value)
-    {
-        Assert::isInstance($value, $this->className);
-
-        $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * @param $default
-     * @return BaseObjectPrimitive
-     * @throws WrongArgumentException
-     */
-    public function setDefault($default)
-    {
-        Assert::isInstance($default, $this->className);
-
-        $this->default = $default;
-
-        return $this;
     }
 }

@@ -9,27 +9,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class StandardComparator extends Singleton
-    implements Comparator, Instantiatable
-{
-    private $cmpFunction = 'strcmp';
-
-    public static function me()
+namespace OnPhp {
+    class StandardComparator extends Singleton
+        implements Comparator, Instantiatable
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        private $cmpFunction = 'strcmp';
 
-    public function setCmpFunction($name)
-    {
-        $this->cmpFunction = $name;
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-        return $this;
-    }
+        public function setCmpFunction($name)
+        {
+            $this->cmpFunction = $name;
 
-    public function compare($one, $two)
-    {
-        $cmpFunc = $this->cmpFunction;
+            return $this;
+        }
 
-        return $cmpFunc($one, $two);
+        public function compare($one, $two)
+        {
+            $cmpFunc = $this->cmpFunction;
+
+            return $cmpFunc($one, $two);
+        }
     }
 }

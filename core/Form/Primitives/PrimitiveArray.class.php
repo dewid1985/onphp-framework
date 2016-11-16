@@ -8,92 +8,93 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveArray extends FiltrablePrimitive
-{
+namespace OnPhp {
     /**
-     * Fetching strategy for incoming containers:
-     *
-     * null - do nothing;
-     * true - lazy fetch;
-     * false - full fetch.
+     * @ingroup Primitives
      **/
-    private $fetchMode = null;
-
-    /**
-     * @return PrimitiveArray
-     **/
-    public function setFetchMode($ternary)
+    class PrimitiveArray extends FiltrablePrimitive
     {
-        Assert::isTernaryBase($ternary);
+        /**
+         * Fetching strategy for incoming containers:
+         *
+         * null - do nothing;
+         * true - lazy fetch;
+         * false - full fetch.
+         **/
+        private $fetchMode = null;
 
-        $this->fetchMode = $ternary;
+        /**
+         * @return PrimitiveArray
+         **/
+        public function setFetchMode($ternary)
+        {
+            Assert::isTernaryBase($ternary);
 
-        return $this;
-    }
+            $this->fetchMode = $ternary;
 
-    /**
-     * @param $value
-     * @return bool|null
-     */
-    public function importValue($value)
-    {
-        if ($value instanceof UnifiedContainer) {
-            if (
-                ($this->fetchMode !== null)
-                && ($value->getParentObject()->getId())
-            ) {
-                if ($value->isLazy() === $this->fetchMode) {
-                    $value = $value->getList();
-                } else {
-                    $className = get_class($value);
+            return $this;
+        }
 
-                    $containter = new $className(
-                        $value->getParentObject(),
-                        $this->fetchMode
-                    );
+        /**
+         * @param $value
+         * @return bool|null
+         */
+        public function importValue($value)
+        {
+            if ($value instanceof UnifiedContainer) {
+                if (
+                    ($this->fetchMode !== null)
+                    && ($value->getParentObject()->getId())
+                ) {
+                    if ($value->isLazy() === $this->fetchMode) {
+                        $value = $value->getList();
+                    } else {
+                        $className = get_class($value);
 
-                    $value = $containter->getList();
+                        $containter = new $className(
+                            $value->getParentObject(),
+                            $this->fetchMode
+                        );
+
+                        $value = $containter->getList();
+                    }
+                } elseif (!$value->isFetched()) {
+                    return null;
                 }
-            } elseif (!$value->isFetched()) {
+            }
+
+            if (is_array($value)) {
+                return $this->import([$this->getName() => $value]);
+            }
+
+            return false;
+        }
+
+        /**
+         * @param $scope
+         * @return bool|null
+         */
+        public function import($scope)
+        {
+            if (!BasePrimitive::import($scope)) {
                 return null;
             }
+
+            $this->value = $scope[$this->name];
+
+            $this->selfFilter();
+
+            if (
+                is_array($this->value)
+                && !($this->min && count($this->value) < $this->min)
+                && !($this->max && count($this->value) > $this->max)
+            ) {
+                return true;
+            } else {
+                $this->value = null;
+            }
+
+            return false;
         }
-
-        if (is_array($value)) {
-            return $this->import([$this->getName() => $value]);
-        }
-
-        return false;
-    }
-
-    /**
-     * @param $scope
-     * @return bool|null
-     */
-    public function import($scope)
-    {
-        if (!BasePrimitive::import($scope)) {
-            return null;
-        }
-
-        $this->value = $scope[$this->name];
-
-        $this->selfFilter();
-
-        if (
-            is_array($this->value)
-            && !($this->min && count($this->value) < $this->min)
-            && !($this->max && count($this->value) > $this->max)
-        ) {
-            return true;
-        } else {
-            $this->value = null;
-        }
-
-        return false;
     }
 }

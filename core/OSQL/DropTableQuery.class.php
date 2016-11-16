@@ -8,47 +8,48 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- * @ingroup Module
- **/
-class DropTableQuery extends QueryIdentification
-{
-    /** @var null  */
-    private $name = null;
-
-    /** @var bool  */
-    private $cascade = false;
-
+namespace OnPhp {
     /**
-     * DropTableQuery constructor.
-     * @param $name
-     * @param bool $cascade
-     */
-    public function __construct($name, $cascade = false)
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    class DropTableQuery extends QueryIdentification
     {
-        $this->name = $name;
-        $this->cascade = (true === $cascade);
-    }
+        /** @var null */
+        private $name = null;
 
-    /**
-     * @throws UnsupportedMethodException
-     */
-    public function getId()
-    {
-        throw new UnsupportedMethodException();
-    }
+        /** @var bool */
+        private $cascade = false;
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect) : string
-    {
-        return
-            'DROP TABLE ' . $dialect->quoteTable($this->name)
-            . $dialect->dropTableMode($this->cascade)
-            . ';';
+        /**
+         * DropTableQuery constructor.
+         * @param $name
+         * @param bool $cascade
+         */
+        public function __construct($name, $cascade = false)
+        {
+            $this->name = $name;
+            $this->cascade = (true === $cascade);
+        }
+
+        /**
+         * @throws UnsupportedMethodException
+         */
+        public function getId()
+        {
+            throw new UnsupportedMethodException();
+        }
+
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect) : string
+        {
+            return
+                'DROP TABLE ' . $dialect->quoteTable($this->name)
+                . $dialect->dropTableMode($this->cascade)
+                . ';';
+        }
     }
 }

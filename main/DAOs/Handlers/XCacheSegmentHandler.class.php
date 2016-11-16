@@ -9,50 +9,52 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @see http://trac.lighttpd.net/xcache/
- *
- * @ingroup DAOs
- **/
-class XCacheSegmentHandler extends OptimizerSegmentHandler
-{
-    public function __construct($segmentId)
+namespace OnPhp {
+    /**
+     * @see http://trac.lighttpd.net/xcache/
+     *
+     * @ingroup DAOs
+     **/
+    class XCacheSegmentHandler extends OptimizerSegmentHandler
     {
-        parent::__construct($segmentId);
+        public function __construct($segmentId)
+        {
+            parent::__construct($segmentId);
 
-        $this->locker = SemaphorePool::me();
-    }
-
-    public function drop()
-    {
-        return xcache_unset($this->id);
-    }
-
-    public function ping($key)
-    {
-        if (xcache_isset($this->id))
-            return parent::ping($key);
-        else
-            return false;
-    }
-
-    protected function getMap()
-    {
-        $this->locker->get($this->id);
-
-        if (!$map = xcache_get($this->id)) {
-            $map = array();
+            $this->locker = SemaphorePool::me();
         }
 
-        return $map;
-    }
+        public function drop()
+        {
+            return xcache_unset($this->id);
+        }
 
-    protected function storeMap(array $map)
-    {
-        $result = xcache_set($this->id, $map);
+        public function ping($key)
+        {
+            if (xcache_isset($this->id))
+                return parent::ping($key);
+            else
+                return false;
+        }
 
-        $this->locker->free($this->id);
+        protected function getMap()
+        {
+            $this->locker->get($this->id);
 
-        return $result;
+            if (!$map = xcache_get($this->id)) {
+                $map = array();
+            }
+
+            return $map;
+        }
+
+        protected function storeMap(array $map)
+        {
+            $result = xcache_set($this->id, $map);
+
+            $this->locker->free($this->id);
+
+            return $result;
+        }
     }
 }

@@ -8,12 +8,13 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveIpRange extends BaseObjectPrimitive
-{
-    protected $className = 'IpRange';
+namespace OnPhp {
+    /**
+     * @ingroup Primitives
+     **/
+    class PrimitiveIpRange extends BaseObjectPrimitive
+    {
+        protected $className = 'IpRange';
+    }
 }
 

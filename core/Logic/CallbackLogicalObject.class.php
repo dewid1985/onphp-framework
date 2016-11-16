@@ -8,44 +8,45 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * Wrapper around given childs of LogicalObject with custom logic-glue's.
- *
- * @ingroup Logic
- **/
-class CallbackLogicalObject implements LogicalObject
-{
+namespace OnPhp {
     /**
-     * @var Closure
-     */
-    private $callback = null;
-
-
-    /**
-     * @param Closure $callback
-     */
-    public function __construct($callback)
+     * Wrapper around given childs of LogicalObject with custom logic-glue's.
+     *
+     * @ingroup Logic
+     **/
+    class CallbackLogicalObject implements LogicalObject
     {
-        Assert::isTrue(is_callable($callback, true), 'callback must be callable');
-        $this->callback = $callback;
-    }
+        /**
+         * @var Closure
+         */
+        private $callback = null;
 
-    /**
-     * @param Form $form
-     * @return bool
-     */
-    public function toBoolean(Form $form) : bool
-    {
-        return call_user_func($this->callback, $form);
-    }
 
-    /**
-     * @param Dialect $dialect
-     * @throws UnimplementedFeatureException
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        throw new UnimplementedFeatureException("toDialectString is not needed here");
+        /**
+         * @param Closure $callback
+         */
+        public function __construct($callback)
+        {
+            Assert::isTrue(is_callable($callback, true), 'callback must be callable');
+            $this->callback = $callback;
+        }
+
+        /**
+         * @param Form $form
+         * @return bool
+         */
+        public function toBoolean(Form $form) : bool
+        {
+            return call_user_func($this->callback, $form);
+        }
+
+        /**
+         * @param Dialect $dialect
+         * @throws UnimplementedFeatureException
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            throw new UnimplementedFeatureException("toDialectString is not needed here");
+        }
     }
 }

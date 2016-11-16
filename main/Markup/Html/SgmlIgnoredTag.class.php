@@ -12,61 +12,66 @@
 /**
  * @ingroup Html
  **/
-class SgmlIgnoredTag extends SgmlTag
-{
-    private $cdata = null;
-    private $endMark = null;
-
-
+namespace OnPhp {
     /**
-     * @return SgmlIgnoredTag
-     **/
-    public static function comment()
+     * Class SgmlIgnoredTag
+     * @package OnPhp
+     */
+    class SgmlIgnoredTag extends SgmlTag
     {
-        return (new self())->setId('!--')->setEndMark('--');
-    }
+        private $cdata = null;
+        private $endMark = null;
 
-    /**
-     * @return Cdata
-     **/
-    public function getCdata()
-    {
-        return $this->cdata;
-    }
 
-    /**
-     * @return SgmlIgnoredTag
-     **/
-    public function setCdata(Cdata $cdata)
-    {
-        $this->cdata = $cdata;
+        /**
+         * @return SgmlIgnoredTag
+         **/
+        public static function comment()
+        {
+            return (new self())->setId('!--')->setEndMark('--');
+        }
 
-        return $this;
-    }
+        /**
+         * @return Cdata
+         **/
+        public function getCdata()
+        {
+            return $this->cdata;
+        }
 
-    public function getEndMark()
-    {
-        return $this->endMark;
-    }
+        /**
+         * @return SgmlIgnoredTag
+         **/
+        public function setCdata(Cdata $cdata)
+        {
+            $this->cdata = $cdata;
 
-    /**
-     * @return SgmlIgnoredTag
-     **/
-    public function setEndMark($endMark)
-    {
-        $this->endMark = $endMark;
+            return $this;
+        }
 
-        return $this;
-    }
+        public function getEndMark()
+        {
+            return $this->endMark;
+        }
 
-    public function isComment()
-    {
-        return $this->getId() == '!--';
-    }
+        /**
+         * @return SgmlIgnoredTag
+         **/
+        public function setEndMark($endMark)
+        {
+            $this->endMark = $endMark;
 
-    public function isExternal()
-    {
-        return ($this->getId() && $this->getId()[0] == '?');
+            return $this;
+        }
+
+        public function isComment()
+        {
+            return $this->getId() == '!--';
+        }
+
+        public function isExternal()
+        {
+            return ($this->getId() && $this->getId()[0] == '?');
+        }
     }
 }
-

@@ -8,78 +8,79 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Uncachers
- **/
-class UncacherSmartDaoWorkerLists implements UncacherBase
-{
-    private $classNameMap = [];
-
-    public function __construct($className, $indexKey, $intKey)
-    {
-        $this->classNameMap[$className] = [$indexKey, $intKey];
-    }
-
-    public function getClassNameMap()
-    {
-        return $this->classNameMap;
-    }
-
+namespace OnPhp {
     /**
-     * @param UncacherBase $uncacher
-     * @return UncacherBaseDaoWorker
-     * @throws WrongArgumentException
-     */
-    public function merge(UncacherBase $uncacher)
+     * @ingroup Uncachers
+     **/
+    class UncacherSmartDaoWorkerLists implements UncacherBase
     {
-        Assert::isInstance($uncacher, get_class($this));
-        return $this->mergeSelf($uncacher);
-    }
+        private $classNameMap = [];
 
-    /**
-     * @param UncacherSmartDaoWorkerLists $uncacher
-     * @return $this
-     */
-    private function mergeSelf(UncacherSmartDaoWorkerLists $uncacher)
-    {
-        foreach ($uncacher->getClassNameMap() as $className => $classNameRow) {
-            if (!isset($this->classNameMap[$className])) {
-                $this->classNameMap[$className] = $classNameRow;
+        public function __construct($className, $indexKey, $intKey)
+        {
+            $this->classNameMap[$className] = [$indexKey, $intKey];
+        }
+
+        public function getClassNameMap()
+        {
+            return $this->classNameMap;
+        }
+
+        /**
+         * @param UncacherBase $uncacher
+         * @return UncacherBaseDaoWorker
+         * @throws WrongArgumentException
+         */
+        public function merge(UncacherBase $uncacher)
+        {
+            Assert::isInstance($uncacher, get_class($this));
+            return $this->mergeSelf($uncacher);
+        }
+
+        /**
+         * @param UncacherSmartDaoWorkerLists $uncacher
+         * @return $this
+         */
+        private function mergeSelf(UncacherSmartDaoWorkerLists $uncacher)
+        {
+            foreach ($uncacher->getClassNameMap() as $className => $classNameRow) {
+                if (!isset($this->classNameMap[$className])) {
+                    $this->classNameMap[$className] = $classNameRow;
+                }
+            }
+            return $this;
+        }
+
+        public function uncache()
+        {
+            foreach ($this->classNameMap as $className => $classNameRow) {
+                list ($indexKey, $intKey) = $classNameRow;
+                $this->uncacheClassName($className, $indexKey, $intKey);
             }
         }
-        return $this;
-    }
 
-    public function uncache()
-    {
-        foreach ($this->classNameMap as $className => $classNameRow) {
-            list ($indexKey, $intKey) = $classNameRow;
-            $this->uncacheClassName($className, $indexKey, $intKey);
-        }
-    }
+        protected function uncacheClassName($className, $indexKey, $intKey)
+        {
+            $cache = Cache::me();
+            $pool = SemaphorePool::me();
 
-    protected function uncacheClassName($className, $indexKey, $intKey)
-    {
-        $cache = Cache::me();
-        $pool = SemaphorePool::me();
+            if ($pool->get($intKey)) {
+                $indexList = $cache->mark($className)->get($indexKey);
+                $cache->mark($className)->delete($indexKey);
 
-        if ($pool->get($intKey)) {
-            $indexList = $cache->mark($className)->get($indexKey);
+                if ($indexList) {
+                    foreach (array_keys($indexList) as $key)
+                        $cache->mark($className)->delete($key);
+                }
+
+                $pool->free($intKey);
+
+                return true;
+            }
+
             $cache->mark($className)->delete($indexKey);
 
-            if ($indexList) {
-                foreach (array_keys($indexList) as $key)
-                    $cache->mark($className)->delete($key);
-            }
-
-            $pool->free($intKey);
-
-            return true;
+            return false;
         }
-
-        $cache->mark($className)->delete($indexKey);
-
-        return false;
     }
 }

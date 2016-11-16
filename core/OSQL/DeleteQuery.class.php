@@ -8,57 +8,58 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class DeleteQuery extends QuerySkeleton implements SQLTableName
-{
-    protected $table = null;
-
-    public function getId()
-    {
-        throw new UnsupportedMethodException();
-    }
-
+namespace OnPhp {
     /**
-     * @return DeleteQuery
+     * @ingroup OSQL
      **/
-    public function from($table)
+    class DeleteQuery extends QuerySkeleton implements SQLTableName
     {
-        $this->table = $table;
+        protected $table = null;
 
-        return $this;
-    }
+        public function getId()
+        {
+            throw new UnsupportedMethodException();
+        }
 
-    public function getTable()
-    {
-        return $this->table;
-    }
+        /**
+         * @return DeleteQuery
+         **/
+        public function from($table)
+        {
+            $this->table = $table;
 
-    public function toDialectString(Dialect $dialect)
-    {
-        if ($this->where) {
-            $deleteStr =
-                'DELETE FROM ' . $dialect->quoteTable($this->table)
-                . parent::toDialectString($dialect);
+            return $this;
+        }
 
-            $this->checkReturning($dialect);
+        public function getTable()
+        {
+            return $this->table;
+        }
 
-            if (empty($this->returning)) {
-                return $deleteStr;
+        public function toDialectString(Dialect $dialect)
+        {
+            if ($this->where) {
+                $deleteStr =
+                    'DELETE FROM ' . $dialect->quoteTable($this->table)
+                    . parent::toDialectString($dialect);
+
+                $this->checkReturning($dialect);
+
+                if (empty($this->returning)) {
+                    return $deleteStr;
+                } else {
+                    $query =
+                        $deleteStr
+                        . ' RETURNING '
+                        . $this->toDialectStringReturning($dialect);
+
+                    return $query;
+                }
             } else {
-                $query =
-                    $deleteStr
-                    . ' RETURNING '
-                    . $this->toDialectStringReturning($dialect);
-
-                return $query;
+                throw new WrongArgumentException(
+                    "leave '{$this->table}' table alone in peace, bastard"
+                );
             }
-        } else {
-            throw new WrongArgumentException(
-                "leave '{$this->table}' table alone in peace, bastard"
-            );
         }
     }
 }

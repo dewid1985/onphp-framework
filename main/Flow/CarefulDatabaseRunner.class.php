@@ -9,85 +9,89 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Flow
- **/
-class CarefulDatabaseRunner implements CarefulCommand
-{
-    private $command = null;
+namespace OnPhp {
     /**
-     * @var InnerTransaction
+     * Class CarefulDatabaseRunner
+     * @ingroup Flow
+     * @package OnPhp
      */
-    private $transaction = null;
-
-    private $running = false;
-
-    final public function __construct(EditorCommand $command)
+    class CarefulDatabaseRunner implements CarefulCommand
     {
-        $this->command = $command;
-    }
+        private $command = null;
+        /**
+         * @var InnerTransaction
+         */
+        private $transaction = null;
 
-    /**
-     * @throws BaseException
-     * @return ModelAndView
-     **/
-    public function run(Prototyped $subject, Form $form, HttpRequest $request)
-    {
-        Assert::isFalse($this->running, 'command already running');
-        Assert::isTrue($subject instanceof DAOConnected);
+        private $running = false;
 
-        $this->transaction = InnerTransaction::begin($subject->dao());
-
-        try {
-            $mav = $this->command->run($subject, $form, $request);
-
-            $this->running = true;
-
-            return $mav;
-        } catch (BaseException $e) {
-            $this->transaction->rollback();
-
-            throw $e;
+        final public function __construct(EditorCommand $command)
+        {
+            $this->command = $command;
         }
 
-        Assert::isUnreachable();
-    }
+        /**
+         * @throws BaseException
+         * @return ModelAndView
+         **/
+        public function run(Prototyped $subject, Form $form, HttpRequest $request)
+        {
+            Assert::isFalse($this->running, 'command already running');
+            Assert::isTrue($subject instanceof DAOConnected);
 
-    /**
-     * @return CarefulDatabaseRunner
-     **/
-    public function commit()
-    {
-        if ($this->running) {
-            $this->transaction->commit();
-            $this->running = false;
-        }
+            $this->transaction = InnerTransaction::begin($subject->dao());
 
-        return $this;
-    }
-
-    public function __destruct()
-    {
-        if ($this->running) {
-            $this->rollback();
-        }
-    }
-
-    /**
-     * @return CarefulDatabaseRunner
-     **/
-    public function rollback()
-    {
-        if ($this->running) {
             try {
+                $mav = $this->command->run($subject, $form, $request);
+
+                $this->running = true;
+
+                return $mav;
+            } catch (BaseException $e) {
                 $this->transaction->rollback();
-            } catch (DatabaseException $e) {
-                // keep silence
+
+                throw $e;
             }
 
-            $this->running = false;
+            Assert::isUnreachable();
         }
 
-        return $this;
+        /**
+         * @return CarefulDatabaseRunner
+         **/
+        public function commit()
+        {
+            if ($this->running) {
+                $this->transaction->commit();
+                $this->running = false;
+            }
+
+            return $this;
+        }
+
+        public function __destruct()
+        {
+            if ($this->running) {
+                $this->rollback();
+            }
+        }
+
+        /**
+         * @return CarefulDatabaseRunner
+         **/
+        public function rollback()
+        {
+            if ($this->running) {
+                try {
+                    $this->transaction->rollback();
+                } catch (DatabaseException $e) {
+                    // keep silence
+                }
+
+                $this->running = false;
+            }
+
+            return $this;
+        }
     }
 }

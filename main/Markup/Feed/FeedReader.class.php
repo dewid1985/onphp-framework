@@ -8,79 +8,79 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Feed
- **/
-class FeedReader
-{
-    private $xml = null;
-    private $formats = [];
-
-    public function __construct()
-    {
-        $this->formats[] = YandexRssFeedFormat::me();
-        $this->formats[] = AtomFeedFormat::me();
-        $this->formats[] = RssFeedFormat::me();
-    }
-
-
+namespace OnPhp {
     /**
-     * @return SimpleXMLElement
+     * @ingroup Feed
      **/
-    public function getXml()
+    class FeedReader
     {
-        return $this->xml;
-    }
+        private $xml = null;
+        private $formats = [];
 
-    /**
-     * @param $file
-     * @return FeedChannel
-     * @throws WrongArgumentException
-     * @throws WrongStateException
-     */
-    public function parseFile($file)
-    {
-        try {
-            $this->xml = simplexml_load_file($file);
-        } catch (BaseException $e) {
-            throw new WrongArgumentException(
-                'Invalid link or content: ' . $e->getMessage()
+        public function __construct()
+        {
+            $this->formats[] = YandexRssFeedFormat::me();
+            $this->formats[] = AtomFeedFormat::me();
+            $this->formats[] = RssFeedFormat::me();
+        }
+
+
+        /**
+         * @return SimpleXMLElement
+         **/
+        public function getXml()
+        {
+            return $this->xml;
+        }
+
+        /**
+         * @param $file
+         * @return FeedChannel
+         * @throws WrongArgumentException
+         * @throws WrongStateException
+         */
+        public function parseFile($file)
+        {
+            try {
+                $this->xml = simplexml_load_file($file);
+            } catch (BaseException $e) {
+                throw new WrongArgumentException(
+                    'Invalid link or content: ' . $e->getMessage()
+                );
+            }
+
+            if (!$this->xml) {
+                throw new WrongStateException('simplexml_load_file failed.');
+            }
+
+            return $this->parse();
+        }
+
+        /**
+         * @return mixed
+         * @throws WrongStateException
+         */
+        private function parse()
+        {
+            foreach ($this->formats as $format) {
+                if ($format->isAcceptable($this->xml)) {
+                    return $format->parse($this->xml);
+                }
+            }
+
+            throw new WrongStateException(
+                'you\'re using unsupported format of feed'
             );
         }
 
-        if (!$this->xml) {
-            throw new WrongStateException('simplexml_load_file failed.');
+        /**
+         * @return FeedReader
+         **/
+        public function parseXml($xml)
+        {
+            $this->xml = new SimpleXMLElement($xml);
+
+            return $this->parse();
         }
-
-        return $this->parse();
-    }
-
-    /**
-     * @return mixed
-     * @throws WrongStateException
-     */
-    private function parse()
-    {
-        foreach ($this->formats as $format) {
-            if ($format->isAcceptable($this->xml)) {
-                return $format->parse($this->xml);
-            }
-        }
-
-        throw new WrongStateException(
-            'you\'re using unsupported format of feed'
-        );
-    }
-
-    /**
-     * @return FeedReader
-     **/
-    public function parseXml($xml)
-    {
-        $this->xml = new SimpleXMLElement($xml);
-
-        return $this->parse();
     }
 }
-

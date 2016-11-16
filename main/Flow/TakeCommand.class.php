@@ -9,28 +9,32 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Flow
- **/
-abstract class TakeCommand implements EditorCommand
-{
+namespace OnPhp {
     /**
-     * @return ModelAndView
-     **/
-    public function run(Prototyped $subject, Form $form, HttpRequest $request)
+     * Class TakeCommand
+     * @ingroup Flow
+     * @package OnPhp
+     */
+    abstract class TakeCommand implements EditorCommand
     {
-        $subject = $subject->dao()->{$this->daoMethod()}($subject);
+        /**
+         * @return ModelAndView
+         **/
+        public function run(Prototyped $subject, Form $form, HttpRequest $request)
+        {
+            $subject = $subject->dao()->{$this->daoMethod()}($subject);
 
-        return
-            (new ModelAndView())
-                ->setView(
-                    EditorController::COMMAND_SUCCEEDED
-                )
-                ->setModel(
-                    (new Model())
-                        ->set('id', $subject->getId())
-                );
+            return
+                (new ModelAndView())
+                    ->setView(
+                        EditorController::COMMAND_SUCCEEDED
+                    )
+                    ->setModel(
+                        (new Model())
+                            ->set('id', $subject->getId())
+                    );
+        }
+
+        abstract protected function daoMethod();
     }
-
-    abstract protected function daoMethod();
 }

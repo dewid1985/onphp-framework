@@ -9,27 +9,27 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class ImmutableObjectComparator extends Singleton
-    implements Comparator, Instantiatable
-{
-    public static function me()
+namespace OnPhp {
+    class ImmutableObjectComparator extends Singleton
+        implements Comparator, Instantiatable
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    public function compare($one, $two)
-    {
-        Assert::isInstance($one, 'Identifiable');
-        Assert::isInstance($two, 'Identifiable');
+        public function compare($one, $two)
+        {
+            Assert::isInstance($one, 'Identifiable');
+            Assert::isInstance($two, 'Identifiable');
 
-        $oneId = $one->getId();
-        $twoId = $two->getId();
+            $oneId = $one->getId();
+            $twoId = $two->getId();
 
-        if ($oneId === $twoId)
-            return 0;
+            if ($oneId === $twoId)
+                return 0;
 
-        return ($oneId < $twoId) ? -1 : 1;
+            return ($oneId < $twoId) ? -1 : 1;
+        }
     }
 }
-
-

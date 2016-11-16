@@ -10,84 +10,86 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class WebAppAjaxHandler implements InterceptingChainHandler
-{
-
-    private static $ajaxRequestVar = 'HTTP_X_REQUESTED_WITH';
-    private static $ajaxRequestValueList = ['XMLHttpRequest'];
-    private static $pjaxRequestVar = 'HTTP_X_PJAX';
-
-    /**
-     * @return WebAppAjaxHandler
-     */
-    public function run(InterceptingChain $chain)
+namespace OnPhp {
+    class WebAppAjaxHandler implements InterceptingChainHandler
     {
 
-        /** @var boolean $isPjaxRequest */
-        $isPjaxRequest = $this->isPjaxRequest($chain->getRequest());
+        private static $ajaxRequestVar = 'HTTP_X_REQUESTED_WITH';
+        private static $ajaxRequestValueList = ['XMLHttpRequest'];
+        private static $pjaxRequestVar = 'HTTP_X_PJAX';
 
-        /** @var boolean $isAjaxRequest */
-        $isAjaxRequest = !$isPjaxRequest && $this->isAjaxRequest($chain->getRequest());
+        /**
+         * @return WebAppAjaxHandler
+         */
+        public function run(InterceptingChain $chain)
+        {
 
-        /* @var $chain WebApplication */
-        $chain->setVar('isPjax', $isPjaxRequest);
-        $chain->setVar('isAjax', $isAjaxRequest);
-        $chain->getServiceLocator()
-            ->set('isPjax', $isPjaxRequest)
-            ->set('isAjax', $isAjaxRequest);
+            /** @var boolean $isPjaxRequest */
+            $isPjaxRequest = $this->isPjaxRequest($chain->getRequest());
 
-        $chain->next();
+            /** @var boolean $isAjaxRequest */
+            $isAjaxRequest = !$isPjaxRequest && $this->isAjaxRequest($chain->getRequest());
 
-        return $this;
-    }
+            /* @var $chain WebApplication */
+            $chain->setVar('isPjax', $isPjaxRequest);
+            $chain->setVar('isAjax', $isAjaxRequest);
+            $chain->getServiceLocator()
+                ->set('isPjax', $isPjaxRequest)
+                ->set('isAjax', $isAjaxRequest);
 
-    /**
-     * @return boolean
-     */
-    private function isPjaxRequest(HttpRequest $request)
-    {
-        $form = (new Form())
-            ->add(
-                (new Primitive())->boolean(self::$pjaxRequestVar)
-            )
-            ->add(
-                (new Primitive())->boolean('_isPjax')
-            )
-            ->import($request->getServer())
-            ->importOneMore('_isPjax', $request->getGet());
+            $chain->next();
 
-        if ($form->getErrors()) {
+            return $this;
+        }
+
+        /**
+         * @return boolean
+         */
+        private function isPjaxRequest(HttpRequest $request)
+        {
+            $form = (new Form())
+                ->add(
+                    (new Primitive())->boolean(self::$pjaxRequestVar)
+                )
+                ->add(
+                    (new Primitive())->boolean('_isPjax')
+                )
+                ->import($request->getServer())
+                ->importOneMore('_isPjax', $request->getGet());
+
+            if ($form->getErrors()) {
+                return false;
+            }
+            return $form->getValue(self::$pjaxRequestVar) || $form->getValue('_isPjax');
+        }
+
+        /**
+         * @return boolean
+         */
+        private function isAjaxRequest(HttpRequest $request)
+        {
+            $form = (new Form())
+                ->add(
+                    (new Primitive())
+                        ->plainChoice(self::$ajaxRequestVar)
+                        ->setList(self::$ajaxRequestValueList)
+                )
+                ->add(
+                    (new Primitive())->boolean('_isAjax')
+                )
+                ->import($request->getServer())
+                ->importOneMore('_isAjax', $request->getGet());
+
+            if ($form->getErrors()) {
+                return false;
+            }
+            if ($form->getValue(self::$ajaxRequestVar)) {
+                return true;
+            }
+            if ($form->getValue('_isAjax')) {
+                return true;
+            }
             return false;
         }
-        return $form->getValue(self::$pjaxRequestVar) || $form->getValue('_isPjax');
-    }
-
-    /**
-     * @return boolean
-     */
-    private function isAjaxRequest(HttpRequest $request)
-    {
-        $form = (new Form())
-            ->add(
-                (new Primitive())
-                    ->plainChoice(self::$ajaxRequestVar)
-                    ->setList(self::$ajaxRequestValueList)
-            )
-            ->add(
-                (new Primitive())->boolean('_isAjax')
-            )
-            ->import($request->getServer())
-            ->importOneMore('_isAjax', $request->getGet());
-
-        if ($form->getErrors()) {
-            return false;
-        }
-        if ($form->getValue(self::$ajaxRequestVar)) {
-            return true;
-        }
-        if ($form->getValue('_isAjax')) {
-            return true;
-        }
-        return false;
     }
 }

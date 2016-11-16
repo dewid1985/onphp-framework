@@ -9,16 +9,18 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Flow
- **/
-class ForbiddenCommand implements EditorCommand
-{
+namespace OnPhp {
     /**
-     * @return ModelAndView
+     * @ingroup Flow
      **/
-    public function run(Prototyped $subject, Form $form, HttpRequest $request)
+    class ForbiddenCommand implements EditorCommand
     {
-        return (new ModelAndView())->setView(EditorController::COMMAND_FAILED);
+        /**
+         * @return ModelAndView
+         **/
+        public function run(Prototyped $subject, Form $form, HttpRequest $request)
+        {
+            return (new ModelAndView())->setView(EditorController::COMMAND_FAILED);
+        }
     }
 }

@@ -8,16 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Support interface for use with FullTextUtils.
- *
- * @ingroup DAOs
- * @ingroup Module
- **/
-interface FullTextDAO extends BaseDAO
-{
-    // index' field name
-    public function getIndexField();
+namespace OnPhp {
+    /**
+     * Support interface for use with FullTextUtils.
+     *
+     * @ingroup DAOs
+     * @ingroup Module
+     **/
+    interface FullTextDAO extends BaseDAO
+    {
+        // index' field name
+        public function getIndexField();
+    }
 }
-

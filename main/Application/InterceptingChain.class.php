@@ -9,56 +9,58 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class InterceptingChain
-{
-    protected $chain = array();
-
-    protected $pos = -1;
-
-
-    /**
-     * @return InterceptingChain
-     */
-    public function add(InterceptingChainHandler $handler)
+namespace OnPhp {
+    class InterceptingChain
     {
-        $this->chain [] = $handler;
+        protected $chain = array();
 
-        return $this;
-    }
+        protected $pos = -1;
 
-    public function getHandlers()
-    {
-        return $this->chain;
-    }
 
-    /**
-     * @return InterceptingChain
-     */
-    public function run()
-    {
-        $this->pos = -1;
+        /**
+         * @return InterceptingChain
+         */
+        public function add(InterceptingChainHandler $handler)
+        {
+            $this->chain [] = $handler;
 
-        $this->next();
-
-        return $this;
-    }
-
-    public function next()
-    {
-        $this->pos++;
-
-        if (isset($this->chain[$this->pos])) {
-            $handler = $this->chain[$this->pos];
-            /* @var $handler InterceptingChainHandler */
-            $handler->run($this);
-            $this->checkHandlerResult($handler);
+            return $this;
         }
 
-        return $this;
-    }
+        public function getHandlers()
+        {
+            return $this->chain;
+        }
 
-    protected function checkHandlerResult(InterceptingChainHandler $handler)
-    {
-        return $this;
+        /**
+         * @return InterceptingChain
+         */
+        public function run()
+        {
+            $this->pos = -1;
+
+            $this->next();
+
+            return $this;
+        }
+
+        public function next()
+        {
+            $this->pos++;
+
+            if (isset($this->chain[$this->pos])) {
+                $handler = $this->chain[$this->pos];
+                /* @var $handler InterceptingChainHandler */
+                $handler->run($this);
+                $this->checkHandlerResult($handler);
+            }
+
+            return $this;
+        }
+
+        protected function checkHandlerResult(InterceptingChainHandler $handler)
+        {
+            return $this;
+        }
     }
 }

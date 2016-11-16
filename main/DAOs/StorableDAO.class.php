@@ -8,95 +8,96 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup DAOs
- **/
-abstract class StorableDAO extends ProtoDAO
-{
-    public function take(Identifiable $object)
-    {
-        return
-            $object->getId()
-                ? $this->merge($object, true)
-                : $this->add($object);
-    }
-
-    public function merge(Identifiable $object, $cacheOnly = true)
-    {
-        Assert::isNotNull($object->getId());
-
-        $this->checkObjectType($object);
-
-        $old = Cache::worker($this)->getCachedById($object->getId());
-
-        if (!$old) { // unlikely
-            if ($cacheOnly)
-                return $this->save($object);
-            else
-                $old = Cache::worker($this)->getById($object->getId());
-        }
-        if ($object === $old)
-            return $this->save($object);
-
-        return $this->unite($object, $old);
-    }
-
-    public function save(Identifiable $object)
-    {
-        return
-            $this->inject(
-                $this->targetizeUpdateQuery((new OSQL())->update(), $object),
-                $object
-            );
-    }
-
+namespace OnPhp {
     /**
-     * @return UpdateQuery
+     * @ingroup DAOs
      **/
-    private function targetizeUpdateQuery(
-        UpdateQuery $query,
-        Identifiable $object
-    )
+    abstract class StorableDAO extends ProtoDAO
     {
-        return $query->where(Expression::eqId($this->getIdName(), $object));
-    }
+        public function take(Identifiable $object)
+        {
+            return
+                $object->getId()
+                    ? $this->merge($object, true)
+                    : $this->add($object);
+        }
 
-    public function unite(
-        Identifiable $object, Identifiable $old
-    )
-    {
-        $query = $this->getProtoClass()
-            ->fillQuery((new OSQL())->update($this->getTable()), $object, $old);
+        public function merge(Identifiable $object, $cacheOnly = true)
+        {
+            Assert::isNotNull($object->getId());
 
-        if (!$query->getFieldsCount())
-            return $object;
+            $this->checkObjectType($object);
 
-        return $this->doInject(
-            $this->targetizeUpdateQuery($query, $object),
-            $object
-        );
-    }
+            $old = Cache::worker($this)->getCachedById($object->getId());
 
-    public function add(Identifiable $object)
-    {
-        return
-            $this->inject(
-                (new OSQL())->insert(),
-                $object->setId(
-                    DBPool::getByDao($this)->obtainSequence(
-                        $this->getSequence()
-                    )
-                )
-            );
-    }
+            if (!$old) { // unlikely
+                if ($cacheOnly)
+                    return $this->save($object);
+                else
+                    $old = Cache::worker($this)->getById($object->getId());
+            }
+            if ($object === $old)
+                return $this->save($object);
 
-    public function import(Identifiable $object)
-    {
-        return
-            $this->inject(
-                (new OSQL())->insert(),
+            return $this->unite($object, $old);
+        }
+
+        public function save(Identifiable $object)
+        {
+            return
+                $this->inject(
+                    $this->targetizeUpdateQuery((new OSQL())->update(), $object),
+                    $object
+                );
+        }
+
+        /**
+         * @return UpdateQuery
+         **/
+        private function targetizeUpdateQuery(
+            UpdateQuery $query,
+            Identifiable $object
+        )
+        {
+            return $query->where(Expression::eqId($this->getIdName(), $object));
+        }
+
+        public function unite(
+            Identifiable $object, Identifiable $old
+        )
+        {
+            $query = $this->getProtoClass()
+                ->fillQuery((new OSQL())->update($this->getTable()), $object, $old);
+
+            if (!$query->getFieldsCount())
+                return $object;
+
+            return $this->doInject(
+                $this->targetizeUpdateQuery($query, $object),
                 $object
             );
+        }
+
+        public function add(Identifiable $object)
+        {
+            return
+                $this->inject(
+                    (new OSQL())->insert(),
+                    $object->setId(
+                        DBPool::getByDao($this)->obtainSequence(
+                            $this->getSequence()
+                        )
+                    )
+                );
+        }
+
+        public function import(Identifiable $object)
+        {
+            return
+                $this->inject(
+                    (new OSQL())->insert(),
+                    $object
+                );
+        }
     }
 }

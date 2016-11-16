@@ -9,45 +9,47 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class FloatRange extends BaseRange
-{
-    public function __construct($min = null, $max = null)
+namespace OnPhp {
+    class FloatRange extends BaseRange
     {
-        if (!is_null($min))
-            Assert::isFloat($min);
+        public function __construct($min = null, $max = null)
+        {
+            if (!is_null($min))
+                Assert::isFloat($min);
 
-        if (!is_null($max))
-            Assert::isFloat($max);
+            if (!is_null($max))
+                Assert::isFloat($max);
 
-        parent::__construct($min, $max);
+            parent::__construct($min, $max);
+        }
+
+        /**
+         * @throws WrongArgumentException
+         * @return FloatRange
+         **/
+        public function setMin($min = null)
+        {
+            if ($min !== null)
+                Assert::isFloat($min);
+            else
+                return $this;
+
+            return parent::setMin($min);
+        }
+
+        /**
+         * @throws WrongArgumentException
+         * @return FloatRange
+         **/
+        public function setMax($max = null)
+        {
+            if ($max !== null)
+                Assert::isFloat($max);
+            else
+                return $this;
+
+            return parent::setMax($max);
+        }
     }
 
-    /**
-     * @throws WrongArgumentException
-     * @return FloatRange
-     **/
-    public function setMin($min = null)
-    {
-        if ($min !== null)
-            Assert::isFloat($min);
-        else
-            return $this;
-
-        return parent::setMin($min);
-    }
-
-    /**
-     * @throws WrongArgumentException
-     * @return FloatRange
-     **/
-    public function setMax($max = null)
-    {
-        if ($max !== null)
-            Assert::isFloat($max);
-        else
-            return $this;
-
-        return parent::setMax($max);
-    }
 }
-

@@ -8,131 +8,133 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Feed
- **/
-class FeedItem
-{
-    private $id = null;
-    private $title = null;
-    private $content = null;
-    private $summary = null;
-    private $published = null;
-    private $link = null;
-    private $category = null;
-
-    public function __construct($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
+namespace OnPhp {
     /**
-     * @return FeedItem
-     **/
-    public function setId($id)
+     * Class FeedItem
+     * @ingroup Feed
+     * @package OnPhp
+     */
+    class FeedItem
     {
-        $this->id = $id;
+        private $id = null;
+        private $title = null;
+        private $content = null;
+        private $summary = null;
+        private $published = null;
+        private $link = null;
+        private $category = null;
 
-        return $this;
-    }
+        public function __construct($title)
+        {
+            $this->title = $title;
+        }
 
-    public function getTitle()
-    {
-        return $this->title;
-    }
+        public function getId()
+        {
+            return $this->id;
+        }
 
-    /**
-     * @return FeedItem
-     **/
-    public function setTitle($title)
-    {
-        $this->title = $title;
+        /**
+         * @return FeedItem
+         **/
+        public function setId($id)
+        {
+            $this->id = $id;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    public function getContent()
-    {
-        return $this->content;
-    }
+        public function getTitle()
+        {
+            return $this->title;
+        }
 
-    /**
-     * @return FeedItem
-     **/
-    public function setContent($content)
-    {
-        $this->content = $content;
+        /**
+         * @return FeedItem
+         **/
+        public function setTitle($title)
+        {
+            $this->title = $title;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    public function getSummary()
-    {
-        return $this->summary;
-    }
+        public function getContent()
+        {
+            return $this->content;
+        }
 
-    /**
-     * @return FeedItem
-     **/
-    public function setSummary($summary)
-    {
-        $this->summary = $summary;
+        /**
+         * @return FeedItem
+         **/
+        public function setContent($content)
+        {
+            $this->content = $content;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return Timestamp
-     **/
-    public function getPublished()
-    {
-        return $this->published;
-    }
+        public function getSummary()
+        {
+            return $this->summary;
+        }
 
-    /**
-     * @return FeedItem
-     **/
-    public function setPublished(Timestamp $published)
-    {
-        $this->published = $published;
+        /**
+         * @return FeedItem
+         **/
+        public function setSummary($summary)
+        {
+            $this->summary = $summary;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    public function getLink()
-    {
-        return $this->link;
-    }
+        /**
+         * @return Timestamp
+         **/
+        public function getPublished()
+        {
+            return $this->published;
+        }
 
-    /**
-     * @return FeedItem
-     **/
-    public function setLink($link)
-    {
-        $this->link = $link;
+        /**
+         * @return FeedItem
+         **/
+        public function setPublished(Timestamp $published)
+        {
+            $this->published = $published;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    public function getCategory()
-    {
-        return $this->category;
-    }
+        public function getLink()
+        {
+            return $this->link;
+        }
 
-    /**
-     * @return FeedItem
-     **/
-    public function setCategory($category)
-    {
-        $this->category = $category;
+        /**
+         * @return FeedItem
+         **/
+        public function setLink($link)
+        {
+            $this->link = $link;
 
-        return $this;
+            return $this;
+        }
+
+        public function getCategory()
+        {
+            return $this->category;
+        }
+
+        /**
+         * @return FeedItem
+         **/
+        public function setCategory($category)
+        {
+            $this->category = $category;
+
+            return $this;
+        }
     }
 }
-

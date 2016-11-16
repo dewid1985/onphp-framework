@@ -8,48 +8,49 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveBoolean extends BasePrimitive
-{
+namespace OnPhp {
     /**
-     * @param $scope
-     * @return bool
-     */
-    public function import($scope)
+     * @ingroup Primitives
+     **/
+    class PrimitiveBoolean extends BasePrimitive
     {
-        if (isset($scope[$this->name]))
-            $this->value = filter_var($scope[$this->name], FILTER_VALIDATE_BOOLEAN);
-        else
-            $this->value = false;
-        return $this->imported = true;
-    }
+        /**
+         * @param $scope
+         * @return bool
+         */
+        public function import($scope)
+        {
+            if (isset($scope[$this->name]))
+                $this->value = filter_var($scope[$this->name], FILTER_VALIDATE_BOOLEAN);
+            else
+                $this->value = false;
+            return $this->imported = true;
+        }
 
-    /**
-     * @param $value
-     * @return bool
-     */
-    public function importValue($value)
-    {
-        if (
-            false === $value
-            || null === $value
-        )
-            $this->value = false;
-        else
-            $this->value = true;
+        /**
+         * @param $value
+         * @return bool
+         */
+        public function importValue($value)
+        {
+            if (
+                false === $value
+                || null === $value
+            )
+                $this->value = false;
+            else
+                $this->value = true;
 
 
-        return $this->imported = true;
-    }
+            return $this->imported = true;
+        }
 
-    /**
-     * @return bool
-     */
-    public function isImported()
-    {
-        return ($this->imported && $this->value);
+        /**
+         * @return bool
+         */
+        public function isImported()
+        {
+            return ($this->imported && $this->value);
+        }
     }
 }

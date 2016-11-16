@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Basis for almost all implementations of SQL parts.
- *
- * @ingroup OSQL
- * @ingroup Module
- **/
-interface DialectString
-{
-    public function toDialectString(Dialect $dialect);
+namespace OnPhp {
+    /**
+     * Basis for almost all implementations of SQL parts.
+     *
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    interface DialectString
+    {
+        public function toDialectString(Dialect $dialect);
+    }
 }

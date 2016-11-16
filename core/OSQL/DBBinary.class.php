@@ -8,26 +8,27 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Container for passing binary values into OSQL queries.
- *
- * @ingroup OSQL
- * @ingroup Module
- **/
-class DBBinary extends DBValue
-{
-    function __construct($value)
-    {
-        parent::__construct($value);
-    }
-
+namespace OnPhp {
     /**
-     * @param Dialect $dialect
-     * @return mixed
-     */
-    public function toDialectString(Dialect $dialect)
+     * Container for passing binary values into OSQL queries.
+     *
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    class DBBinary extends DBValue
     {
-        return $dialect->quoteBinary($this->getValue());
+        function __construct($value)
+        {
+            parent::__construct($value);
+        }
+
+        /**
+         * @param Dialect $dialect
+         * @return mixed
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            return $dialect->quoteBinary($this->getValue());
+        }
     }
 }

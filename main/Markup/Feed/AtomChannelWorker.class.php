@@ -8,43 +8,46 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Feed
- **/
-class AtomChannelWorker extends Singleton implements FeedChannelWorker
-{
+namespace OnPhp {
     /**
-     *
-     *
-     * @return AtomChannelWorker
-     **/
-    public static function me()
+     * Class AtomChannelWorker
+     * @ingroup Feed
+     * @package OnPhp
+     */
+    class AtomChannelWorker extends Singleton implements FeedChannelWorker
     {
-        return Singleton::getInstance(__CLASS__);
-    }
-
-    /**
-     * @return FeedChannel
-     **/
-    public function makeChannel(SimpleXMLElement $xmlFeed)
-    {
-        $feedChannel = new FeedChannel((string) $xmlFeed->title);
-
-        if (isset($xmlFeed->link)) {
-            if (is_array($xmlFeed->link)) {
-                $feedChannel->setLink((string) $xmlFeed->link[0]);
-            } else {
-                $feedChannel->setLink((string) $xmlFeed->link);
-            }
+        /**
+         *
+         *
+         * @return AtomChannelWorker
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
         }
 
-        return $feedChannel;
-    }
+        /**
+         * @return FeedChannel
+         **/
+        public function makeChannel(SimpleXMLElement $xmlFeed)
+        {
+            $feedChannel = new FeedChannel((string)$xmlFeed->title);
 
-    public function toXml(FeedChannel $channel, $itemsXml)
-    {
-        throw new UnimplementedFeatureException('implement me!');
+            if (isset($xmlFeed->link)) {
+                if (is_array($xmlFeed->link)) {
+                    $feedChannel->setLink((string)$xmlFeed->link[0]);
+                } else {
+                    $feedChannel->setLink((string)$xmlFeed->link);
+                }
+            }
+
+            return $feedChannel;
+        }
+
+        public function toXml(FeedChannel $channel, $itemsXml)
+        {
+            throw new UnimplementedFeatureException('implement me!');
+        }
     }
 }
 

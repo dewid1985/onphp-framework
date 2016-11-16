@@ -8,51 +8,52 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class ClassProjection implements ObjectProjection
-{
-    protected $className = null;
-
+namespace OnPhp {
     /**
-     * ClassProjection constructor.
-     * @param $class
-     */
-    public function __construct($class)
-    {
-        Assert::isTrue(
-            ClassUtils::isInstanceOf($class, 'Prototyped')
-        );
-
-        if (is_object($class))
-            $this->className = get_class($class);
-        else
-            $this->className = $class;
-    }
-
-    /**
-     * @return JoinCapableQuery
+     * @ingroup Projections
      **/
-    public function process(Criteria $criteria, JoinCapableQuery $query)
+    class ClassProjection implements ObjectProjection
     {
-        $dao = call_user_func([$this->className, 'dao']);
+        protected $className = null;
 
-        foreach ($dao->getFields() as $field)
-            $this->subProcess(
-                $query,
-                new DBField($field, $dao->getTable())
+        /**
+         * ClassProjection constructor.
+         * @param $class
+         */
+        public function __construct($class)
+        {
+            Assert::isTrue(
+                ClassUtils::isInstanceOf($class, 'Prototyped')
             );
 
-        return $query;
-    }
+            if (is_object($class))
+                $this->className = get_class($class);
+            else
+                $this->className = $class;
+        }
 
-    /* void */
-    protected function subProcess(
-        JoinCapableQuery $query, DBField $field
-    )
-    {
-        $query->get($field);
+        /**
+         * @return JoinCapableQuery
+         **/
+        public function process(Criteria $criteria, JoinCapableQuery $query)
+        {
+            $dao = call_user_func([$this->className, 'dao']);
+
+            foreach ($dao->getFields() as $field)
+                $this->subProcess(
+                    $query,
+                    new DBField($field, $dao->getTable())
+                );
+
+            return $query;
+        }
+
+        /* void */
+        protected function subProcess(
+            JoinCapableQuery $query, DBField $field
+        )
+        {
+            $query->get($field);
+        }
     }
 }

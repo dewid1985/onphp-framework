@@ -8,54 +8,55 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Helpers
- **/
-class CallChain
-{
-    private $chain = [];
-
+namespace OnPhp {
     /**
-     * @return CallChain
+     * @ingroup Helpers
      **/
-    public function add($object)
+    class CallChain
     {
-        $this->chain[] = $object;
+        private $chain = [];
 
-        return $this;
-    }
+        /**
+         * @return CallChain
+         **/
+        public function add($object)
+        {
+            $this->chain[] = $object;
 
-    public function call($method, $args = null /* , ... */)
-    {
-        if (!$this->chain)
-            throw new WrongStateException();
-
-        $args = func_get_args();
-        array_shift($args);
-
-        if (count($args)) {
-            $result = $args;
-            foreach ($this->chain as $object)
-                $result = call_user_func_array(
-                    array($object, $method),
-                    is_array($result)
-                        ? $result
-                        : array($result)
-                );
-        } else {
-            foreach ($this->chain as $object)
-                $result = call_user_func(array($object, $method));
+            return $this;
         }
 
-        return $result;
-    }
+        public function call($method, $args = null /* , ... */)
+        {
+            if (!$this->chain)
+                throw new WrongStateException();
 
-    public function __call($method, $args = null)
-    {
-        return call_user_func_array(
-            array($this, 'call'),
-            array_merge(array($method), $args)
-        );
+            $args = func_get_args();
+            array_shift($args);
+
+            if (count($args)) {
+                $result = $args;
+                foreach ($this->chain as $object)
+                    $result = call_user_func_array(
+                        array($object, $method),
+                        is_array($result)
+                            ? $result
+                            : array($result)
+                    );
+            } else {
+                foreach ($this->chain as $object)
+                    $result = call_user_func(array($object, $method));
+            }
+
+            return $result;
+        }
+
+        public function __call($method, $args = null)
+        {
+            return call_user_func_array(
+                array($this, 'call'),
+                array_merge(array($method), $args)
+            );
+        }
     }
 }

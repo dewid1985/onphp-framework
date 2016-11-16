@@ -8,130 +8,132 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveDateRange extends FiltrablePrimitive
-{
-    private $className = null;
-
-
+namespace OnPhp {
     /**
-     * @throws WrongArgumentException
-     * @return PrimitiveDateRange
+     * @ingroup Primitives
      **/
-    public function of($class)
+    class PrimitiveDateRange extends FiltrablePrimitive
     {
-        Assert::isTrue(
-            ClassUtils::isInstanceOf($class, $this->getObjectName())
-        );
+        private $className = null;
 
-        $this->className = $class;
 
-        return $this;
-    }
-
-    protected function getObjectName()
-    {
-        return 'DateRange';
-    }
-
-    /**
-     * @throws WrongArgumentException
-     * @return PrimitiveDateRange
-     **/
-    public function setDefault(/* DateRange */
-        $object
-    ) {
-        $this->checkType($object);
-
-        $this->default = $object;
-
-        return $this;
-    }
-
-    private function checkType($object)
-    {
-        if ($this->className) {
+        /**
+         * @throws WrongArgumentException
+         * @return PrimitiveDateRange
+         **/
+        public function of($class)
+        {
             Assert::isTrue(
-                ClassUtils::isInstanceOf($object, $this->className)
+                ClassUtils::isInstanceOf($class, $this->getObjectName())
             );
-        } else {
-            Assert::isTrue(
-                ClassUtils::isInstanceOf($object, $this->getObjectName())
-            );
+
+            $this->className = $class;
+
+            return $this;
         }
-    }
 
-    public function importValue($value)
-    {
-        try {
-            if ($value) {
-                $this->checkType($value);
+        protected function getObjectName()
+        {
+            return 'DateRange';
+        }
 
-                if ($this->checkRanges($value)) {
-                    $this->value = $value;
-                    return true;
-                } else {
-                    return false;
-                }
+        /**
+         * @throws WrongArgumentException
+         * @return PrimitiveDateRange
+         **/
+        public function setDefault(/* DateRange */
+            $object
+        )
+        {
+            $this->checkType($object);
+
+            $this->default = $object;
+
+            return $this;
+        }
+
+        private function checkType($object)
+        {
+            if ($this->className) {
+                Assert::isTrue(
+                    ClassUtils::isInstanceOf($object, $this->className)
+                );
             } else {
-                return parent::importValue(null);
+                Assert::isTrue(
+                    ClassUtils::isInstanceOf($object, $this->getObjectName())
+                );
             }
-        } catch (WrongArgumentException $e) {
-            return false;
         }
-    }
 
-    protected function checkRanges(DateRange $range)
-    {
-        return
-            !($this->min && ($this->min->toStamp() < $range->getStartStamp()))
-            && !($this->max && ($this->max->toStamp() > $range->getEndStamp()));
-    }
-
-    public function import($scope)
-    {
-        if (parent::import($scope)) {
-            $listName = $this->getObjectName() . 'List';
+        public function importValue($value)
+        {
             try {
-                $range = $this->makeRange($scope[$this->name]);
+                if ($value) {
+                    $this->checkType($value);
+
+                    if ($this->checkRanges($value)) {
+                        $this->value = $value;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return parent::importValue(null);
+                }
             } catch (WrongArgumentException $e) {
                 return false;
             }
-
-            if ($this->checkRanges($range)) {
-                if (
-                    $this->className
-                    && ($this->className != $this->getObjectName())
-                ) {
-                    $newRange = new $this->className;
-
-                    if ($start = $range->getStart()) {
-                        $newRange->setStart($start);
-                    }
-
-                    if ($end = $range->getEnd()) {
-                        $newRange->setEnd($end);
-                    }
-
-                    $this->value = $newRange;
-                    return true;
-                }
-
-                $this->value = $range;
-                return true;
-            }
         }
 
-        return false;
-    }
+        protected function checkRanges(DateRange $range)
+        {
+            return
+                !($this->min && ($this->min->toStamp() < $range->getStartStamp()))
+                && !($this->max && ($this->max->toStamp() > $range->getEndStamp()));
+        }
 
-    /* void */
+        public function import($scope)
+        {
+            if (parent::import($scope)) {
+                $listName = $this->getObjectName() . 'List';
+                try {
+                    $range = $this->makeRange($scope[$this->name]);
+                } catch (WrongArgumentException $e) {
+                    return false;
+                }
 
-    protected function makeRange($string)
-    {
-        return DateRangeList::makeRange($string);
+                if ($this->checkRanges($range)) {
+                    if (
+                        $this->className
+                        && ($this->className != $this->getObjectName())
+                    ) {
+                        $newRange = new $this->className;
+
+                        if ($start = $range->getStart()) {
+                            $newRange->setStart($start);
+                        }
+
+                        if ($end = $range->getEnd()) {
+                            $newRange->setEnd($end);
+                        }
+
+                        $this->value = $newRange;
+                        return true;
+                    }
+
+                    $this->value = $range;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /* void */
+
+        protected function makeRange($string)
+        {
+            return DateRangeList::makeRange($string);
+        }
     }
 }

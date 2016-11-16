@@ -8,73 +8,74 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveNoValue extends BasePrimitive
-{
+namespace OnPhp {
     /**
-     * @param $value
-     * @return PrimitiveNoValue
-     * @throws WrongArgumentException
-     */
-    public function setValue($value) : PrimitiveNoValue
+     * @ingroup Primitives
+     **/
+    class PrimitiveNoValue extends BasePrimitive
     {
-        Assert::isUnreachable('No value!');
+        /**
+         * @param $value
+         * @return PrimitiveNoValue
+         * @throws WrongArgumentException
+         */
+        public function setValue($value) : PrimitiveNoValue
+        {
+            Assert::isUnreachable('No value!');
 
-        return $this;
-    }
-
-    /**
-     * @param $default
-     * @return PrimitiveNoValue
-     * @throws WrongArgumentException
-     */
-    public function setDefaultValue($default) : PrimitiveNoValue
-    {
-        Assert::isUnreachable('No default value!');
-
-        return $this;
-    }
-
-    /**
-     * @param $raw
-     * @return PrimitiveNoValue
-     * @throws WrongArgumentException
-     */
-    public function setRawValue($raw) : PrimitiveNoValue
-    {
-        Assert::isUnreachable('No raw value!');
-
-        return $this;
-    }
-
-    /**
-     * @param $value
-     * @return PrimitiveNoValue
-     * @throws WrongArgumentException
-     */
-    public function importValue($value) : PrimitiveNoValue
-    {
-        Assert::isUnreachable('No import value!');
-
-        return $this;
-    }
-
-    /**
-     * @param $scope
-     * @return bool|null
-     */
-    public function import($scope)
-    {
-        if (
-            array_key_exists($this->name, $scope)
-            && $scope[$this->name] == null
-        ) {
-            return $this->imported = true;
+            return $this;
         }
 
-        return null;
+        /**
+         * @param $default
+         * @return PrimitiveNoValue
+         * @throws WrongArgumentException
+         */
+        public function setDefaultValue($default) : PrimitiveNoValue
+        {
+            Assert::isUnreachable('No default value!');
+
+            return $this;
+        }
+
+        /**
+         * @param $raw
+         * @return PrimitiveNoValue
+         * @throws WrongArgumentException
+         */
+        public function setRawValue($raw) : PrimitiveNoValue
+        {
+            Assert::isUnreachable('No raw value!');
+
+            return $this;
+        }
+
+        /**
+         * @param $value
+         * @return PrimitiveNoValue
+         * @throws WrongArgumentException
+         */
+        public function importValue($value) : PrimitiveNoValue
+        {
+            Assert::isUnreachable('No import value!');
+
+            return $this;
+        }
+
+        /**
+         * @param $scope
+         * @return bool|null
+         */
+        public function import($scope)
+        {
+            if (
+                array_key_exists($this->name, $scope)
+                && $scope[$this->name] == null
+            ) {
+                return $this->imported = true;
+            }
+
+            return null;
+        }
     }
 }

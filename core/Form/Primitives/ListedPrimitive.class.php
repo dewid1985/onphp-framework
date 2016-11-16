@@ -8,19 +8,20 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * @ingroup Primitives
+     * @ingroup Module
+     **/
+    interface ListedPrimitive
+    {
+        /// @return plain array of possible primitive choices
+        public function getList();
 
-/**
- * @ingroup Primitives
- * @ingroup Module
- **/
-interface ListedPrimitive
-{
-    /// @return plain array of possible primitive choices
-    public function getList();
+        public function setList($list);
 
-    public function setList($list);
+        public function getChoiceValue();
 
-    public function getChoiceValue();
-
-    public function getActualChoiceValue();
+        public function getActualChoiceValue();
+    }
 }

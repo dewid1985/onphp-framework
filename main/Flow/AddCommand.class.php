@@ -9,13 +9,17 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Flow
- **/
-class AddCommand extends MakeCommand
-{
-    protected function daoMethod()
+namespace OnPhp {
+    /**
+     * Class AddCommand
+     * @ingroup Flow
+     * @package OnPhp
+     */
+    class AddCommand extends MakeCommand
     {
-        return 'add';
+        protected function daoMethod()
+        {
+            return 'add';
+        }
     }
 }

@@ -8,72 +8,73 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Logic
- **/
-class EqualsLowerExpression implements LogicalObject, MappableObject
-{
-    /** @var null  */
-    private $left = null;
-    /** @var null  */
-    private $right = null;
-
-
+namespace OnPhp {
     /**
-     * EqualsLowerExpression constructor.
-     * @param $left
-     * @param $right
-     */
-    public function __construct($left, $right)
-    {
-        $this->left = $left;
-        $this->right = $right;
-    }
-
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect) : string
-    {
-        return
-            '('
-            . $dialect->toFieldString(
-                new SQLFunction('lower', $this->left)
-            ) . ' = '
-            . $dialect->toValueString(
-                is_string($this->right)
-                    ? mb_strtolower($this->right)
-                    : new SQLFunction('lower', $this->right)
-            )
-            . ')';
-    }
-
-    /**
-     * @return EqualsLowerExpression
+     * @ingroup Logic
      **/
-    public function toMapped(ProtoDAO $dao, JoinCapableQuery $query)
+    class EqualsLowerExpression implements LogicalObject, MappableObject
     {
-        return new self(
-            $dao->guessAtom($this->left, $query),
-            $dao->guessAtom($this->right, $query)
-        );
-    }
+        /** @var null */
+        private $left = null;
+        /** @var null */
+        private $right = null;
 
-    /**
-     * @param Form $form
-     * @return bool
-     */
-    public function toBoolean(Form $form) : bool
-    {
-        $left = $form->toFormValue($this->left);
-        $right = $form->toFormValue($this->right);
 
-        $both =
-            (null !== $left)
-            && (null !== $right);
+        /**
+         * EqualsLowerExpression constructor.
+         * @param $left
+         * @param $right
+         */
+        public function __construct($left, $right)
+        {
+            $this->left = $left;
+            $this->right = $right;
+        }
 
-        return $both && (mb_strtolower($left) === mb_strtolower($right));
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect) : string
+        {
+            return
+                '('
+                . $dialect->toFieldString(
+                    new SQLFunction('lower', $this->left)
+                ) . ' = '
+                . $dialect->toValueString(
+                    is_string($this->right)
+                        ? mb_strtolower($this->right)
+                        : new SQLFunction('lower', $this->right)
+                )
+                . ')';
+        }
+
+        /**
+         * @return EqualsLowerExpression
+         **/
+        public function toMapped(ProtoDAO $dao, JoinCapableQuery $query)
+        {
+            return new self(
+                $dao->guessAtom($this->left, $query),
+                $dao->guessAtom($this->right, $query)
+            );
+        }
+
+        /**
+         * @param Form $form
+         * @return bool
+         */
+        public function toBoolean(Form $form) : bool
+        {
+            $left = $form->toFormValue($this->left);
+            $right = $form->toFormValue($this->right);
+
+            $both =
+                (null !== $left)
+                && (null !== $right);
+
+            return $both && (mb_strtolower($left) === mb_strtolower($right));
+        }
     }
 }

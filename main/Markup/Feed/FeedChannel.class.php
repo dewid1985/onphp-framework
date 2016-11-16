@@ -8,91 +8,93 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Feed
- **/
-class FeedChannel
-{
-    private $title = null;
-    private $link = null;
-    private $description = null;
-    private $feedItems = [];
-
-    public function __construct($title)
-    {
-        $this->title = $title;
-    }
-
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
+namespace OnPhp {
     /**
-     * @return FeedChannel
-     **/
-    public function setTitle($title)
+     * Class FeedChannel
+     * @ingroup Feed
+     * @package OnPhp
+     */
+    class FeedChannel
     {
-        $this->title = $title;
+        private $title = null;
+        private $link = null;
+        private $description = null;
+        private $feedItems = [];
 
-        return $this;
-    }
+        public function __construct($title)
+        {
+            $this->title = $title;
+        }
 
-    public function getDescription()
-    {
-        return $this->description;
-    }
 
-    /**
-     * @return FeedChannel
-     **/
-    public function setDescription($description)
-    {
-        $this->description = $description;
+        public function getTitle()
+        {
+            return $this->title;
+        }
 
-        return $this;
-    }
+        /**
+         * @return FeedChannel
+         **/
+        public function setTitle($title)
+        {
+            $this->title = $title;
 
-    public function getLink()
-    {
-        return $this->link;
-    }
+            return $this;
+        }
 
-    /**
-     * @return FeedChannel
-     **/
-    public function setLink($link)
-    {
-        $this->link = $link;
+        public function getDescription()
+        {
+            return $this->description;
+        }
 
-        return $this;
-    }
+        /**
+         * @return FeedChannel
+         **/
+        public function setDescription($description)
+        {
+            $this->description = $description;
 
-    public function getFeedItems()
-    {
-        return $this->feedItems;
-    }
+            return $this;
+        }
 
-    /**
-     * @return FeedChannel
-     **/
-    public function setFeedItems($feedItems)
-    {
-        $this->feedItems = $feedItems;
+        public function getLink()
+        {
+            return $this->link;
+        }
 
-        return $this;
-    }
+        /**
+         * @return FeedChannel
+         **/
+        public function setLink($link)
+        {
+            $this->link = $link;
 
-    /**
-     * @return FeedChannel
-     **/
-    public function addFeedItem(FeedItem $feedItem)
-    {
-        $this->feedItems[] = $feedItem;
+            return $this;
+        }
 
-        return $this;
+        public function getFeedItems()
+        {
+            return $this->feedItems;
+        }
+
+        /**
+         * @return FeedChannel
+         **/
+        public function setFeedItems($feedItems)
+        {
+            $this->feedItems = $feedItems;
+
+            return $this;
+        }
+
+        /**
+         * @return FeedChannel
+         **/
+        public function addFeedItem(FeedItem $feedItem)
+        {
+            $this->feedItems[] = $feedItem;
+
+            return $this;
+        }
     }
 }
-

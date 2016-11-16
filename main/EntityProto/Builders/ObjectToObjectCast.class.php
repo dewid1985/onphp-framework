@@ -9,26 +9,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class ObjectToObjectCast extends ObjectBuilder
-{
-    function __construct(EntityProto $proto)
+namespace OnPhp {
+    class ObjectToObjectCast extends ObjectBuilder
     {
-        parent::__construct($proto);
-    }
+        function __construct(EntityProto $proto)
+        {
+            parent::__construct($proto);
+        }
 
-    /**
-     * @return ObjectGetter
-     **/
-    protected function getGetter($object)
-    {
-        return new ObjectGetter($this->proto, $object);
-    }
+        /**
+         * @return ObjectGetter
+         **/
+        protected function getGetter($object)
+        {
+            return new ObjectGetter($this->proto, $object);
+        }
 
-    /**
-     * @return ObjectSetter
-     **/
-    protected function getSetter(&$object)
-    {
-        return new ObjectSetter($this->proto, $object);
+        /**
+         * @return ObjectSetter
+         **/
+        protected function getSetter(&$object)
+        {
+            return new ObjectSetter($this->proto, $object);
+        }
     }
 }

@@ -8,42 +8,43 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Primitives
- **/
-class PrimitiveTimestampRange extends PrimitiveDateRange
-{
-
-    function __construct($name)
-    {
-        parent::__construct($name);
-    }
-
+namespace OnPhp {
     /**
-     * @return string
-     */
-    protected function getObjectName() : string
+     * @ingroup Primitives
+     **/
+    class PrimitiveTimestampRange extends PrimitiveDateRange
     {
-        return 'TimestampRange';
-    }
 
-    /**
-     * @param $string
-     * @return TimestampRange
-     * @throws WrongArgumentException
-     */
-    protected function makeRange($string)
-    {
-        if (strpos($string, ' - ') !== false) {
-            list($first, $second) = explode(' - ', $string);
-
-            return new TimestampRange(
-                new Timestamp(trim($first)),
-                new Timestamp(trim($second))
-            );
+        function __construct($name)
+        {
+            parent::__construct($name);
         }
 
-        throw new WrongArgumentException();
+        /**
+         * @return string
+         */
+        protected function getObjectName() : string
+        {
+            return 'TimestampRange';
+        }
+
+        /**
+         * @param $string
+         * @return TimestampRange
+         * @throws WrongArgumentException
+         */
+        protected function makeRange($string)
+        {
+            if (strpos($string, ' - ') !== false) {
+                list($first, $second) = explode(' - ', $string);
+
+                return new TimestampRange(
+                    new Timestamp(trim($first)),
+                    new Timestamp(trim($second))
+                );
+            }
+
+            throw new WrongArgumentException();
+        }
     }
 }

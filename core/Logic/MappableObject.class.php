@@ -8,15 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Logic
- * @ingroup Module
- **/
-interface MappableObject extends DialectString
-{
+namespace OnPhp {
     /**
-     * @return MappableObject
+     * @ingroup Logic
+     * @ingroup Module
      **/
-    public function toMapped(ProtoDAO $dao, JoinCapableQuery $query);
+    interface MappableObject extends DialectString
+    {
+        /**
+         * @return MappableObject
+         **/
+        public function toMapped(ProtoDAO $dao, JoinCapableQuery $query);
+    }
 }

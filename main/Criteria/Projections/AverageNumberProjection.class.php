@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-class AverageNumberProjection extends AggregateProjection
-{
-    public function getFunctionName()
+namespace OnPhp {
+    /**
+     * @ingroup Projections
+     **/
+    class AverageNumberProjection extends AggregateProjection
     {
-        return 'avg';
+        public function getFunctionName()
+        {
+            return 'avg';
+        }
     }
 }

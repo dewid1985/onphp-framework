@@ -8,23 +8,24 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Projections
- **/
-abstract class BaseProjection implements ObjectProjection, Aliased
-{
-    protected $property = null;
-    protected $alias = null;
-
-    public function __construct($propertyName = null, $alias = null)
+namespace OnPhp {
+    /**
+     * @ingroup Projections
+     **/
+    abstract class BaseProjection implements ObjectProjection, Aliased
     {
-        $this->property = $propertyName;
-        $this->alias = $alias;
-    }
+        protected $property = null;
+        protected $alias = null;
 
-    public function getAlias()
-    {
-        return $this->alias;
+        public function __construct($propertyName = null, $alias = null)
+        {
+            $this->property = $propertyName;
+            $this->alias = $alias;
+        }
+
+        public function getAlias()
+        {
+            return $this->alias;
+        }
     }
 }

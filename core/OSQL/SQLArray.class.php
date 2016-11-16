@@ -8,58 +8,59 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Values row implementation.
- *
- * @ingroup OSQL
- **/
-class SQLArray implements DialectString
-{
-    /** @var array  */
-    private $array = [];
-
+namespace OnPhp {
     /**
-     * SQLArray constructor.
-     * @param $array
-     */
-    public function __construct($array)
+     * Values row implementation.
+     *
+     * @ingroup OSQL
+     **/
+    class SQLArray implements DialectString
     {
-        $this->array = $array;
-    }
+        /** @var array */
+        private $array = [];
 
-    /**
-     * @return array
-     */
-    public function getArray() : array
-    {
-        return $this->array;
-    }
-
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect) : string
-    {
-        $array = $this->array;
-
-        if (is_array($array)) {
-            $quoted = [];
-
-            foreach ($array as $item) {
-                if ($item instanceof DialectString) {
-                    $quoted[] = $item->toDialectString($dialect);
-                } else {
-                    $quoted[] = $dialect->valueToString($item);
-                }
-            }
-
-            $value = implode(', ', $quoted);
-        } else {
-            $value = $dialect->quoteValue($array);
+        /**
+         * SQLArray constructor.
+         * @param $array
+         */
+        public function __construct($array)
+        {
+            $this->array = $array;
         }
 
-        return "({$value})";
+        /**
+         * @return array
+         */
+        public function getArray() : array
+        {
+            return $this->array;
+        }
+
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect) : string
+        {
+            $array = $this->array;
+
+            if (is_array($array)) {
+                $quoted = [];
+
+                foreach ($array as $item) {
+                    if ($item instanceof DialectString) {
+                        $quoted[] = $item->toDialectString($dialect);
+                    } else {
+                        $quoted[] = $dialect->valueToString($item);
+                    }
+                }
+
+                $value = implode(', ', $quoted);
+            } else {
+                $value = $dialect->quoteValue($array);
+            }
+
+            return "({$value})";
+        }
     }
 }

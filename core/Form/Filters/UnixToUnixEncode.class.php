@@ -8,28 +8,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Uuencode a string.
- *
- * @ingroup Filters
- **/
-class UnixToUnixEncode extends BaseFilter
-{
+namespace OnPhp {
     /**
-     * @return UnixToUnixEncode
+     * Uuencode a string.
+     *
+     * @ingroup Filters
      **/
-    public static function me()
+    class UnixToUnixEncode extends BaseFilter
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        /**
+         * @return UnixToUnixEncode
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
+        }
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function apply($value) : string
-    {
-        return convert_uuencode($value);
+        /**
+         * @param $value
+         * @return string
+         */
+        public function apply($value) : string
+        {
+            return convert_uuencode($value);
+        }
     }
 }

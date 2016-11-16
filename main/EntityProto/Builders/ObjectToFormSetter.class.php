@@ -9,26 +9,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class ObjectToFormSetter extends FormBuilder
-{
-    function __construct(EntityProto $proto)
+namespace OnPhp {
+    class ObjectToFormSetter extends FormBuilder
     {
-        parent::__construct($proto);
-    }
+        function __construct(EntityProto $proto)
+        {
+            parent::__construct($proto);
+        }
 
-    /**
-     * @return ObjectGetter
-     **/
-    protected function getGetter($object)
-    {
-        return new ObjectGetter($this->proto, $object);
-    }
+        /**
+         * @return ObjectGetter
+         **/
+        protected function getGetter($object)
+        {
+            return new ObjectGetter($this->proto, $object);
+        }
 
-    /**
-     * @return FormSetter
-     **/
-    protected function getSetter(&$object)
-    {
-        return new FormHardenedSetter($this->proto, $object);
+        /**
+         * @return FormSetter
+         **/
+        protected function getSetter(&$object)
+        {
+            return new FormHardenedSetter($this->proto, $object);
+        }
     }
 }

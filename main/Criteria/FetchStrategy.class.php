@@ -8,66 +8,67 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Criteria
- **/
-class FetchStrategy extends Enumeration
-{
-    const JOIN = 1;
-    const CASCADE = 2;
-    const LAZY = 3;
-
-    protected $names = array(
-        self::JOIN => 'join',
-        self::CASCADE => 'cascade',
-        self::LAZY => 'lazy'
-    );
-
+namespace OnPhp {
     /**
-     * @return FetchStrategy
+     * @ingroup Criteria
      **/
-    public static function join()
+    class FetchStrategy extends Enumeration
     {
-        return self::getInstance(self::JOIN);
-    }
+        const JOIN = 1;
+        const CASCADE = 2;
+        const LAZY = 3;
 
-    /**
-     * @return FetchStrategy
-     **/
-    private static function getInstance($id)
-    {
-        static $instances = array();
+        protected $names = array(
+            self::JOIN => 'join',
+            self::CASCADE => 'cascade',
+            self::LAZY => 'lazy'
+        );
 
-        if (!isset($instances[$id]))
-            $instances[$id] = new self($id);
+        /**
+         * @return FetchStrategy
+         **/
+        public static function join()
+        {
+            return self::getInstance(self::JOIN);
+        }
 
-        return $instances[$id];
-    }
+        /**
+         * @return FetchStrategy
+         **/
+        private static function getInstance($id)
+        {
+            static $instances = array();
 
-    /**
-     * @return FetchStrategy
-     **/
-    public static function cascade()
-    {
-        return self::getInstance(self::CASCADE);
-    }
+            if (!isset($instances[$id]))
+                $instances[$id] = new self($id);
 
-    /**
-     * @return FetchStrategy
-     **/
-    public static function lazy()
-    {
-        return self::getInstance(self::LAZY);
-    }
+            return $instances[$id];
+        }
 
-    /**
-     * @return FetchStrategy
-     **/
-    public function setId($id)
-    {
-        Assert::isNull($this->id, 'i am immutable one!');
+        /**
+         * @return FetchStrategy
+         **/
+        public static function cascade()
+        {
+            return self::getInstance(self::CASCADE);
+        }
 
-        return parent::setId($id);
+        /**
+         * @return FetchStrategy
+         **/
+        public static function lazy()
+        {
+            return self::getInstance(self::LAZY);
+        }
+
+        /**
+         * @return FetchStrategy
+         **/
+        public function setId($id)
+        {
+            Assert::isNull($this->id, 'i am immutable one!');
+
+            return parent::setId($id);
+        }
     }
 }

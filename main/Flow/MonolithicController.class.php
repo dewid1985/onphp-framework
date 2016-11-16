@@ -8,92 +8,95 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-abstract class MonolithicController extends BaseEditor
-{
-    public function __construct(Prototyped $subject)
-    {
-        $this->commandMap['import'] = 'doImport';
-        $this->commandMap['drop'] = 'doDrop';
-        $this->commandMap['save'] = 'doSave';
-        $this->commandMap['edit'] = 'doEdit';
-        $this->commandMap['add'] = 'doAdd';
-
-        parent::__construct($subject);
-    }
-
+namespace OnPhp {
     /**
-     * @return ModelAndView
-     **/
-    public function handleRequest(HttpRequest $request)
+     * Class MonolithicController
+     * @ingroup Flow
+     * @package OnPhp
+     */
+    abstract class MonolithicController extends BaseEditor
     {
-        $this->map->import($request);
+        public function __construct(Prototyped $subject)
+        {
+            $this->commandMap['import'] = 'doImport';
+            $this->commandMap['drop'] = 'doDrop';
+            $this->commandMap['save'] = 'doSave';
+            $this->commandMap['edit'] = 'doEdit';
+            $this->commandMap['add'] = 'doAdd';
 
-        $form = $this->getForm();
+            parent::__construct($subject);
+        }
 
-        if (!$command = $form->getValue('action'))
-            $command = $form->get('action')->getDefault();
+        /**
+         * @return ModelAndView
+         **/
+        public function handleRequest(HttpRequest $request)
+        {
+            $this->map->import($request);
 
-        if ($command) {
-            $mav = $this->{$this->commandMap[$command]}(
-                $this->subject, $form, $request
-            );
-        } else
-            $mav = new ModelAndView();
+            $form = $this->getForm();
 
-        return $this->postHandleRequest($mav, $request);
-    }
+            if (!$command = $form->getValue('action'))
+                $command = $form->get('action')->getDefault();
 
-    /**
-     * @return ModelAndView
-     **/
-    public function doImport(
-        Prototyped $subject, Form $form, HttpRequest $request
-    )
-    {
-        return (new ImportCommand())->run($subject, $form, $request);
-    }
+            if ($command) {
+                $mav = $this->{$this->commandMap[$command]}(
+                    $this->subject, $form, $request
+                );
+            } else
+                $mav = new ModelAndView();
 
-    /**
-     * @return ModelAndView
-     **/
-    public function doDrop(
-        Prototyped $subject, Form $form, HttpRequest $request
-    )
-    {
-        return (new DropCommand())->run($subject, $form, $request);
-    }
+            return $this->postHandleRequest($mav, $request);
+        }
 
-    /**
-     * @return ModelAndView
-     **/
-    public function doSave(
-        Prototyped $subject, Form $form, HttpRequest $request
-    )
-    {
-        return (new SaveCommand())->run($subject, $form, $request);
-    }
+        /**
+         * @return ModelAndView
+         **/
+        public function doImport(
+            Prototyped $subject, Form $form, HttpRequest $request
+        )
+        {
+            return (new ImportCommand())->run($subject, $form, $request);
+        }
 
-    /**
-     * @return ModelAndView
-     **/
-    public function doEdit(
-        Prototyped $subject, Form $form, HttpRequest $request
-    )
-    {
-        return (new EditCommand())->run($subject, $form, $request);
-    }
+        /**
+         * @return ModelAndView
+         **/
+        public function doDrop(
+            Prototyped $subject, Form $form, HttpRequest $request
+        )
+        {
+            return (new DropCommand())->run($subject, $form, $request);
+        }
 
-    /**
-     * @return ModelAndView
-     **/
-    public function doAdd(
-        Prototyped $subject, Form $form, HttpRequest $request
-    )
-    {
-        return (new AddCommand())->run($subject, $form, $request);
+        /**
+         * @return ModelAndView
+         **/
+        public function doSave(
+            Prototyped $subject, Form $form, HttpRequest $request
+        )
+        {
+            return (new SaveCommand())->run($subject, $form, $request);
+        }
+
+        /**
+         * @return ModelAndView
+         **/
+        public function doEdit(
+            Prototyped $subject, Form $form, HttpRequest $request
+        )
+        {
+            return (new EditCommand())->run($subject, $form, $request);
+        }
+
+        /**
+         * @return ModelAndView
+         **/
+        public function doAdd(
+            Prototyped $subject, Form $form, HttpRequest $request
+        )
+        {
+            return (new AddCommand())->run($subject, $form, $request);
+        }
     }
 }

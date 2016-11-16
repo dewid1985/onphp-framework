@@ -8,65 +8,66 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-abstract class SQLBaseJoin implements SQLTableName, Aliased
-{
-    /** @var null  */
-    protected $subject = null;
-    /** @var null  */
-    protected $alias = null;
-    /** @var LogicalObject|null  */
-    protected $logic = null;
-
+namespace OnPhp {
     /**
-     * SQLBaseJoin constructor.
-     * @param $subject
-     * @param LogicalObject $logic
-     * @param $alias
-     */
-    public function __construct($subject, LogicalObject $logic, $alias)
+     * @ingroup OSQL
+     **/
+    abstract class SQLBaseJoin implements SQLTableName, Aliased
     {
-        $this->subject = $subject;
-        $this->alias = $alias;
-        $this->logic = $logic;
-    }
+        /** @var null */
+        protected $subject = null;
+        /** @var null */
+        protected $alias = null;
+        /** @var LogicalObject|null */
+        protected $logic = null;
 
-    /**
-     * @return null
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
+        /**
+         * SQLBaseJoin constructor.
+         * @param $subject
+         * @param LogicalObject $logic
+         * @param $alias
+         */
+        public function __construct($subject, LogicalObject $logic, $alias)
+        {
+            $this->subject = $subject;
+            $this->alias = $alias;
+            $this->logic = $logic;
+        }
 
-    /**
-     * @return null
-     */
-    public function getTable()
-    {
-        return $this->alias ? $this->alias : $this->subject;
-    }
+        /**
+         * @return null
+         */
+        public function getAlias()
+        {
+            return $this->alias;
+        }
 
-    /**
-     * @param Dialect $dialect
-     * @param null $logic
-     * @return string
-     */
-    protected function baseToString(Dialect $dialect, $logic = null) : string
-    {
-        return
-            $logic . 'JOIN '
-            . ($this->subject instanceof DialectString
-                ?
-                $this->subject instanceof Query
-                    ? '(' . $this->subject->toDialectString($dialect) . ')'
-                    : $this->subject->toDialectString($dialect)
-                : $dialect->quoteTable($this->subject)
-            )
-            . ($this->alias ? ' AS ' . $dialect->quoteTable($this->alias) : null)
-            . ' ON ' . $this->logic->toDialectString($dialect);
+        /**
+         * @return null
+         */
+        public function getTable()
+        {
+            return $this->alias ? $this->alias : $this->subject;
+        }
+
+        /**
+         * @param Dialect $dialect
+         * @param null $logic
+         * @return string
+         */
+        protected function baseToString(Dialect $dialect, $logic = null) : string
+        {
+            return
+                $logic . 'JOIN '
+                . ($this->subject instanceof DialectString
+                    ?
+                    $this->subject instanceof Query
+                        ? '(' . $this->subject->toDialectString($dialect) . ')'
+                        : $this->subject->toDialectString($dialect)
+                    : $dialect->quoteTable($this->subject)
+                )
+                . ($this->alias ? ' AS ' . $dialect->quoteTable($this->alias) : null)
+                . ' ON ' . $this->logic->toDialectString($dialect);
+        }
     }
 }

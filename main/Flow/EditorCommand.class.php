@@ -8,14 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-interface EditorCommand
-{
+namespace OnPhp {
     /**
-     * @return ModelAndView
+     * @ingroup Flow
      **/
-    public function run(Prototyped $subject, Form $form, HttpRequest $request);
+    interface EditorCommand
+    {
+        /**
+         * @return ModelAndView
+         **/
+        public function run(Prototyped $subject, Form $form, HttpRequest $request);
+    }
 }

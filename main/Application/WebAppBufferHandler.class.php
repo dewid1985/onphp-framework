@@ -9,23 +9,25 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class WebAppBufferHandler implements InterceptingChainHandler
-{
-    /**
-     * @return WebAppBufferHandler
-     */
-    public function run(InterceptingChain $chain)
+namespace OnPhp {
+    class WebAppBufferHandler implements InterceptingChainHandler
     {
-        ob_start();
+        /**
+         * @return WebAppBufferHandler
+         */
+        public function run(InterceptingChain $chain)
+        {
+            ob_start();
 
-        $chain->next();
+            $chain->next();
 
-        if (($pageContents = ob_get_contents()) !== '') {
-            ob_end_flush();
-        } else {
-            ob_end_clean();
+            if (($pageContents = ob_get_contents()) !== '') {
+                ob_end_flush();
+            } else {
+                ob_end_clean();
+            }
+
+            return $this;
         }
-
-        return $this;
     }
 }

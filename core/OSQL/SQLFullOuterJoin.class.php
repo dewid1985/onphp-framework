@@ -8,19 +8,20 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class SQLFullOuterJoin extends SQLBaseJoin
-{
+namespace OnPhp {
     /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect) : string
+     * @ingroup OSQL
+     **/
+    class SQLFullOuterJoin extends SQLBaseJoin
     {
-        return parent::baseToString($dialect, 'FULL OUTER ');
-    }
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect) : string
+        {
+            return parent::baseToString($dialect, 'FULL OUTER ');
+        }
 
+    }
 }

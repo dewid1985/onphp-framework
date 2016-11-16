@@ -9,50 +9,52 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class DirectoryContext
-{
-    private $map = array();
-    private $reverseMap = array();
-
-    public function bind($name, $object)
+namespace OnPhp {
+    class DirectoryContext
     {
-        if (!is_dir($name))
-            throw new WrongArgumentException(
-                'directory ' . $name . ' does not exists'
-            );
+        private $map = array();
+        private $reverseMap = array();
 
-        if (
-            isset($this->map[$name])
-            && $this->map[$name] !== $object
-        )
-            throw new WrongArgumentException('consider using rebind()');
+        public function bind($name, $object)
+        {
+            if (!is_dir($name))
+                throw new WrongArgumentException(
+                    'directory ' . $name . ' does not exists'
+                );
 
-        return $this->rebind($name, $object);
-    }
+            if (
+                isset($this->map[$name])
+                && $this->map[$name] !== $object
+            )
+                throw new WrongArgumentException('consider using rebind()');
 
-    public function rebind($name, $object)
-    {
-        Assert::isNotNull($object);
+            return $this->rebind($name, $object);
+        }
 
-        $this->map[$name] = $object;
-        $this->reverseMap[spl_object_hash($object)] = $name;
+        public function rebind($name, $object)
+        {
+            Assert::isNotNull($object);
 
-        return $this;
-    }
+            $this->map[$name] = $object;
+            $this->reverseMap[spl_object_hash($object)] = $name;
 
-    public function lookup($name)
-    {
-        if (!isset($this->map[$name]))
-            return null;
+            return $this;
+        }
 
-        return $this->map[$name];
-    }
+        public function lookup($name)
+        {
+            if (!isset($this->map[$name]))
+                return null;
 
-    public function reverseLookup($object)
-    {
-        if (!isset($this->reverseMap[spl_object_hash($object)]))
-            return null;
+            return $this->map[$name];
+        }
 
-        return $this->reverseMap[spl_object_hash($object)];
+        public function reverseLookup($object)
+        {
+            if (!isset($this->reverseMap[spl_object_hash($object)]))
+                return null;
+
+            return $this->reverseMap[spl_object_hash($object)];
+        }
     }
 }

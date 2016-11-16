@@ -8,23 +8,24 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- **/
-class FullTextSearch extends FullText
-{
+namespace OnPhp {
     /**
-     * @param Dialect $dialect
-     * @throws UnimplementedFeatureException
-     */
-    public function toDialectString(Dialect $dialect)
+     * @ingroup OSQL
+     **/
+    class FullTextSearch extends FullText
     {
-        return
-            $dialect->fullTextSearch(
-                $this->field,
-                $this->words,
-                $this->logic
-            );
+        /**
+         * @param Dialect $dialect
+         * @throws UnimplementedFeatureException
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            return
+                $dialect->fullTextSearch(
+                    $this->field,
+                    $this->words,
+                    $this->logic
+                );
+        }
     }
 }

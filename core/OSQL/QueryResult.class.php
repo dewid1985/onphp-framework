@@ -8,116 +8,117 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Holder for query's execution information.
- *
- * @ingroup OSQL
- **/
-class QueryResult implements Identifiable
-{
-    /** @var array  */
-    private $list = [];
-
-    /** @var int  */
-    private $count = 0;
-    /** @var int  */
-    private $affected = 0;
-
-    /** @var null  */
-    private $query = null;
-
-
+namespace OnPhp {
     /**
-     * @return string
-     */
-    public function getId() : string
-    {
-        return '_result_' . $this->getQuery()->getId();
-    }
-
-    /**
-     * @param $id
-     * @throws UnsupportedMethodException
-     */
-    public function setId($id)
-    {
-        throw new UnsupportedMethodException();
-    }
-
-    /**
-     * @return SelectQuery
+     * Holder for query's execution information.
+     *
+     * @ingroup OSQL
      **/
-    public function getQuery() : SelectQuery
+    class QueryResult implements Identifiable
     {
-        return $this->query;
-    }
+        /** @var array */
+        private $list = [];
 
-    /**
-     * @param SelectQuery $query
-     * @return QueryResult
-     */
-    public function setQuery(SelectQuery $query) : QueryResult
-    {
-        $this->query = $query;
+        /** @var int */
+        private $count = 0;
+        /** @var int */
+        private $affected = 0;
 
-        return $this;
-    }
+        /** @var null */
+        private $query = null;
 
-    /**
-     * @return array
-     */
-    public function getList() : array
-    {
-        return $this->list;
-    }
 
-    /**
-     * @param array $list
-     * @return QueryResult
-     */
-    public function setList(array $list) : QueryResult
-    {
-        $this->list = $list;
+        /**
+         * @return string
+         */
+        public function getId() : string
+        {
+            return '_result_' . $this->getQuery()->getId();
+        }
 
-        return $this;
-    }
+        /**
+         * @param $id
+         * @throws UnsupportedMethodException
+         */
+        public function setId($id)
+        {
+            throw new UnsupportedMethodException();
+        }
 
-    /**
-     * @return int
-     */
-    public function getCount() : int
-    {
-        return $this->count;
-    }
+        /**
+         * @return SelectQuery
+         **/
+        public function getQuery() : SelectQuery
+        {
+            return $this->query;
+        }
 
-    /**
-     * @param $count
-     * @return QueryResult
-     */
-    public function setCount($count) : QueryResult
-    {
-        $this->count = $count;
+        /**
+         * @param SelectQuery $query
+         * @return QueryResult
+         */
+        public function setQuery(SelectQuery $query) : QueryResult
+        {
+            $this->query = $query;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return int
-     */
-    public function getAffected() : int
-    {
-        return $this->affected;
-    }
+        /**
+         * @return array
+         */
+        public function getList() : array
+        {
+            return $this->list;
+        }
 
-    /**
-     * @param $affected
-     * @return QueryResult
-     */
-    public function setAffected($affected) : QueryResult
-    {
-        $this->affected = $affected;
+        /**
+         * @param array $list
+         * @return QueryResult
+         */
+        public function setList(array $list) : QueryResult
+        {
+            $this->list = $list;
 
-        return $this;
+            return $this;
+        }
+
+        /**
+         * @return int
+         */
+        public function getCount() : int
+        {
+            return $this->count;
+        }
+
+        /**
+         * @param $count
+         * @return QueryResult
+         */
+        public function setCount($count) : QueryResult
+        {
+            $this->count = $count;
+
+            return $this;
+        }
+
+        /**
+         * @return int
+         */
+        public function getAffected() : int
+        {
+            return $this->affected;
+        }
+
+        /**
+         * @param $affected
+         * @return QueryResult
+         */
+        public function setAffected($affected) : QueryResult
+        {
+            $this->affected = $affected;
+
+            return $this;
+        }
     }
 }

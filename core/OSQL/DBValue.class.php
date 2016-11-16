@@ -8,46 +8,47 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Container for passing values into OSQL queries.
- *
- * @ingroup OSQL
- * @ingroup Module
- **/
-class DBValue extends Castable
-{
-    /** @var null  */
-    private $value = null;
-
+namespace OnPhp {
     /**
-     * DBValue constructor.
-     * @param $value
-     */
-    public function __construct($value)
+     * Container for passing values into OSQL queries.
+     *
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    class DBValue extends Castable
     {
-        $this->value = $value;
-    }
+        /** @var null */
+        private $value = null;
 
-    /**
-     * @return null
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
+        /**
+         * DBValue constructor.
+         * @param $value
+         */
+        public function __construct($value)
+        {
+            $this->value = $value;
+        }
 
-    /**
-     * @param Dialect $dialect
-     * @return mixed|string
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        $out = $dialect->quoteValue($this->value);
+        /**
+         * @return null
+         */
+        public function getValue()
+        {
+            return $this->value;
+        }
 
-        return
-            $this->cast
-                ? $dialect->toCasted($out, $this->cast)
-                : $out;
+        /**
+         * @param Dialect $dialect
+         * @return mixed|string
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            $out = $dialect->quoteValue($this->value);
+
+            return
+                $this->cast
+                    ? $dialect->toCasted($out, $this->cast)
+                    : $out;
+        }
     }
 }

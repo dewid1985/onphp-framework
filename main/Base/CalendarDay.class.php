@@ -8,65 +8,66 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Calendar day representation.
- *
- * @ingroup Calendar
- **/
-class CalendarDay extends Date
-{
-    private $selected = null;
-    private $outside = null;
-
-
-    function __construct($date)
-    {
-        parent::__construct($date);
-    }
-
-    public function  __sleep()
-    {
-        $sleep = parent::__sleep();
-        $sleep[] = 'selected';
-        $sleep[] = 'outside';
-        return $sleep;
-    }
-
+namespace OnPhp {
     /**
-     * @return bool
-     */
-    public function isSelected() : bool
-    {
-        return $this->selected === true;
-    }
-
-    /**
-     * @param $selected
-     * @return $this
-     */
-    public function setSelected($selected)
-    {
-        $this->selected = $selected === true;
-
-        return $this;
-    }
-
-    /**
-     * @return null
-     */
-    public function isOutside()
-    {
-        return $this->outside;
-    }
-
-    /**
-     * @return CalendarDay
+     * Calendar day representation.
+     *
+     * @ingroup Calendar
      **/
-    public function setOutside($outside)
+    class CalendarDay extends Date
     {
-        $this->outside = $outside === true;
+        private $selected = null;
+        private $outside = null;
 
-        return $this;
+
+        function __construct($date)
+        {
+            parent::__construct($date);
+        }
+
+        public function __sleep()
+        {
+            $sleep = parent::__sleep();
+            $sleep[] = 'selected';
+            $sleep[] = 'outside';
+            return $sleep;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isSelected() : bool
+        {
+            return $this->selected === true;
+        }
+
+        /**
+         * @param $selected
+         * @return $this
+         */
+        public function setSelected($selected)
+        {
+            $this->selected = $selected === true;
+
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function isOutside()
+        {
+            return $this->outside;
+        }
+
+        /**
+         * @return CalendarDay
+         **/
+        public function setOutside($outside)
+        {
+            $this->outside = $outside === true;
+
+            return $this;
+        }
     }
 }

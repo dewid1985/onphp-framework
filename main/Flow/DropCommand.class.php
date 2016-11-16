@@ -8,33 +8,33 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class DropCommand implements EditorCommand
-{
+namespace OnPhp {
     /**
-     * @return ModelAndView
+     * @ingroup Flow
      **/
-    public function run(Prototyped $subject, Form $form, HttpRequest $request)
+    class DropCommand implements EditorCommand
     {
-        if ($object = $form->getValue('id')) {
+        /**
+         * @return ModelAndView
+         **/
+        public function run(Prototyped $subject, Form $form, HttpRequest $request)
+        {
+            if ($object = $form->getValue('id')) {
 
-            if ($object instanceof Identifiable) {
+                if ($object instanceof Identifiable) {
 
-                $object->dao()->drop($object);
+                    $object->dao()->drop($object);
 
-                return
-                    (new ModelAndView())->setView(BaseEditor::COMMAND_SUCCEEDED);
+                    return
+                        (new ModelAndView())->setView(BaseEditor::COMMAND_SUCCEEDED);
 
-            } else {
-                // already deleted
-                $form->markMissing('id');
+                } else {
+                    // already deleted
+                    $form->markMissing('id');
+                }
             }
-        }
 
-        return new ModelAndView();
+            return new ModelAndView();
+        }
     }
 }
-

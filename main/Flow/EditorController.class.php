@@ -8,42 +8,43 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-abstract class EditorController extends BaseEditor
-{
-    public function __construct(Prototyped $subject)
-    {
-        $this->commandMap['import'] = new ImportCommand();
-        $this->commandMap['drop'] = new DropCommand();
-        $this->commandMap['save'] = new SaveCommand();
-        $this->commandMap['edit'] = new EditCommand();
-        $this->commandMap['add'] = new AddCommand();
-
-        parent::__construct($subject);
-    }
-
+namespace OnPhp {
     /**
-     * @return ModelAndView
+     * @ingroup Flow
      **/
-    public function handleRequest(HttpRequest $request)
+    abstract class EditorController extends BaseEditor
     {
-        $this->map->import($request);
+        public function __construct(Prototyped $subject)
+        {
+            $this->commandMap['import'] = new ImportCommand();
+            $this->commandMap['drop'] = new DropCommand();
+            $this->commandMap['save'] = new SaveCommand();
+            $this->commandMap['edit'] = new EditCommand();
+            $this->commandMap['add'] = new AddCommand();
 
-        $form = $this->getForm();
+            parent::__construct($subject);
+        }
 
-        if (!$command = $form->getValue('action'))
-            $command = $form->get('action')->getDefault();
+        /**
+         * @return ModelAndView
+         **/
+        public function handleRequest(HttpRequest $request)
+        {
+            $this->map->import($request);
 
-        if ($command) {
-            $mav = $this->commandMap[$command]->run(
-                $this->subject, $form, $request
-            );
-        } else
-            $mav = new ModelAndView();
+            $form = $this->getForm();
 
-        return $this->postHandleRequest($mav, $request);
+            if (!$command = $form->getValue('action'))
+                $command = $form->get('action')->getDefault();
+
+            if ($command) {
+                $mav = $this->commandMap[$command]->run(
+                    $this->subject, $form, $request
+                );
+            } else
+                $mav = new ModelAndView();
+
+            return $this->postHandleRequest($mav, $request);
+        }
     }
 }

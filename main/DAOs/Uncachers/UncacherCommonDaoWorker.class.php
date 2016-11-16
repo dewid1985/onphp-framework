@@ -8,20 +8,21 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Uncachers
- **/
-class UncacherCommonDaoWorker extends UncacherBaseDaoWorker
-{
-    function __construct($className, $idKey)
+namespace OnPhp {
+    /**
+     * @ingroup Uncachers
+     **/
+    class UncacherCommonDaoWorker extends UncacherBaseDaoWorker
     {
-        parent::__construct($className, $idKey);
-    }
+        function __construct($className, $idKey)
+        {
+            parent::__construct($className, $idKey);
+        }
 
-    protected function uncacheClassName($className, $idKeys)
-    {
-        ClassUtils::callStaticMethod("$className::dao")->uncacheLists();
-        parent::uncacheClassName($className, $idKeys);
+        protected function uncacheClassName($className, $idKeys)
+        {
+            ClassUtils::callStaticMethod("$className::dao")->uncacheLists();
+            parent::uncacheClassName($className, $idKeys);
+        }
     }
 }

@@ -9,14 +9,20 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class PrototypedSetter extends PrototypedMethodCaller
-{
-    abstract public function set($name, $value);
-
-    public function getGetter()
+namespace OnPhp {
+    /**
+     * Class PrototypedSetter
+     * @package OnPhp
+     */
+    abstract class PrototypedSetter extends PrototypedMethodCaller
     {
-        throw new UnimplementedFeatureException(
-            'inverse operation is not defined yet'
-        );
+        abstract public function set($name, $value);
+
+        public function getGetter()
+        {
+            throw new UnimplementedFeatureException(
+                'inverse operation is not defined yet'
+            );
+        }
     }
 }

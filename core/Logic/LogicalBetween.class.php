@@ -8,75 +8,76 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * SQL's BETWEEN or logical check whether value in-between given limits.
- *
- * @ingroup Logic
- **/
-class LogicalBetween implements LogicalObject, MappableObject
-{
-    /** @var null  */
-    private $field = null;
-    /** @var null  */
-    private $left = null;
-    /** @var null  */
-    private $right = null;
-
+namespace OnPhp {
     /**
-     * LogicalBetween constructor.
-     * @param $field
-     * @param $left
-     * @param $right
-     */
-    public function __construct($field, $left, $right)
+     * SQL's BETWEEN or logical check whether value in-between given limits.
+     *
+     * @ingroup Logic
+     **/
+    class LogicalBetween implements LogicalObject, MappableObject
     {
-        $this->left = $left;
-        $this->right = $right;
-        $this->field = $field;
-    }
+        /** @var null */
+        private $field = null;
+        /** @var null */
+        private $left = null;
+        /** @var null */
+        private $right = null;
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect) : string
-    {
-        return
-            '('
-            . $dialect->toFieldString($this->field)
-            . ' BETWEEN '
-            . $dialect->toValueString($this->left)
-            . ' AND '
-            . $dialect->toValueString($this->right)
-            . ')';
-    }
+        /**
+         * LogicalBetween constructor.
+         * @param $field
+         * @param $left
+         * @param $right
+         */
+        public function __construct($field, $left, $right)
+        {
+            $this->left = $left;
+            $this->right = $right;
+            $this->field = $field;
+        }
 
-    /**
-     * @param ProtoDAO $dao
-     * @param JoinCapableQuery $query
-     * @return LogicalBetween
-     */
-    public function toMapped(ProtoDAO $dao, JoinCapableQuery $query)
-    {
-        return new self(
-            $dao->guessAtom($this->field, $query),
-            $dao->guessAtom($this->left, $query),
-            $dao->guessAtom($this->right, $query)
-        );
-    }
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect) : string
+        {
+            return
+                '('
+                . $dialect->toFieldString($this->field)
+                . ' BETWEEN '
+                . $dialect->toValueString($this->left)
+                . ' AND '
+                . $dialect->toValueString($this->right)
+                . ')';
+        }
 
-    /**
-     * @param Form $form
-     * @return bool
-     */
-    public function toBoolean(Form $form) : bool
-    {
-        $left = $form->toFormValue($this->left);
-        $right = $form->toFormValue($this->right);
-        $value = $form->toFormValue($this->field);
+        /**
+         * @param ProtoDAO $dao
+         * @param JoinCapableQuery $query
+         * @return LogicalBetween
+         */
+        public function toMapped(ProtoDAO $dao, JoinCapableQuery $query)
+        {
+            return new self(
+                $dao->guessAtom($this->field, $query),
+                $dao->guessAtom($this->left, $query),
+                $dao->guessAtom($this->right, $query)
+            );
+        }
 
-        return ($left <= $value)
-        && ($value <= $right);
+        /**
+         * @param Form $form
+         * @return bool
+         */
+        public function toBoolean(Form $form) : bool
+        {
+            $left = $form->toFormValue($this->left);
+            $right = $form->toFormValue($this->right);
+            $value = $form->toFormValue($this->field);
+
+            return ($left <= $value)
+            && ($value <= $right);
+        }
     }
 }

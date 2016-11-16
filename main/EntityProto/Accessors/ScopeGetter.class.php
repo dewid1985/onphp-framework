@@ -9,22 +9,24 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class ScopeGetter extends PrototypedGetter
-{
-    public function get($name)
+namespace OnPhp {
+    class ScopeGetter extends PrototypedGetter
     {
-        if (!isset($this->mapping[$name]))
-            throw new WrongArgumentException(
-                "knows nothing about property '{$name}'"
-            );
+        public function get($name)
+        {
+            if (!isset($this->mapping[$name]))
+                throw new WrongArgumentException(
+                    "knows nothing about property '{$name}'"
+                );
 
-        $primitive = $this->mapping[$name];
+            $primitive = $this->mapping[$name];
 
-        $key = $primitive->getName();
+            $key = $primitive->getName();
 
-        return
-            isset($this->object[$key])
-                ? $this->object[$key]
-                : null;
+            return
+                isset($this->object[$key])
+                    ? $this->object[$key]
+                    : null;
+        }
     }
 }

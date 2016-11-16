@@ -8,43 +8,44 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see http://eaccelerator.net/
- *
- * @ingroup DAOs
- **/
-class eAcceleratorSegmentHandler extends OptimizerSegmentHandler
-{
-    public function __construct($segmentId)
+namespace OnPhp {
+    /**
+     * @see http://eaccelerator.net/
+     *
+     * @ingroup DAOs
+     **/
+    class eAcceleratorSegmentHandler extends OptimizerSegmentHandler
     {
-        parent::__construct($segmentId);
+        public function __construct($segmentId)
+        {
+            parent::__construct($segmentId);
 
-        $this->locker = Singleton::getInstance('eAcceleratorLocker');
-    }
-
-    public function drop()
-    {
-        return eaccelerator_rm($this->id);
-    }
-
-    protected function getMap()
-    {
-        $this->locker->get($this->id);
-
-        if (!$map = eaccelerator_get($this->id)) {
-            $map = array();
+            $this->locker = Singleton::getInstance('eAcceleratorLocker');
         }
 
-        return $map;
-    }
+        public function drop()
+        {
+            return eaccelerator_rm($this->id);
+        }
 
-    protected function storeMap(array $map)
-    {
-        $result = eaccelerator_put($this->id, $map, Cache::EXPIRES_FOREVER);
+        protected function getMap()
+        {
+            $this->locker->get($this->id);
 
-        $this->locker->free($this->id);
+            if (!$map = eaccelerator_get($this->id)) {
+                $map = array();
+            }
 
-        return $result;
+            return $map;
+        }
+
+        protected function storeMap(array $map)
+        {
+            $result = eaccelerator_put($this->id, $map, Cache::EXPIRES_FOREVER);
+
+            $this->locker->free($this->id);
+
+            return $result;
+        }
     }
 }

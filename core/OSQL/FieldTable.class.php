@@ -8,44 +8,45 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup OSQL
- * @ingroup Module
- **/
-abstract class FieldTable extends Castable
-{
-    /** @var null  */
-    protected $field = null;
-
+namespace OnPhp {
     /**
-     * FieldTable constructor.
-     * @param $field
-     */
-    public function __construct($field)
+     * @ingroup OSQL
+     * @ingroup Module
+     **/
+    abstract class FieldTable extends Castable
     {
-        $this->field = $field;
-    }
+        /** @var null */
+        protected $field = null;
 
-    /**
-     * @return null
-     */
-    public function getField()
-    {
-        return $this->field;
-    }
+        /**
+         * FieldTable constructor.
+         * @param $field
+         */
+        public function __construct($field)
+        {
+            $this->field = $field;
+        }
 
-    /**
-     * @param Dialect $dialect
-     * @return string
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        $out = $dialect->fieldToString($this->field);
+        /**
+         * @return null
+         */
+        public function getField()
+        {
+            return $this->field;
+        }
 
-        return
-            $this->cast
-                ? $dialect->toCasted($out, $this->cast)
-                : $out;
+        /**
+         * @param Dialect $dialect
+         * @return string
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            $out = $dialect->fieldToString($this->field);
+
+            return
+                $this->cast
+                    ? $dialect->toCasted($out, $this->cast)
+                    : $out;
+        }
     }
 }
