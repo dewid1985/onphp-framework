@@ -8,16 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class TimestampRangeType extends DateRangeType
-{
-    public function toPrimitive()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    class TimestampRangeType extends DateRangeType
     {
-        return 'Primitive::timestampRange';
+        public function toPrimitive()
+        {
+            return 'Primitive::timestampRange';
+        }
     }
 }
-
 ?>

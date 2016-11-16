@@ -8,147 +8,147 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class BufferedReader extends Reader
-{
-    private $in = null;
-    private $closed = false;
-
-    private $buffer = null;
-    private $bufferLength = 0;
-
-    private $position = 0;
-    private $markPosition = null;
-
+namespace OnPhp {
     /**
-     * BufferedReader constructor.
-     * @param Reader $in
-     */
-    public function __construct(Reader $in)
-    {
-        $this->in = $in;
-    }
-
-    /**
-     * @return BufferedReader
+     * @ingroup Utils
      **/
-    public function close()
+    class BufferedReader extends Reader
     {
-        $this->closed = true;
+        private $in = null;
+        private $closed = false;
 
-        return $this;
-    }
+        private $buffer = null;
+        private $bufferLength = 0;
 
-    /**
-     * @return bool
-     */
-    public function isEof() : bool
-    {
-        return $this->in->isEof();
-    }
+        private $position = 0;
+        private $markPosition = null;
 
-    /**
-     * @return bool
-     */
-    public function markSupported() : bool
-    {
-        return true;
-    }
-
-    /**
-     * @return BufferedReader
-     **/
-    public function mark()
-    {
-        $this->markPosition = $this->position;
-
-        return $this;
-    }
-
-    /**
-     * @return BufferedReader
-     **/
-    public function reset()
-    {
-        $this->position = $this->markPosition;
-
-        return $this;
-    }
-
-    /**
-     * @param $count
-     * @return null|string
-     * @throws IOException
-     */
-    public function read($count)
-    {
-        $this->ensureOpen();
-
-        $remainingCount = $count;
-        $availableCount = $this->available();
-
-        if ($remainingCount <= $availableCount) {
-            $readFromBuffer = $count;
-        } else {
-            $readFromBuffer = $availableCount;
+        /**
+         * BufferedReader constructor.
+         * @param Reader $in
+         */
+        public function __construct(Reader $in)
+        {
+            $this->in = $in;
         }
 
-        $result = null;
+        /**
+         * @return BufferedReader
+         **/
+        public function close()
+        {
+            $this->closed = true;
 
-        if ($readFromBuffer > 0) {
-            $result = mb_substr(
-                $this->buffer,
-                $this->position,
-                $readFromBuffer
-            );
-
-            $this->position += $readFromBuffer;
-            $remainingCount -= $readFromBuffer;
+            return $this;
         }
 
-        if ($remainingCount > 0) {
-            $remaining = $this->in->read($remainingCount);
+        /**
+         * @return bool
+         */
+        public function isEof() : bool
+        {
+            return $this->in->isEof();
+        }
 
-            if ($this->markPosition !== null) {
-                $this->buffer .= $remaining;
-                $remainingLength = mb_strlen($remaining);
+        /**
+         * @return bool
+         */
+        public function markSupported() : bool
+        {
+            return true;
+        }
 
-                $this->bufferLength += $remainingLength;
-                $this->position += $remainingLength;
+        /**
+         * @return BufferedReader
+         **/
+        public function mark()
+        {
+            $this->markPosition = $this->position;
+
+            return $this;
+        }
+
+        /**
+         * @return BufferedReader
+         **/
+        public function reset()
+        {
+            $this->position = $this->markPosition;
+
+            return $this;
+        }
+
+        /**
+         * @param $count
+         * @return null|string
+         * @throws IOException
+         */
+        public function read($count)
+        {
+            $this->ensureOpen();
+
+            $remainingCount = $count;
+            $availableCount = $this->available();
+
+            if ($remainingCount <= $availableCount) {
+                $readFromBuffer = $count;
+            } else {
+                $readFromBuffer = $availableCount;
             }
 
-            if ($remaining !== null) {
-                $result .= $remaining;
+            $result = null;
+
+            if ($readFromBuffer > 0) {
+                $result = mb_substr(
+                    $this->buffer,
+                    $this->position,
+                    $readFromBuffer
+                );
+
+                $this->position += $readFromBuffer;
+                $remainingCount -= $readFromBuffer;
+            }
+
+            if ($remainingCount > 0) {
+                $remaining = $this->in->read($remainingCount);
+
+                if ($this->markPosition !== null) {
+                    $this->buffer .= $remaining;
+                    $remainingLength = mb_strlen($remaining);
+
+                    $this->bufferLength += $remainingLength;
+                    $this->position += $remainingLength;
+                }
+
+                if ($remaining !== null) {
+                    $result .= $remaining;
+                }
+            }
+
+            return $result;
+        }
+
+        /**
+         * @throws IOException
+         */
+        private function ensureOpen()
+        {
+            if ($this->closed) {
+                throw new IOException('stream has been closed');
             }
         }
 
-        return $result;
-    }
+        /* void */
 
-    /**
-     * @throws IOException
-     */
-    private function ensureOpen()
-    {
-        if ($this->closed) {
-            throw new IOException('stream has been closed');
+        /**
+         * @return int
+         * @throws IOException
+         */
+        public function available() : int
+        {
+            $this->ensureOpen();
+
+            return ($this->bufferLength - $this->position);
         }
-    }
-
-    /* void */
-
-    /**
-     * @return int
-     * @throws IOException
-     */
-    public function available() : int
-    {
-        $this->ensureOpen();
-
-        return ($this->bufferLength - $this->position);
     }
 }
-

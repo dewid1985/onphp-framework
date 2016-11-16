@@ -8,278 +8,278 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-class OqlTokenizer
-{
-    private static $masks = [
-        OqlToken::NEW_LINE =>
-            '\n',
-
-        // "'`-quoted string constant
-        OqlToken::STRING =>
-            '"[^"\\\]*(?:\\\.[^"\\\]*)*"|\'[^\'\\\]*(?:\\\.[^\'\\\]*)*\'|`[^`\\\]*(?:\\\.[^`\\\]*)*`',
-
-        // unsigned numeric constant
-        OqlToken::NUMBER =>
-            '(?:\b[\d]+)?\.?[\d]+(?:[eE][-+]?[\d]+)?\b',
-
-        // boolean constant
-        OqlToken::BOOLEAN =>
-            '\b(?:true|false)\b',
-
-        OqlToken::NULL =>
-            '\bnull\b',
-
-        // substitution
-        OqlToken::SUBSTITUTION =>
-            '\$[\d]+',
-
-        // reserved word
-        OqlToken::KEYWORD =>
-            '\b(?:as|distinct|from|where|not|and|or|in|like|ilike|similar\s+to|between|is|group\s+by|order\s+by|asc|desc|having|limit|offset)\b',
-
-        // aggregate function
-        OqlToken::AGGREGATE_FUNCTION =>
-            '\b(?:sum|avg|min|max|count)\b',
-
-        // property, class name
-        OqlToken::IDENTIFIER =>
-            '\b[a-zA-Z_][a-zA-Z\d_]*(?:\.[a-zA-Z_][a-zA-Z\d_]+)*\b',
-
-        // parentheses
-        OqlToken::PARENTHESES =>
-            '[\(\)]',
-
-        // comma
-        OqlToken::PUNCTUATION =>
-            ',',
-
-        // comparison operators
-        OqlToken::COMPARISON_OPERATOR =>
-            '\>\=|\<\=|\<\>|\>|\<|\!\=|\=',
-
-        // arithmetic operators
-        OqlToken::ARITHMETIC_OPERATOR =>
-            '\+|\-|\/|\*'
-    ];
-    private $tokens = [];
-    private $tokensCount = 0;
-    private $token = null;
-    private $prevToken = null;
-    private $index = -1;
-
-    public function __construct($string)
-    {
-        $this->tokenize($string);
-    }
-
+namespace OnPhp {
     /**
-     * @return OqlTokenizer
+     * @ingroup OQL
      **/
-    private function tokenize($string)
+    class OqlTokenizer
     {
-        Assert::isString($string);
+        private static $masks = [
+            OqlToken::NEW_LINE =>
+                '\n',
 
-        $maxMultibyteDelta = strlen($string) - mb_strlen($string);
-        $isMultibyte = $maxMultibyteDelta > 0;
+            // "'`-quoted string constant
+            OqlToken::STRING =>
+                '"[^"\\\]*(?:\\\.[^"\\\]*)*"|\'[^\'\\\]*(?:\\\.[^\'\\\]*)*\'|`[^`\\\]*(?:\\\.[^`\\\]*)*`',
 
-        $pattern = '/(' . implode(')|(', self::$masks) . ')/is';
-        if ($isMultibyte) {
-            $pattern .= 'u';
+            // unsigned numeric constant
+            OqlToken::NUMBER =>
+                '(?:\b[\d]+)?\.?[\d]+(?:[eE][-+]?[\d]+)?\b',
+
+            // boolean constant
+            OqlToken::BOOLEAN =>
+                '\b(?:true|false)\b',
+
+            OqlToken::NULL =>
+                '\bnull\b',
+
+            // substitution
+            OqlToken::SUBSTITUTION =>
+                '\$[\d]+',
+
+            // reserved word
+            OqlToken::KEYWORD =>
+                '\b(?:as|distinct|from|where|not|and|or|in|like|ilike|similar\s+to|between|is|group\s+by|order\s+by|asc|desc|having|limit|offset)\b',
+
+            // aggregate function
+            OqlToken::AGGREGATE_FUNCTION =>
+                '\b(?:sum|avg|min|max|count)\b',
+
+            // property, class name
+            OqlToken::IDENTIFIER =>
+                '\b[a-zA-Z_][a-zA-Z\d_]*(?:\.[a-zA-Z_][a-zA-Z\d_]+)*\b',
+
+            // parentheses
+            OqlToken::PARENTHESES =>
+                '[\(\)]',
+
+            // comma
+            OqlToken::PUNCTUATION =>
+                ',',
+
+            // comparison operators
+            OqlToken::COMPARISON_OPERATOR =>
+                '\>\=|\<\=|\<\>|\>|\<|\!\=|\=',
+
+            // arithmetic operators
+            OqlToken::ARITHMETIC_OPERATOR =>
+                '\+|\-|\/|\*'
+        ];
+        private $tokens = [];
+        private $tokensCount = 0;
+        private $token = null;
+        private $prevToken = null;
+        private $index = -1;
+
+        public function __construct($string)
+        {
+            $this->tokenize($string);
         }
 
-        preg_match_all(
-            $pattern,
-            $string,
-            $matches,
-            PREG_SET_ORDER | PREG_OFFSET_CAPTURE
-        );
+        /**
+         * @return OqlTokenizer
+         **/
+        private function tokenize($string)
+        {
+            Assert::isString($string);
 
-        $line = 1;
-        $lineStart = 0;
-        $multibyteDelta = 0;
+            $maxMultibyteDelta = strlen($string) - mb_strlen($string);
+            $isMultibyte = $maxMultibyteDelta > 0;
 
-        foreach ($matches as $match) {
-            $type = count($match) - 1;
-            $offset = $match[0][1] - $multibyteDelta;
-
-            if ($type == OqlToken::NEW_LINE) {
-                $line++;
-                $lineStart = $offset + 1;
-                continue;
+            $pattern = '/(' . implode(')|(', self::$masks) . ')/is';
+            if ($isMultibyte) {
+                $pattern .= 'u';
             }
 
-            $value = $match[0][0];
-            $position = $offset - $lineStart;
+            preg_match_all(
+                $pattern,
+                $string,
+                $matches,
+                PREG_SET_ORDER | PREG_OFFSET_CAPTURE
+            );
 
-            $this->tokens[] =
-                OqlToken::make(
-                    $this->importTokenValue($value, $type),
-                    $value,
-                    $type,
-                    $line,
-                    $position
-                );
+            $line = 1;
+            $lineStart = 0;
+            $multibyteDelta = 0;
 
-            if (
-                $type == OqlToken::KEYWORD
-                && ($pos = strpos($value, "\n")) !== false
-            ) {
-                $line++;
-                $lineStart = $offset + $pos + 1;
-            }
+            foreach ($matches as $match) {
+                $type = count($match) - 1;
+                $offset = $match[0][1] - $multibyteDelta;
 
-            if ($isMultibyte && $type == OqlToken::STRING) {
-                $multibyteDelta += (strlen($value) - mb_strlen($value));
+                if ($type == OqlToken::NEW_LINE) {
+                    $line++;
+                    $lineStart = $offset + 1;
+                    continue;
+                }
 
-                if ($multibyteDelta >= $maxMultibyteDelta) {
-                    $isMultibyte = false;
+                $value = $match[0][0];
+                $position = $offset - $lineStart;
+
+                $this->tokens[] =
+                    OqlToken::make(
+                        $this->importTokenValue($value, $type),
+                        $value,
+                        $type,
+                        $line,
+                        $position
+                    );
+
+                if (
+                    $type == OqlToken::KEYWORD
+                    && ($pos = strpos($value, "\n")) !== false
+                ) {
+                    $line++;
+                    $lineStart = $offset + $pos + 1;
+                }
+
+                if ($isMultibyte && $type == OqlToken::STRING) {
+                    $multibyteDelta += (strlen($value) - mb_strlen($value));
+
+                    if ($multibyteDelta >= $maxMultibyteDelta) {
+                        $isMultibyte = false;
+                    }
                 }
             }
+
+            $this->tokensCount = count($this->tokens);
+
+            return $this;
         }
 
-        $this->tokensCount = count($this->tokens);
+        private static function importTokenValue($value, $type)
+        {
+            switch ($type) {
+                case OqlToken::STRING:
+                    $quote = mb_substr($value, 0, 1);
 
-        return $this;
-    }
+                    return mb_ereg_replace(
+                        '\\\\' . $quote,
+                        $quote,
+                        mb_substr($value, 1, mb_strlen($value) - 2)
+                    );
 
-    private static function importTokenValue($value, $type)
-    {
-        switch ($type) {
-            case OqlToken::STRING:
-                $quote = mb_substr($value, 0, 1);
+                case OqlToken::NUMBER:
+                    return floatval($value);
 
-                return mb_ereg_replace(
-                    '\\\\' . $quote,
-                    $quote,
-                    mb_substr($value, 1, mb_strlen($value) - 2)
-                );
+                case OqlToken::BOOLEAN:
+                    return strtolower($value) != 'false';
 
-            case OqlToken::NUMBER:
-                return floatval($value);
+                case OqlToken::NULL:
+                    return 'null';
 
-            case OqlToken::BOOLEAN:
-                return strtolower($value) != 'false';
+                case OqlToken::AGGREGATE_FUNCTION:
+                    return strtolower($value);
 
-            case OqlToken::NULL:
-                return 'null';
+                case OqlToken::SUBSTITUTION:
+                    return intval(substr($value, 1));
 
-            case OqlToken::AGGREGATE_FUNCTION:
-                return strtolower($value);
+                case OqlToken::KEYWORD:
+                    return strtolower(
+                        preg_replace('/\s+/', ' ', $value)
+                    );
 
-            case OqlToken::SUBSTITUTION:
-                return intval(substr($value, 1));
+                case OqlToken::COMPARISON_OPERATOR:
+                    return $value == '<>' ? BinaryExpression::NOT_EQUALS : $value;
+            }
 
-            case OqlToken::KEYWORD:
-                return strtolower(
-                    preg_replace('/\s+/', ' ', $value)
-                );
-
-            case OqlToken::COMPARISON_OPERATOR:
-                return $value == '<>' ? BinaryExpression::NOT_EQUALS : $value;
+            return $value;
         }
 
-        return $value;
-    }
-
-    public function getList()
-    {
-        return $this->tokens;
-    }
-
-    public function getLine()
-    {
-        $token = $this->token;
-        if (!$token) {
-            $token = $this->prevToken;
+        public function getList()
+        {
+            return $this->tokens;
         }
 
-        return $token ? $token->getLine() : null;
-    }
+        public function getLine()
+        {
+            $token = $this->token;
+            if (!$token) {
+                $token = $this->prevToken;
+            }
 
-    public function getPosition()
-    {
-        $token = $this->token;
-        if (!$token) {
-            $token = $this->prevToken;
+            return $token ? $token->getLine() : null;
         }
 
-        return $token ? $token->getPosition() : null;
-    }
+        public function getPosition()
+        {
+            $token = $this->token;
+            if (!$token) {
+                $token = $this->prevToken;
+            }
 
-    public function getIndex()
-    {
-        return $this->index;
-    }
-
-    /**
-     * @return OqlTokenizer
-     **/
-    public function setIndex($index)
-    {
-        if ($index > $this->tokensCount - 1) {
-            $index = $this->tokensCount - 1;
-
-        } elseif ($index < -1) {
-            $index = -1;
+            return $token ? $token->getPosition() : null;
         }
 
-        $this->index = $index;
-        $this->token = $this->getByIndex($this->index);
-        $this->prevToken = $this->getByIndex($this->index - 1);
-
-        return $this;
-    }
-
-    /**
-     * @return OqlToken
-     **/
-    public function get()
-    {
-        return $this->token;
-    }
-
-    /**
-     * @return OqlToken
-     **/
-    public function next()
-    {
-        $this->setIndex($this->index + 1);
-
-        return $this->token;
-    }
-
-    /**
-     * @return OqlToken
-     **/
-    public function back()
-    {
-        $this->setIndex($this->index - 1);
-
-        return $this->token;
-    }
-
-    /**
-     * @return OqlToken
-     **/
-    public function peek()
-    {
-        if ($this->token) {
-            $this->prevToken = $this->token;
+        public function getIndex()
+        {
+            return $this->index;
         }
 
-        return $this->token = $this->getByIndex($this->index + 1);
-    }
+        /**
+         * @return OqlTokenizer
+         **/
+        public function setIndex($index)
+        {
+            if ($index > $this->tokensCount - 1) {
+                $index = $this->tokensCount - 1;
 
-    /**
-     * @return OqlToken
-     **/
-    private function getByIndex($index)
-    {
-        return isset($this->tokens[$index]) ? $this->tokens[$index] : null;
+            } elseif ($index < -1) {
+                $index = -1;
+            }
+
+            $this->index = $index;
+            $this->token = $this->getByIndex($this->index);
+            $this->prevToken = $this->getByIndex($this->index - 1);
+
+            return $this;
+        }
+
+        /**
+         * @return OqlToken
+         **/
+        public function get()
+        {
+            return $this->token;
+        }
+
+        /**
+         * @return OqlToken
+         **/
+        public function next()
+        {
+            $this->setIndex($this->index + 1);
+
+            return $this->token;
+        }
+
+        /**
+         * @return OqlToken
+         **/
+        public function back()
+        {
+            $this->setIndex($this->index - 1);
+
+            return $this->token;
+        }
+
+        /**
+         * @return OqlToken
+         **/
+        public function peek()
+        {
+            if ($this->token) {
+                $this->prevToken = $this->token;
+            }
+
+            return $this->token = $this->getByIndex($this->index + 1);
+        }
+
+        /**
+         * @return OqlToken
+         **/
+        private function getByIndex($index)
+        {
+            return isset($this->tokens[$index]) ? $this->tokens[$index] : null;
+        }
     }
 }
-

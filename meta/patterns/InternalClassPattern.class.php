@@ -8,31 +8,31 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Patterns
- **/
-final class InternalClassPattern
-    extends BasePattern
-    implements GenerationPattern
-{
+namespace OnPhp {
     /**
-     * @return InternalClassPattern
+     * @ingroup Patterns
      **/
-    public function build(MetaClass $class)
+    final class InternalClassPattern
+        extends BasePattern
+        implements GenerationPattern
     {
-        return $this;
-    }
+        /**
+         * @return InternalClassPattern
+         **/
+        public function build(MetaClass $class)
+        {
+            return $this;
+        }
 
-    public function tableExists()
-    {
-        return false;
-    }
+        public function tableExists()
+        {
+            return false;
+        }
 
-    public function daoExists()
-    {
-        return true;
+        public function daoExists()
+        {
+            return true;
+        }
     }
 }
-
 ?>

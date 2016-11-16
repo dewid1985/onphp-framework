@@ -10,6 +10,10 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * Interface IServiceLocatorSupport
+ */
 interface IServiceLocatorSupport
 {
     public function setServiceLocator(IServiceLocator $serviceLocator);

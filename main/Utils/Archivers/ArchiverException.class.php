@@ -8,11 +8,12 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class ArchiverException extends BaseException
-{/*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Utils
+     **/
+    class ArchiverException extends BaseException
+    {
+        /*_*/
+    }
 }
-

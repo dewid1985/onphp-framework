@@ -9,299 +9,300 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class AMQPSelective implements AMQPInterface
-{
-    /**
-     * @var string
-     */
-    protected static $proxy = 'AMQPProxyChannel';
-    /**
-     * @var array of AMQPChannelInterface instances
-     **/
-    protected $channels = [];
-    /**
-     * @var sting
-     */
-    private $current = null;
-    private $pool = [];
-
-    /**
-     * @return AMQPAgregate
-     **/
-    public static function me()
+namespace OnPhp {
+    class AMQPSelective implements AMQPInterface
     {
-        return new self;
-    }
+        /**
+         * @var string
+         */
+        protected static $proxy = 'AMQPProxyChannel';
+        /**
+         * @var array of AMQPChannelInterface instances
+         **/
+        protected $channels = [];
+        /**
+         * @var sting
+         */
+        private $current = null;
+        private $pool = [];
 
-    /**
-     * @param string $proxy
-     */
-    public static function setProxy($proxy)
-    {
-        self::$proxy = $proxy;
-    }
+        /**
+         * @return AMQPAgregate
+         **/
+        public static function me()
+        {
+            return new self;
+        }
 
-    /**
-     * @param AMQPPool $pool
-     * @return AMQPSelective
-     */
-    public function addPool(AMQPPool $pool)
-    {
-        foreach ($pool->getList() as $name => $amqp) {
-            $this->addLink($name, $amqp);
+        /**
+         * @param string $proxy
+         */
+        public static function setProxy($proxy)
+        {
+            self::$proxy = $proxy;
+        }
 
-            if ($name == 'default') {
-                $this->setCurrent('default');
+        /**
+         * @param AMQPPool $pool
+         * @return AMQPSelective
+         */
+        public function addPool(AMQPPool $pool)
+        {
+            foreach ($pool->getList() as $name => $amqp) {
+                $this->addLink($name, $amqp);
+
+                if ($name == 'default') {
+                    $this->setCurrent('default');
+                }
             }
+
+            return $this;
         }
 
-        return $this;
-    }
-
-    /**
-     * @throws WrongArgumentException
-     * @return AMQPPool
-     **/
-    public function addLink($name, AMQP $amqp)
-    {
-        if (isset($this->pool[$name])) {
-            throw new WrongArgumentException(
-                "amqp link with name '{$name}' already registered"
-            );
-        }
-
-        if ($this->pool) {
-            Assert::isInstance($amqp, current($this->pool));
-        }
-
-        $this->pool[$name] = $amqp;
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @return AMQPSelective
-     */
-    public function setCurrent($name)
-    {
-        Assert::isIndexExists($this->pool, $name);
-
-        $this->current = $name;
-
-        return $this;
-    }
-
-    /**
-     * @throws MissingElementException
-     * @return AMQPPool
-     **/
-    public function dropLink($name)
-    {
-        if (!isset($this->pool[$name])) {
-            throw new MissingElementException(
-                "amqp link with name '{$name}' not found"
-            );
-        }
-
-        unset($this->pool[$name]);
-
-        $this->current = null;
-
-        return $this;
-    }
-
-    /**
-     * @param integer $id
-     * @throws WrongArgumentException
-     * @return AMQPChannelInterface
-     **/
-    public function createChannel($id)
-    {
-        Assert::isInteger($id);
-
-        if (isset($this->channels[$id])) {
-            throw new WrongArgumentException(
-                "AMQP channel with id '{$id}' already registered"
-            );
-        }
-
-        if (!$this->current) {
-            $this->setCurrent($this->getAlive());
-        }
-
-        if (!$this->isConnected()) {
-            $this->connect();
-        }
-
-        $this->channels[$id] = new self::$proxy(
-            $this->getCurrentItem()->spawnChannel($id, $this)
-        );
-
-        $this->channels[$id]->open();
-
-        return $this->channels[$id];
-    }
-
-    /**
-     * @throws WrongArgumentException
-     * @return string
-     */
-    public function getAlive()
-    {
-        foreach ($this->pool as $name => $item) {
-            if ($item->isAlive()) {
-                return $name;
-            }
-        }
-
-        Assert::isUnreachable("no alive connection");
-    }
-
-    /**
-     * @return boolean
-     **/
-    public function isConnected()
-    {
-        return $this->processMethod('isConnected');
-    }
-
-    /**
-     * @throws WrongArgumentException
-     * @param string $method
-     * @return mixed
-     */
-    protected function processMethod($method/*, $args*/)
-    {
-        $args = func_get_args();
-        array_shift($args);
-
-        for ($i = 0; $i < count($this->pool); $i++) {
-            try {
-                $this->getCurrentItem()->connect();
-
-                return call_user_func_array(
-                    [$this->getCurrentItem(), $method],
-                    $args
+        /**
+         * @throws WrongArgumentException
+         * @return AMQPPool
+         **/
+        public function addLink($name, AMQP $amqp)
+        {
+            if (isset($this->pool[$name])) {
+                throw new WrongArgumentException(
+                    "amqp link with name '{$name}' already registered"
                 );
-            } catch (AMQPServerConnectionException $e) {
+            }
+
+            if ($this->pool) {
+                Assert::isInstance($amqp, current($this->pool));
+            }
+
+            $this->pool[$name] = $amqp;
+
+            return $this;
+        }
+
+        /**
+         * @param string $name
+         * @return AMQPSelective
+         */
+        public function setCurrent($name)
+        {
+            Assert::isIndexExists($this->pool, $name);
+
+            $this->current = $name;
+
+            return $this;
+        }
+
+        /**
+         * @throws MissingElementException
+         * @return AMQPPool
+         **/
+        public function dropLink($name)
+        {
+            if (!isset($this->pool[$name])) {
+                throw new MissingElementException(
+                    "amqp link with name '{$name}' not found"
+                );
+            }
+
+            unset($this->pool[$name]);
+
+            $this->current = null;
+
+            return $this;
+        }
+
+        /**
+         * @param integer $id
+         * @throws WrongArgumentException
+         * @return AMQPChannelInterface
+         **/
+        public function createChannel($id)
+        {
+            Assert::isInteger($id);
+
+            if (isset($this->channels[$id])) {
+                throw new WrongArgumentException(
+                    "AMQP channel with id '{$id}' already registered"
+                );
+            }
+
+            if (!$this->current) {
                 $this->setCurrent($this->getAlive());
             }
-        }
-    }
 
-    /**
-     * @thows WrongArgumentException
-     * @return AMQPInterface
-     */
-    protected function getCurrentItem()
-    {
-        if ($this->current && $this->pool[$this->current]->isAlive()) {
-            return $this->pool[$this->current];
-        }
+            if (!$this->isConnected()) {
+                $this->connect();
+            }
 
-        Assert::isUnreachable("no current connection");
-    }
+            $this->channels[$id] = new self::$proxy(
+                $this->getCurrentItem()->spawnChannel($id, $this)
+            );
 
-    /**
-     * @return AMQPInterface
-     * @throws AMQPServerConnectionException
-     */
-    public function connect()
-    {
-        return $this->processMethod('connect');
-    }
+            $this->channels[$id]->open();
 
-    /**
-     * @throws MissingElementException
-     * @return AMQPChannelInterface
-     **/
-    public function getChannel($id)
-    {
-        if (isset($this->channels[$id])) {
             return $this->channels[$id];
         }
 
-        throw new MissingElementException(
-            "Can't find AMQP channel with id '{$id}'"
-        );
-    }
+        /**
+         * @throws WrongArgumentException
+         * @return string
+         */
+        public function getAlive()
+        {
+            foreach ($this->pool as $name => $item) {
+                if ($item->isAlive()) {
+                    return $name;
+                }
+            }
 
-    /**
-     * @return array
-     **/
-    public function getChannelList()
-    {
-        return $this->channels;
-    }
+            Assert::isUnreachable("no alive connection");
+        }
 
-    /**
-     * @param integer $id
-     * @throws MissingElementException
-     * @return AMQPChannelInterface
-     **/
-    public function dropChannel($id)
-    {
-        if (!isset($this->channels[$id])) {
+        /**
+         * @return boolean
+         **/
+        public function isConnected()
+        {
+            return $this->processMethod('isConnected');
+        }
+
+        /**
+         * @throws WrongArgumentException
+         * @param string $method
+         * @return mixed
+         */
+        protected function processMethod($method/*, $args*/)
+        {
+            $args = func_get_args();
+            array_shift($args);
+
+            for ($i = 0; $i < count($this->pool); $i++) {
+                try {
+                    $this->getCurrentItem()->connect();
+
+                    return call_user_func_array(
+                        [$this->getCurrentItem(), $method],
+                        $args
+                    );
+                } catch (AMQPServerConnectionException $e) {
+                    $this->setCurrent($this->getAlive());
+                }
+            }
+        }
+
+        /**
+         * @thows WrongArgumentException
+         * @return AMQPInterface
+         */
+        protected function getCurrentItem()
+        {
+            if ($this->current && $this->pool[$this->current]->isAlive()) {
+                return $this->pool[$this->current];
+            }
+
+            Assert::isUnreachable("no current connection");
+        }
+
+        /**
+         * @return AMQPInterface
+         * @throws AMQPServerConnectionException
+         */
+        public function connect()
+        {
+            return $this->processMethod('connect');
+        }
+
+        /**
+         * @throws MissingElementException
+         * @return AMQPChannelInterface
+         **/
+        public function getChannel($id)
+        {
+            if (isset($this->channels[$id])) {
+                return $this->channels[$id];
+            }
+
             throw new MissingElementException(
-                "AMQP channel with id '{$id}' not found"
+                "Can't find AMQP channel with id '{$id}'"
             );
         }
 
-        $this->channels[$id]->close();
+        /**
+         * @return array
+         **/
+        public function getChannelList()
+        {
+            return $this->channels;
+        }
 
-        unset($this->channels[$id]);
+        /**
+         * @param integer $id
+         * @throws MissingElementException
+         * @return AMQPChannelInterface
+         **/
+        public function dropChannel($id)
+        {
+            if (!isset($this->channels[$id])) {
+                throw new MissingElementException(
+                    "AMQP channel with id '{$id}' not found"
+                );
+            }
 
-        return $this;
-    }
+            $this->channels[$id]->close();
 
-    /**
-     * @return AMQPInterface
-     **/
-    public function disconnect()
-    {
-        return $this->processMethod('disconnect');
-    }
+            unset($this->channels[$id]);
 
-    /**
-     * @return AMQPInterface
-     **/
-    public function reconnect()
-    {
-        return $this->processMethod('reconnect');
-    }
+            return $this;
+        }
 
-    /**
-     * @return AMQPInterface
-     **/
-    public function getLink()
-    {
-        return $this->processMethod('getLink');
-    }
+        /**
+         * @return AMQPInterface
+         **/
+        public function disconnect()
+        {
+            return $this->processMethod('disconnect');
+        }
 
-    /**
-     * @return AMQPCredentials
-     */
-    public function getCredentials()
-    {
-        return $this->processMethod('getCredentials');
-    }
+        /**
+         * @return AMQPInterface
+         **/
+        public function reconnect()
+        {
+            return $this->processMethod('reconnect');
+        }
 
-    /**
-     * @return bool
-     */
-    public function isAlive()
-    {
-        return $this->processMethod('isAlive');
-    }
+        /**
+         * @return AMQPInterface
+         **/
+        public function getLink()
+        {
+            return $this->processMethod('getLink');
+        }
 
-    /**
-     * @param bool $alive
-     * @return AMQPInterface
-     */
-    public function setAlive($alive)
-    {
-        return $this->processMethod('setAlive', $alive);
+        /**
+         * @return AMQPCredentials
+         */
+        public function getCredentials()
+        {
+            return $this->processMethod('getCredentials');
+        }
+
+        /**
+         * @return bool
+         */
+        public function isAlive()
+        {
+            return $this->processMethod('isAlive');
+        }
+
+        /**
+         * @param bool $alive
+         * @return AMQPInterface
+         */
+        public function setAlive($alive)
+        {
+            return $this->processMethod('setAlive', $alive);
+        }
     }
 }
-

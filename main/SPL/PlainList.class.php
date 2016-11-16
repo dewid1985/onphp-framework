@@ -8,24 +8,24 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Ordered unindexed list of Identifiable objects.
- *
- * @ingroup onSPL
- **/
-class PlainList extends AbstractList
-{
+namespace OnPhp {
     /**
-     * @return PlainList
+     * Ordered unindexed list of Identifiable objects.
+     *
+     * @ingroup onSPL
      **/
-    public function offsetSet($offset, $value)
+    class PlainList extends AbstractList
     {
-        Assert::isTrue($value instanceof Identifiable);
+        /**
+         * @return PlainList
+         **/
+        public function offsetSet($offset, $value)
+        {
+            Assert::isTrue($value instanceof Identifiable);
 
-        $this->list[] = $value;
+            $this->list[] = $value;
 
-        return $this;
+            return $this;
+        }
     }
 }
-

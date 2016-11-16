@@ -8,55 +8,55 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Base class modelling an AMQ channel
- **/
-abstract class AMQPBaseChannel implements AMQPChannelInterface
-{
-    protected $id = null;
-
+namespace OnPhp {
     /**
-     * @var AMQPInterface
+     * Base class modelling an AMQ channel
      **/
-    protected $transport = null;
-
-    public function __construct($id, AMQPInterface $transport)
+    abstract class AMQPBaseChannel implements AMQPChannelInterface
     {
-        $this->id = $id;
-        $this->transport = $transport;
-    }
+        protected $id = null;
 
-    public function __destruct()
-    {
-        if ($this->isOpen()) {
-            $this->close();
-        }
-    }
+        /**
+         * @var AMQPInterface
+         **/
+        protected $transport = null;
 
-    public function getTransport()
-    {
-        return $this->transport;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @throws AMQPServerConnectionException
-     * @return AMQPBaseChannel
-     **/
-    protected function checkConnection()
-    {
-        if (!$this->transport->getLink()->isConnected()) {
-            throw new AMQPServerConnectionException(
-                "No connection available"
-            );
+        public function __construct($id, AMQPInterface $transport)
+        {
+            $this->id = $id;
+            $this->transport = $transport;
         }
 
-        return $this;
+        public function __destruct()
+        {
+            if ($this->isOpen()) {
+                $this->close();
+            }
+        }
+
+        public function getTransport()
+        {
+            return $this->transport;
+        }
+
+        public function getId()
+        {
+            return $this->id;
+        }
+
+        /**
+         * @throws AMQPServerConnectionException
+         * @return AMQPBaseChannel
+         **/
+        protected function checkConnection()
+        {
+            if (!$this->transport->getLink()->isConnected()) {
+                throw new AMQPServerConnectionException(
+                    "No connection available"
+                );
+            }
+
+            return $this;
+        }
     }
 }
-

@@ -9,7 +9,11 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class RouterException extends BaseException
-{/*_*/
+namespace OnPhp {
+
+    class RouterException extends BaseException
+    {
+        /*_*/
+    }
 }
 

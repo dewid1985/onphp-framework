@@ -8,69 +8,71 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class SimplePhpView extends EmptyView
-{
-    protected $templatePath = null;
-    protected $partViewResolver = null;
-
-    public function __construct($templatePath, ViewResolver $partViewResolver)
-    {
-        $this->templatePath = $templatePath;
-        $this->partViewResolver = $partViewResolver;
-    }
-
-    public function toString($model = null) : string
-    {
-        try {
-            ob_start();
-            $this->render($model);
-            return ob_get_clean();
-        } catch (Exception $e) {
-            ob_end_clean();
-            throw $e;
-        }
-    }
-
+namespace OnPhp {
     /**
-     * @return SimplePhpView
+     * @ingroup Flow
      **/
-    public function render(/* Model */
-        $model = null
-    ) {
-        Assert::isTrue($model === null || $model instanceof Model);
+    class SimplePhpView extends EmptyView
+    {
+        protected $templatePath = null;
+        protected $partViewResolver = null;
 
-        if ($model) {
-            extract($model->getList());
+        public function __construct($templatePath, ViewResolver $partViewResolver)
+        {
+            $this->templatePath = $templatePath;
+            $this->partViewResolver = $partViewResolver;
         }
 
-        $partViewer = new PartViewer($this->partViewResolver, $model);
+        public function toString($model = null) : string
+        {
+            try {
+                ob_start();
+                $this->render($model);
+                return ob_get_clean();
+            } catch (Exception $e) {
+                ob_end_clean();
+                throw $e;
+            }
+        }
 
-        $this->preRender();
+        /**
+         * @return SimplePhpView
+         **/
+        public function render(/* Model */
+            $model = null
+        )
+        {
+            Assert::isTrue($model === null || $model instanceof Model);
 
-        include $this->templatePath;
+            if ($model) {
+                extract($model->getList());
+            }
 
-        $this->postRender();
+            $partViewer = new PartViewer($this->partViewResolver, $model);
 
-        return $this;
-    }
+            $this->preRender();
 
-    /**
-     * @return SimplePhpView
-     **/
-    protected function preRender()
-    {
-        return $this;
-    }
+            include $this->templatePath;
 
-    /**
-     * @return SimplePhpView
-     **/
-    protected function postRender()
-    {
-        return $this;
+            $this->postRender();
+
+            return $this;
+        }
+
+        /**
+         * @return SimplePhpView
+         **/
+        protected function preRender()
+        {
+            return $this;
+        }
+
+        /**
+         * @return SimplePhpView
+         **/
+        protected function postRender()
+        {
+            return $this;
+        }
     }
 }

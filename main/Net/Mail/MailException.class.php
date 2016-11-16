@@ -8,12 +8,14 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Exceptions
- **/
-class MailException extends BaseException
-{/*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     **/
+    class MailException extends BaseException
+    {
+        /*_*/
+    }
 }
 
 

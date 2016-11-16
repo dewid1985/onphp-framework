@@ -8,74 +8,75 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-class CircleBackgroundDrawer extends BackgroundDrawer
-{
-    const VERTEX_COUNT = 20;
-
-    private $minRadius = null;
-    private $maxRadius = null;
-    private $count = null;
-
-    public function __construct($count, $minRadius, $maxRadius = null)
-    {
-        if ($maxRadius === null) {
-            $maxRadius = $minRadius;
-        }
-
-        $this->maxRadius = $maxRadius;
-        $this->minRadius = $minRadius;
-        $this->count = $count;
-    }
-
+namespace OnPhp {
     /**
-     * @return CircleBackgroundDrawer
+     * @ingroup Turing
      **/
-    public function draw()
+    class CircleBackgroundDrawer extends BackgroundDrawer
     {
-        for ($i = 0; $i < $this->count; ++$i) {
-            $y = mt_rand(0, $this->getTuringImage()->getHeight());
-            $x = mt_rand(0, $this->getTuringImage()->getWidth());
+        const VERTEX_COUNT = 20;
 
-            $radius = mt_rand($this->minRadius, $this->maxRadius);
+        private $minRadius = null;
+        private $maxRadius = null;
+        private $count = null;
 
-            $this->drawCircle($x, $y, $radius);
+        public function __construct($count, $minRadius, $maxRadius = null)
+        {
+            if ($maxRadius === null) {
+                $maxRadius = $minRadius;
+            }
+
+            $this->maxRadius = $maxRadius;
+            $this->minRadius = $minRadius;
+            $this->count = $count;
         }
 
-        return $this;
-    }
+        /**
+         * @return CircleBackgroundDrawer
+         **/
+        public function draw()
+        {
+            for ($i = 0; $i < $this->count; ++$i) {
+                $y = mt_rand(0, $this->getTuringImage()->getHeight());
+                $x = mt_rand(0, $this->getTuringImage()->getWidth());
 
-    /* void */
-    private function drawCircle($x, $y, $radius)
-    {
-        $vertexArray = [];
+                $radius = mt_rand($this->minRadius, $this->maxRadius);
 
-        $angleStep = 360 / CircleBackgroundDrawer::VERTEX_COUNT;
-        $angle = 0;
+                $this->drawCircle($x, $y, $radius);
+            }
 
-        for ($i = 0; $i < CircleBackgroundDrawer::VERTEX_COUNT; ++$i) {
-            $color = $this->makeColor();
-            $colorId = $this->getTuringImage()->getColorIdentifier($color);
-
-            $angleRad = deg2rad($angle);
-
-            $dx = sin($angleRad) * $radius;
-            $dy = cos($angleRad) * $radius;
-
-            $vertexArray[] = $x + $dx;
-            $vertexArray[] = $y + $dy;
-
-            $angle += $angleStep;
+            return $this;
         }
 
-        imagefilledpolygon(
-            $this->getTuringImage()->getImageId(),
-            $vertexArray,
-            CircleBackgroundDrawer::VERTEX_COUNT,
-            $colorId
-        );
+        /* void */
+        private function drawCircle($x, $y, $radius)
+        {
+            $vertexArray = [];
+
+            $angleStep = 360 / CircleBackgroundDrawer::VERTEX_COUNT;
+            $angle = 0;
+
+            for ($i = 0; $i < CircleBackgroundDrawer::VERTEX_COUNT; ++$i) {
+                $color = $this->makeColor();
+                $colorId = $this->getTuringImage()->getColorIdentifier($color);
+
+                $angleRad = deg2rad($angle);
+
+                $dx = sin($angleRad) * $radius;
+                $dy = cos($angleRad) * $radius;
+
+                $vertexArray[] = $x + $dx;
+                $vertexArray[] = $y + $dy;
+
+                $angle += $angleStep;
+            }
+
+            imagefilledpolygon(
+                $this->getTuringImage()->getImageId(),
+                $vertexArray,
+                CircleBackgroundDrawer::VERTEX_COUNT,
+                $colorId
+            );
+        }
     }
 }

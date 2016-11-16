@@ -8,374 +8,374 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class CustomizableDaoSynchronizer
-{
-    protected $dryRun = false;
-    protected $reallyDelete = false;
-
-    protected $master = null;
-    protected $slave = null;
-
-    private $masterProjection = null;
-    private $slaveProjection = null;
-
-    private $masterKeyProperty = 'id';
-    private $slaveKeyProperty = 'id';
-
-    private $totalUpdated = 0;
-    private $totalInserted = 0;
-    private $totalDeleted = 0;
-
+namespace OnPhp {
     /**
-     * @return bool
-     */
-    public function isDryRun()
-    {
-        return $this->dryRun;
-    }
-
-    /**
-     * @return CustomizableDaoSynchronizer
+     * @ingroup Utils
      **/
-    public function setDryRun($dryRun)
+    class CustomizableDaoSynchronizer
     {
-        $this->dryRun = $dryRun;
+        protected $dryRun = false;
+        protected $reallyDelete = false;
 
-        return $this;
-    }
+        protected $master = null;
+        protected $slave = null;
 
-    /**
-     * @return bool
-     */
-    public function isReallyDelete() : bool
-    {
-        return $this->reallyDelete;
-    }
+        private $masterProjection = null;
+        private $slaveProjection = null;
 
-    /**
-     * @return CustomizableDaoSynchronizer
-     **/
-    public function setReallyDelete($reallyDelete)
-    {
-        $this->reallyDelete = $reallyDelete;
+        private $masterKeyProperty = 'id';
+        private $slaveKeyProperty = 'id';
 
-        return $this;
-    }
+        private $totalUpdated = 0;
+        private $totalInserted = 0;
+        private $totalDeleted = 0;
 
-    /**
-     * @return GenericDAO
-     **/
-    public function getMaster()
-    {
-        return $this->master;
-    }
-
-    /**
-     * @return CustomizableDaoSynchronizer
-     **/
-    public function setMaster(GenericDAO $master)
-    {
-        $this->master = $master;
-
-        return $this;
-    }
-
-    /**
-     * @return GenericDAO
-     **/
-    public function getSlave()
-    {
-        return $this->slave;
-    }
-
-    /**
-     * @return CustomizableDaoSynchronizer
-     **/
-    public function setSlave(GenericDAO $slave)
-    {
-        $this->slave = $slave;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMasterKeyProperty()
-    {
-        return $this->masterKeyProperty;
-    }
-
-    /**
-     * @return CustomizableDaoSynchronizer
-     **/
-    public function setMasterKeyProperty($masterKeyProperty)
-    {
-        $this->masterKeyProperty = $masterKeyProperty;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSlaveKeyProperty()
-    {
-        return $this->slaveKeyProperty;
-    }
-
-    /**
-     * @return CustomizableDaoSynchronizer
-     **/
-    public function setSlaveKeyProperty($slaveKeyProperty)
-    {
-        $this->slaveKeyProperty = $slaveKeyProperty;
-
-        return $this;
-    }
-
-    /**
-     * @return ObjectProjection
-     **/
-    public function getMasterProjection()
-    {
-        return $this->masterProjection;
-    }
-
-    /**
-     * @return CustomizableDaoSynchronizer
-     **/
-    public function setMasterProjection(ObjectProjection $masterProjection)
-    {
-        $this->masterProjection = $masterProjection;
-
-        return $this;
-    }
-
-    /**
-     * @return ObjectProjection
-     **/
-    public function getSlaveProjection()
-    {
-        return $this->slaveProjection;
-    }
-
-    /**
-     * @return CustomizableDaoSynchronizer
-     **/
-    public function setSlaveProjection(ObjectProjection $slaveProjection)
-    {
-        $this->slaveProjection = $slaveProjection;
-
-        return $this;
-    }
-
-    /**
-     * @return CustomizableDaoSynchronizer
-     **/
-    public function run()
-    {
-        $masterIterator = new DaoIterator();
-        $slaveIterator = new DaoIterator();
-
-        $masterIterator->setDao($this->master);
-        $slaveIterator->setDao($this->slave);
-
-        if ($this->masterKeyProperty) {
-            $masterIterator->setKeyProperty($this->masterKeyProperty);
+        /**
+         * @return bool
+         */
+        public function isDryRun()
+        {
+            return $this->dryRun;
         }
 
-        if ($this->slaveKeyProperty) {
-            $slaveIterator->setKeyProperty($this->slaveKeyProperty);
+        /**
+         * @return CustomizableDaoSynchronizer
+         **/
+        public function setDryRun($dryRun)
+        {
+            $this->dryRun = $dryRun;
+
+            return $this;
         }
 
-        if ($this->masterProjection) {
-            $masterIterator->setProjection($this->masterProjection);
+        /**
+         * @return bool
+         */
+        public function isReallyDelete() : bool
+        {
+            return $this->reallyDelete;
         }
 
-        if ($this->slaveProjection) {
-            $slaveIterator->setProjection($this->slaveProjection);
+        /**
+         * @return CustomizableDaoSynchronizer
+         **/
+        public function setReallyDelete($reallyDelete)
+        {
+            $this->reallyDelete = $reallyDelete;
+
+            return $this;
         }
 
-        $this->totalDeleted = 0;
-        $this->totalInserted = 0;
-        $this->totalUpdated = 0;
+        /**
+         * @return GenericDAO
+         **/
+        public function getMaster()
+        {
+            return $this->master;
+        }
 
-        while ($masterIterator->valid() || $slaveIterator->valid()) {
-            $masterObject = $masterIterator->current();
-            $slaveObject = $slaveIterator->current();
+        /**
+         * @return CustomizableDaoSynchronizer
+         **/
+        public function setMaster(GenericDAO $master)
+        {
+            $this->master = $master;
 
-            $masterObject = $this->convertMasterObjectToSlave($masterObject);
+            return $this;
+        }
 
-            $masterGetter = 'get' . ucfirst($this->masterKeyProperty);
+        /**
+         * @return GenericDAO
+         **/
+        public function getSlave()
+        {
+            return $this->slave;
+        }
+
+        /**
+         * @return CustomizableDaoSynchronizer
+         **/
+        public function setSlave(GenericDAO $slave)
+        {
+            $this->slave = $slave;
+
+            return $this;
+        }
+
+        /**
+         * @return string
+         */
+        public function getMasterKeyProperty()
+        {
+            return $this->masterKeyProperty;
+        }
+
+        /**
+         * @return CustomizableDaoSynchronizer
+         **/
+        public function setMasterKeyProperty($masterKeyProperty)
+        {
+            $this->masterKeyProperty = $masterKeyProperty;
+
+            return $this;
+        }
+
+        /**
+         * @return string
+         */
+        public function getSlaveKeyProperty()
+        {
+            return $this->slaveKeyProperty;
+        }
+
+        /**
+         * @return CustomizableDaoSynchronizer
+         **/
+        public function setSlaveKeyProperty($slaveKeyProperty)
+        {
+            $this->slaveKeyProperty = $slaveKeyProperty;
+
+            return $this;
+        }
+
+        /**
+         * @return ObjectProjection
+         **/
+        public function getMasterProjection()
+        {
+            return $this->masterProjection;
+        }
+
+        /**
+         * @return CustomizableDaoSynchronizer
+         **/
+        public function setMasterProjection(ObjectProjection $masterProjection)
+        {
+            $this->masterProjection = $masterProjection;
+
+            return $this;
+        }
+
+        /**
+         * @return ObjectProjection
+         **/
+        public function getSlaveProjection()
+        {
+            return $this->slaveProjection;
+        }
+
+        /**
+         * @return CustomizableDaoSynchronizer
+         **/
+        public function setSlaveProjection(ObjectProjection $slaveProjection)
+        {
+            $this->slaveProjection = $slaveProjection;
+
+            return $this;
+        }
+
+        /**
+         * @return CustomizableDaoSynchronizer
+         **/
+        public function run()
+        {
+            $masterIterator = new DaoIterator();
+            $slaveIterator = new DaoIterator();
+
+            $masterIterator->setDao($this->master);
+            $slaveIterator->setDao($this->slave);
+
+            if ($this->masterKeyProperty) {
+                $masterIterator->setKeyProperty($this->masterKeyProperty);
+            }
+
+            if ($this->slaveKeyProperty) {
+                $slaveIterator->setKeyProperty($this->slaveKeyProperty);
+            }
+
+            if ($this->masterProjection) {
+                $masterIterator->setProjection($this->masterProjection);
+            }
+
+            if ($this->slaveProjection) {
+                $slaveIterator->setProjection($this->slaveProjection);
+            }
+
+            $this->totalDeleted = 0;
+            $this->totalInserted = 0;
+            $this->totalUpdated = 0;
+
+            while ($masterIterator->valid() || $slaveIterator->valid()) {
+                $masterObject = $masterIterator->current();
+                $slaveObject = $slaveIterator->current();
+
+                $masterObject = $this->convertMasterObjectToSlave($masterObject);
+
+                $masterGetter = 'get' . ucfirst($this->masterKeyProperty);
+                $slaveGetter = 'get' . ucfirst($this->slaveKeyProperty);
+
+                if (
+                    $masterObject && $slaveObject
+                    && (
+                        $masterObject->$masterGetter()
+                        == $slaveObject->$slaveGetter()
+                    )
+                ) {
+                    if ($this->sync($slaveObject, $masterObject)) {
+                        $this->totalUpdated++;
+                    }
+
+                    $masterIterator->next();
+                    $slaveIterator->next();
+                } elseif (
+                    !$masterObject
+                    || (
+                        $slaveObject
+                        && $this->compareKeys(
+                            $masterObject->$masterGetter(),
+                            $slaveObject->$slaveGetter()
+                        ) > 0
+                    )
+                ) {
+                    if ($this->delete($slaveObject)) {
+                        $this->totalDeleted++;
+                    }
+
+                    $slaveIterator->next();
+                } elseif (
+                    !$slaveObject
+                    || (
+                        $masterObject
+                        && $this->compareKeys(
+                            $masterObject->$masterGetter(),
+                            $slaveObject->$slaveGetter()
+                        ) < 0
+                    )
+                ) {
+                    if ($this->insert($masterObject)) {
+                        $this->totalInserted++;
+                    }
+
+                    $masterIterator->next();
+
+                } else {
+                    Assert::isUnreachable('how did you get here?');
+                }
+            }
+
+            return $this;
+        }
+
+        /**
+         * @param $masterObject
+         * @return mixed
+         */
+        private function convertMasterObjectToSlave($masterObject)
+        {
+            if (
+                $masterObject
+                && (
+                    call_user_func(
+                        [$this->slave->getObjectName(), 'create']
+                    )
+                    instanceof SynchronizableObject
+                )
+            ) {
+                $masterObject = call_user_func(
+                    [
+                        $this->slave->getObjectName(),
+                        'createFromMasterObject'
+                    ],
+                    $masterObject
+                );
+            }
+
+            return $masterObject;
+        }
+
+        /**
+         * @param $old
+         * @param $object
+         * @return bool
+         */
+        protected function sync($old, $object)
+        {
+            if (!$this->dryRun) {
+                $this->slave->merge($object);
+            }
+
+            return true;
+        }
+
+        /**
+         * @param $min
+         * @param $sub
+         * @return int
+         */
+        protected function compareKeys($min, $sub)
+        {
+            if ($min > $sub) {
+                return 1;
+            } elseif ($min < $sub) {
+                return -1;
+            }
+
+            return 0;
+        }
+
+        /**
+         * @param $slaveObject
+         * @return bool
+         * @throws WrongArgumentException
+         */
+        protected function delete($slaveObject) : bool
+        {
             $slaveGetter = 'get' . ucfirst($this->slaveKeyProperty);
 
-            if (
-                $masterObject && $slaveObject
-                && (
-                    $masterObject->$masterGetter()
-                    == $slaveObject->$slaveGetter()
-                )
-            ) {
-                if ($this->sync($slaveObject, $masterObject)) {
-                    $this->totalUpdated++;
-                }
+            Assert::methodExists($slaveObject, $slaveGetter);
 
-                $masterIterator->next();
-                $slaveIterator->next();
-            } elseif (
-                !$masterObject
-                || (
-                    $slaveObject
-                    && $this->compareKeys(
-                        $masterObject->$masterGetter(),
-                        $slaveObject->$slaveGetter()
-                    ) > 0
-                )
-            ) {
-                if ($this->delete($slaveObject)) {
-                    $this->totalDeleted++;
-                }
-
-                $slaveIterator->next();
-            } elseif (
-                !$slaveObject
-                || (
-                    $masterObject
-                    && $this->compareKeys(
-                        $masterObject->$masterGetter(),
-                        $slaveObject->$slaveGetter()
-                    ) < 0
-                )
-            ) {
-                if ($this->insert($masterObject)) {
-                    $this->totalInserted++;
-                }
-
-                $masterIterator->next();
-
-            } else {
-                Assert::isUnreachable('how did you get here?');
+            if (!$this->dryRun && $this->reallyDelete) {
+                $this->slave->dropById($slaveObject->$slaveGetter());
             }
+
+            return true;
         }
 
-        return $this;
-    }
+        /**
+         * @param $masterObject
+         * @return bool
+         */
+        protected function insert($masterObject) : bool
+        {
+            if (!$this->dryRun) {
+                $this->slave->import($masterObject);
+            }
 
-    /**
-     * @param $masterObject
-     * @return mixed
-     */
-    private function convertMasterObjectToSlave($masterObject)
-    {
-        if (
-            $masterObject
-            && (
-                call_user_func(
-                    [$this->slave->getObjectName(), 'create']
-                )
-                instanceof SynchronizableObject
-            )
-        ) {
-            $masterObject = call_user_func(
-                [
-                    $this->slave->getObjectName(),
-                    'createFromMasterObject'
-                ],
-                $masterObject
-            );
+            return true;
         }
 
-        return $masterObject;
-    }
-
-    /**
-     * @param $old
-     * @param $object
-     * @return bool
-     */
-    protected function sync($old, $object)
-    {
-        if (!$this->dryRun) {
-            $this->slave->merge($object);
+        /**
+         * @return int
+         */
+        public function getTotalInserted() : int
+        {
+            return $this->totalInserted;
         }
 
-        return true;
-    }
-
-    /**
-     * @param $min
-     * @param $sub
-     * @return int
-     */
-    protected function compareKeys($min, $sub)
-    {
-        if ($min > $sub) {
-            return 1;
-        } elseif ($min < $sub) {
-            return -1;
+        /**
+         * @return int
+         */
+        public function getTotalDeleted() : int
+        {
+            return $this->totalDeleted;
         }
 
-        return 0;
-    }
-
-    /**
-     * @param $slaveObject
-     * @return bool
-     * @throws WrongArgumentException
-     */
-    protected function delete($slaveObject) : bool
-    {
-        $slaveGetter = 'get' . ucfirst($this->slaveKeyProperty);
-
-        Assert::methodExists($slaveObject, $slaveGetter);
-
-        if (!$this->dryRun && $this->reallyDelete) {
-            $this->slave->dropById($slaveObject->$slaveGetter());
+        /**
+         * @return int
+         */
+        public function getTotalUpdated() : int
+        {
+            return $this->totalUpdated;
         }
-
-        return true;
-    }
-
-    /**
-     * @param $masterObject
-     * @return bool
-     */
-    protected function insert($masterObject) : bool
-    {
-        if (!$this->dryRun) {
-            $this->slave->import($masterObject);
-        }
-
-        return true;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalInserted() : int
-    {
-        return $this->totalInserted;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalDeleted() : int
-    {
-        return $this->totalDeleted;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalUpdated() : int
-    {
-        return $this->totalUpdated;
     }
 }
-

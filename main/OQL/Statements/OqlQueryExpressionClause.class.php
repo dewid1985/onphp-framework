@@ -8,42 +8,42 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-abstract class OqlQueryExpressionClause extends OqlQueryClause
-{
-    protected $expression = null;
-
+namespace OnPhp {
     /**
-     * @return OqlQueryExpression
+     * @ingroup OQL
      **/
-    public function getExpression()
+    abstract class OqlQueryExpressionClause extends OqlQueryClause
     {
-        return $this->expression;
-    }
+        protected $expression = null;
 
-    /**
-     * @return OqlQueryExpressionClause
-     **/
-    public function setExpression(OqlQueryExpression $expression)
-    {
-        $this->checkExpression($expression);
-        $this->expression = $expression;
+        /**
+         * @return OqlQueryExpression
+         **/
+        public function getExpression()
+        {
+            return $this->expression;
+        }
 
-        return $this;
-    }
+        /**
+         * @return OqlQueryExpressionClause
+         **/
+        public function setExpression(OqlQueryExpression $expression)
+        {
+            $this->checkExpression($expression);
+            $this->expression = $expression;
 
-    protected static function checkExpression(OqlQueryExpression $expression)
-    {
-    }
+            return $this;
+        }
 
-    public function toLogic()
-    {
-        Assert::isNotNull($this->expression);
+        protected static function checkExpression(OqlQueryExpression $expression)
+        {
+        }
 
-        return $this->expression->evaluate($this->parameters);
+        public function toLogic()
+        {
+            Assert::isNotNull($this->expression);
+
+            return $this->expression->evaluate($this->parameters);
+        }
     }
 }
-

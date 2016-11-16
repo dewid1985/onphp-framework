@@ -8,107 +8,107 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Builders
- **/
-final class SchemaBuilder extends BaseBuilder
-{
-    public static function buildTable($tableName, array $propertyList)
+namespace OnPhp {
+    /**
+     * @ingroup Builders
+     **/
+    final class SchemaBuilder extends BaseBuilder
     {
-        $out = <<<EOT
+        public static function buildTable($tableName, array $propertyList)
+        {
+            $out = <<<EOT
 \$schema
     ->addTable(
     (new DBTable('{$tableName}'))
         ->
 EOT;
-        $columns = [];
+            $columns = [];
 
-        foreach ($propertyList as $property) {
-            if (
-                $property->getRelation()
-                && ($property->getRelationId() != MetaRelation::ONE_TO_ONE)
-            ) {
-                continue;
-            }
-
-            $column = $property->toColumn();
-
-            if (is_array($column)) {
-                $columns = array_merge($columns, $column);
-            } else {
-                $columns[] = $property->toColumn();
-            }
-        }
-
-        $out .= implode("\n        ->", $columns);
-
-        return $out . "\n);\n\n";
-    }
-
-    public static function buildRelations(MetaClass $class)
-    {
-        $out = null;
-
-        $knownJunctions = [];
-
-        foreach ($class->getAllProperties() as $property) {
-            if ($relation = $property->getRelation()) {
-
-                $foreignClass = $property->getType()->getClass();
-
+            foreach ($propertyList as $property) {
                 if (
-                    $relation->getId() == MetaRelation::ONE_TO_MANY
-                    // nothing to build, it's in the same table
-                    // or table does not exist at all
-                    || !$foreignClass->getPattern()->tableExists()
-                    // no need to process them
-                    || $class->getParent()
+                    $property->getRelation()
+                    && ($property->getRelationId() != MetaRelation::ONE_TO_ONE)
                 ) {
                     continue;
-                } elseif (
-                    $relation->getId() == MetaRelation::MANY_TO_MANY
-                ) {
-                    $tableName =
-                        $class->getTableName()
-                        . '_'
-                        . $foreignClass->getTableName();
+                }
 
-                    if (isset($knownJunctions[$tableName])) {
-                        continue;
-                    } // collision prevention
-                    else {
-                        $knownJunctions[$tableName] = true;
-                    }
+                $column = $property->toColumn();
 
-                    $foreignPropery = clone $foreignClass->getIdentifier();
+                if (is_array($column)) {
+                    $columns = array_merge($columns, $column);
+                } else {
+                    $columns[] = $property->toColumn();
+                }
+            }
 
-                    $name = $class->getName();
-                    $name = strtolower($name[0]) . substr($name, 1);
-                    $name .= 'Id';
+            $out .= implode("\n        ->", $columns);
 
-                    $foreignPropery->
-                    setName($name)->
-                    setColumnName($foreignPropery->getConvertedName())->
-                    // we don't need primary key here
-                    setIdentifier(false);
+            return $out . "\n);\n\n";
+        }
 
-                    // we don't want any garbage in such tables
-                    $property = clone $property;
-                    $property->required();
+        public static function buildRelations(MetaClass $class)
+        {
+            $out = null;
 
-                    // prevent name collisions
+            $knownJunctions = [];
+
+            foreach ($class->getAllProperties() as $property) {
+                if ($relation = $property->getRelation()) {
+
+                    $foreignClass = $property->getType()->getClass();
+
                     if (
-                        $property->getRelationColumnName()
-                        == $foreignPropery->getColumnName()
+                        $relation->getId() == MetaRelation::ONE_TO_MANY
+                        // nothing to build, it's in the same table
+                        // or table does not exist at all
+                        || !$foreignClass->getPattern()->tableExists()
+                        // no need to process them
+                        || $class->getParent()
                     ) {
-                        $foreignPropery->setColumnName(
-                            $class->getTableName() . '_'
-                            . $property->getConvertedName() . '_id'
-                        );
-                    }
+                        continue;
+                    } elseif (
+                        $relation->getId() == MetaRelation::MANY_TO_MANY
+                    ) {
+                        $tableName =
+                            $class->getTableName()
+                            . '_'
+                            . $foreignClass->getTableName();
 
-                    $out .= <<<EOT
+                        if (isset($knownJunctions[$tableName])) {
+                            continue;
+                        } // collision prevention
+                        else {
+                            $knownJunctions[$tableName] = true;
+                        }
+
+                        $foreignPropery = clone $foreignClass->getIdentifier();
+
+                        $name = $class->getName();
+                        $name = strtolower($name[0]) . substr($name, 1);
+                        $name .= 'Id';
+
+                        $foreignPropery->
+                        setName($name)->
+                        setColumnName($foreignPropery->getConvertedName())->
+                        // we don't need primary key here
+                        setIdentifier(false);
+
+                        // we don't want any garbage in such tables
+                        $property = clone $property;
+                        $property->required();
+
+                        // prevent name collisions
+                        if (
+                            $property->getRelationColumnName()
+                            == $foreignPropery->getColumnName()
+                        ) {
+                            $foreignPropery->setColumnName(
+                                $class->getTableName() . '_'
+                                . $property->getConvertedName() . '_id'
+                            );
+                        }
+
+                        $out .= <<<EOT
 \$schema
 ->addTable(
     (new DBTable('{$tableName}'))
@@ -119,14 +119,14 @@ EOT;
 
 
 EOT;
-                } else {
-                    $sourceTable = $class->getTableName();
-                    $sourceColumn = $property->getRelationColumnName();
+                    } else {
+                        $sourceTable = $class->getTableName();
+                        $sourceColumn = $property->getRelationColumnName();
 
-                    $targetTable = $foreignClass->getTableName();
-                    $targetColumn = $foreignClass->getIdentifier()->getColumnName();
+                        $targetTable = $foreignClass->getTableName();
+                        $targetColumn = $foreignClass->getIdentifier()->getColumnName();
 
-                    $out .= <<<EOT
+                        $out .= <<<EOT
 // {$sourceTable}.{$sourceColumn} -> {$targetTable}.{$targetColumn}
 \$schema
     ->getTableByName('{$sourceTable}')
@@ -142,21 +142,21 @@ EOT;
 
 EOT;
 
+                    }
                 }
             }
+
+            return $out;
         }
 
-        return $out;
-    }
+        public static function getHead()
+        {
+            $out = parent::getHead();
 
-    public static function getHead()
-    {
-        $out = parent::getHead();
+            $out .= "\$schema = new DBSchema();\n\n";
 
-        $out .= "\$schema = new DBSchema();\n\n";
-
-        return $out;
+            return $out;
+        }
     }
 }
-
 ?>

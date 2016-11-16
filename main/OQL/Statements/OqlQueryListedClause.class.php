@@ -8,47 +8,47 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-abstract class OqlQueryListedClause extends OqlQueryClause
-{
-    protected $list = [];
-
+namespace OnPhp {
     /**
-     * @return OqlQueryListedClause
+     * @ingroup OQL
      **/
-    public function add(OqlQueryParameter $property)
+    abstract class OqlQueryListedClause extends OqlQueryClause
     {
-        $this->list[] = $property;
+        protected $list = [];
 
-        return $this;
-    }
+        /**
+         * @return OqlQueryListedClause
+         **/
+        public function add(OqlQueryParameter $property)
+        {
+            $this->list[] = $property;
 
-    public function getList()
-    {
-        return $this->list;
-    }
+            return $this;
+        }
 
-    /**
-     * @return OqlQueryListedClause
-     **/
-    public function setList(array $list)
-    {
-        $this->list = $list;
+        public function getList()
+        {
+            return $this->list;
+        }
 
-        return $this;
-    }
+        /**
+         * @return OqlQueryListedClause
+         **/
+        public function setList(array $list)
+        {
+            $this->list = $list;
 
-    /**
-     * @return OqlQueryListedClause
-     **/
-    public function dropList()
-    {
-        $this->list = [];
+            return $this;
+        }
 
-        return $this;
+        /**
+         * @return OqlQueryListedClause
+         **/
+        public function dropList()
+        {
+            $this->list = [];
+
+            return $this;
+        }
     }
 }
-

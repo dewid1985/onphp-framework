@@ -8,37 +8,38 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class HttpErrorView implements View
-{
-    protected $status = null;
-
-    protected $prefix = null;
-    protected $postfix = null;
-
+namespace OnPhp {
     /**
-     * HttpErrorView constructor.
-     * @param HttpStatus $status
-     * @param $prefix
-     * @param $postfix
-     */
-    public function __construct(HttpStatus $status, $prefix, $postfix)
+     * @ingroup Flow
+     **/
+    class HttpErrorView implements View
     {
-        $this->status = $status;
+        protected $status = null;
 
-        $this->prefix = $prefix;
-        $this->postfix = $postfix;
-    }
+        protected $prefix = null;
+        protected $postfix = null;
 
-    /**
-     * @param null $model
-     */
-    public function render($model = null)
-    {
-        header($this->status->toString());
-        include $this->prefix . $this->status->getId() . $this->postfix;
+        /**
+         * HttpErrorView constructor.
+         * @param HttpStatus $status
+         * @param $prefix
+         * @param $postfix
+         */
+        public function __construct(HttpStatus $status, $prefix, $postfix)
+        {
+            $this->status = $status;
+
+            $this->prefix = $prefix;
+            $this->postfix = $postfix;
+        }
+
+        /**
+         * @param null $model
+         */
+        public function render($model = null)
+        {
+            header($this->status->toString());
+            include $this->prefix . $this->status->getId() . $this->postfix;
+        }
     }
 }

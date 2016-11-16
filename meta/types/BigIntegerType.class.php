@@ -8,21 +8,21 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class BigIntegerType extends IntegerType
-{
-    public function getSize()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    class BigIntegerType extends IntegerType
     {
-        return 8;
-    }
+        public function getSize()
+        {
+            return 8;
+        }
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::BIGINT))';
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::BIGINT))';
+        }
     }
 }
-
 ?>

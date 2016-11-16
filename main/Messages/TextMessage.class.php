@@ -9,57 +9,62 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class TextMessage implements Message
-{
-    private $timestamp = null;
-    private $text = null;
-
+namespace OnPhp {
     /**
-     * TextMessage constructor.
-     * @param Timestamp|null $timestamp
+     * Class TextMessage
+     * @ingroup Messages
+     * @package OnPhp
      */
-    public function __construct(Timestamp $timestamp = null)
+    class TextMessage implements Message
     {
-        $this->timestamp = $timestamp ?: Timestamp::makeNow();
-    }
+        private $timestamp = null;
+        private $text = null;
 
-    /**
-     * @return null|Timestamp
-     */
-    public function getTimestamp()
-    {
-        return $this->timestamp;
-    }
+        /**
+         * TextMessage constructor.
+         * @param Timestamp|null $timestamp
+         */
+        public function __construct(Timestamp $timestamp = null)
+        {
+            $this->timestamp = $timestamp ?: Timestamp::makeNow();
+        }
 
-    /**
-     * @param Timestamp $timestamp
-     * @return $this
-     */
-    public function setTimestamp(Timestamp $timestamp)
-    {
-        $this->timestamp = $timestamp;
+        /**
+         * @return null|Timestamp
+         */
+        public function getTimestamp()
+        {
+            return $this->timestamp;
+        }
 
-        return $this;
-    }
+        /**
+         * @param Timestamp $timestamp
+         * @return $this
+         */
+        public function setTimestamp(Timestamp $timestamp)
+        {
+            $this->timestamp = $timestamp;
 
-    /**
-     * @return null
-     */
-    public function getText()
-    {
-        return $this->text;
-    }
+            return $this;
+        }
 
-    /**
-     * @param $text
-     * @return $this
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
+        /**
+         * @return null
+         */
+        public function getText()
+        {
+            return $this->text;
+        }
 
-        return $this;
+        /**
+         * @param $text
+         * @return $this
+         */
+        public function setText($text)
+        {
+            $this->text = $text;
+
+            return $this;
+        }
     }
 }
-
-

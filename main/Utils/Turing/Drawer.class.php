@@ -8,29 +8,30 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-abstract class Drawer
-{
-    private $turingImage = null;
-
+namespace OnPhp {
     /**
-     * @return TuringImage
+     * @ingroup Turing
      **/
-    public function getTuringImage()
+    abstract class Drawer
     {
-        return $this->turingImage;
-    }
+        private $turingImage = null;
 
-    /**
-     * @return Drawer
-     **/
-    public function setTuringImage(TuringImage $turingImage)
-    {
-        $this->turingImage = $turingImage;
+        /**
+         * @return TuringImage
+         **/
+        public function getTuringImage()
+        {
+            return $this->turingImage;
+        }
 
-        return $this;
+        /**
+         * @return Drawer
+         **/
+        public function setTuringImage(TuringImage $turingImage)
+        {
+            $this->turingImage = $turingImage;
+
+            return $this;
+        }
     }
 }

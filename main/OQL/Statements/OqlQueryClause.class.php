@@ -8,44 +8,45 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
+namespace OnPhp {
+    /**
+     * @ingroup OQL
+     **/
+    abstract class OqlQueryClause
+    {
+        protected $parameters = [];
 
-/**
- * @ingroup OQL
- **/
-abstract class OqlQueryClause
-{
-	protected $parameters = [];
+        /**
+         * @return OqlQueryClause
+         **/
+        public function bindNext($value)
+        {
+            end($this->parameters);
 
-	/**
-	 * @return OqlQueryClause
-	 **/
-	public function bindNext($value)
-	{
-		end($this->parameters);
+            return $this->bind(key($this->parameters) + 1, $value);
+        }
 
-		return $this->bind(key($this->parameters) + 1, $value);
-	}
+        /**
+         * @return OqlQueryClause
+         **/
+        public function bind($index, $value)
+        {
+            $this->parameters[$index] = $value;
 
-	/**
-	 * @return OqlQueryClause
-	 **/
-	public function bind($index, $value)
-	{
-		$this->parameters[$index] = $value;
+            return $this;
+        }
 
-		return $this;
-	}
+        /**
+         * @return OqlQueryClause
+         **/
+        public function bindAll(array $parameters)
+        {
+            if ($parameters) {
+                $this->parameters = $parameters;
+            }
 
-	/**
-	 * @return OqlQueryClause
-	 **/
-	public function bindAll(array $parameters)
-	{
-		if ($parameters) {
-			$this->parameters = $parameters;
-		}
-
-		return $this;
-	}
+            return $this;
+        }
+    }
 }
 

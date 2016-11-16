@@ -8,31 +8,32 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see http://www.rabbitmq.com/amqp-0-9-1-quickref.html#queue.declare
- **/
-class AMQPQueueConfig extends AMQPBaseConfig
-{
-    protected $exclusive = false;
-
+namespace OnPhp {
     /**
-     * @return bool
-     */
-    public function getExclusive()
-    {
-        return $this->exclusive;
-    }
-
-    /**
-     * @param boolean $exclusive
-     * @return AMQPQueueConfig
+     * @see http://www.rabbitmq.com/amqp-0-9-1-quickref.html#queue.declare
      **/
-    public function setExclusive($exclusive)
+    class AMQPQueueConfig extends AMQPBaseConfig
     {
-        $this->exclusive = $exclusive === false;
+        protected $exclusive = false;
 
-        return $this;
+        /**
+         * @return bool
+         */
+        public function getExclusive()
+        {
+            return $this->exclusive;
+        }
+
+        /**
+         * @param boolean $exclusive
+         * @return AMQPQueueConfig
+         **/
+        public function setExclusive($exclusive)
+        {
+            $this->exclusive = $exclusive === false;
+
+            return $this;
+        }
     }
 }
 

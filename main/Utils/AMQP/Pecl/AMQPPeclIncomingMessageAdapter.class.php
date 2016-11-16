@@ -9,40 +9,45 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class AMQPPeclIncomingMessageAdapter extends StaticFactory
-{
+namespace OnPhp {
     /**
-     * @param AMQPEnvelope $incoming
-     * @return AMQPIncomingMessage
+     * Class AMQPPeclIncomingMessageAdapter
+     * @package OnPhp
      */
-    public static function convert(AMQPEnvelope $incoming)
+    class AMQPPeclIncomingMessageAdapter extends StaticFactory
     {
-        $data = [
-            AMQPIncomingMessage::APP_ID => $incoming->getAppId(),
-            AMQPIncomingMessage::BODY => $incoming->getBody(),
-            AMQPIncomingMessage::CONTENT_ENCODING => $incoming->getContentEncoding(),
-            AMQPIncomingMessage::CONTENT_TYPE => $incoming->getContentType(),
-            AMQPIncomingMessage::CORRELATION_ID => $incoming->getCorrelationId(),
-            //AMQPIncomingMessage::COUNT => $incoming->getCount(),
-            //AMQPIncomingMessage::CONSUME_BODY => $incoming->getConsumeBody(),
-            //AMQPIncomingMessage::CONSUMER_TAG => $incoming->getConsumeTagName(),
-            AMQPIncomingMessage::DELIVERY_TAG => $incoming->getDeliveryTag(),
-            AMQPIncomingMessage::DELIVERY_MODE => $incoming->getDeliveryMode(),
-            AMQPIncomingMessage::EXCHANGE => $incoming->getExchangeName(),
-            AMQPIncomingMessage::EXPIRATION => $incoming->getExpiration(),
-            AMQPIncomingMessage::MESSAGE_ID => $incoming->getMessageId(),
-            AMQPIncomingMessage::PRIORITY => $incoming->getPriority(),
-            AMQPIncomingMessage::REPLY_TO => $incoming->getReplyTo(),
-            AMQPIncomingMessage::REDELIVERED => $incoming->isRedelivery(),
-            AMQPIncomingMessage::PRIORITY => $incoming->getPriority(),
-            AMQPIncomingMessage::ROUTING_KEY => $incoming->getRoutingKey(),
-            AMQPIncomingMessage::TIMESTAMP => $incoming->getTimeStamp(),
-            AMQPIncomingMessage::TYPE => $incoming->getType(),
-            AMQPIncomingMessage::USER_ID => $incoming->getUserId()
-        ];
+        /**
+         * @param AMQPEnvelope $incoming
+         * @return AMQPIncomingMessage
+         */
+        public static function convert(AMQPEnvelope $incoming)
+        {
+            $data = [
+                AMQPIncomingMessage::APP_ID => $incoming->getAppId(),
+                AMQPIncomingMessage::BODY => $incoming->getBody(),
+                AMQPIncomingMessage::CONTENT_ENCODING => $incoming->getContentEncoding(),
+                AMQPIncomingMessage::CONTENT_TYPE => $incoming->getContentType(),
+                AMQPIncomingMessage::CORRELATION_ID => $incoming->getCorrelationId(),
+                //AMQPIncomingMessage::COUNT => $incoming->getCount(),
+                //AMQPIncomingMessage::CONSUME_BODY => $incoming->getConsumeBody(),
+                //AMQPIncomingMessage::CONSUMER_TAG => $incoming->getConsumeTagName(),
+                AMQPIncomingMessage::DELIVERY_TAG => $incoming->getDeliveryTag(),
+                AMQPIncomingMessage::DELIVERY_MODE => $incoming->getDeliveryMode(),
+                AMQPIncomingMessage::EXCHANGE => $incoming->getExchangeName(),
+                AMQPIncomingMessage::EXPIRATION => $incoming->getExpiration(),
+                AMQPIncomingMessage::MESSAGE_ID => $incoming->getMessageId(),
+                AMQPIncomingMessage::PRIORITY => $incoming->getPriority(),
+                AMQPIncomingMessage::REPLY_TO => $incoming->getReplyTo(),
+                AMQPIncomingMessage::REDELIVERED => $incoming->isRedelivery(),
+                AMQPIncomingMessage::PRIORITY => $incoming->getPriority(),
+                AMQPIncomingMessage::ROUTING_KEY => $incoming->getRoutingKey(),
+                AMQPIncomingMessage::TIMESTAMP => $incoming->getTimeStamp(),
+                AMQPIncomingMessage::TYPE => $incoming->getType(),
+                AMQPIncomingMessage::USER_ID => $incoming->getUserId()
+            ];
 
-        return AMQPIncomingMessage::spawn($data);
+            return AMQPIncomingMessage::spawn($data);
+        }
+
     }
-
 }
-

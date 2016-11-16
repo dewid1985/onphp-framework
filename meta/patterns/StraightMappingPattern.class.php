@@ -8,16 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Patterns
- **/
-final class StraightMappingPattern extends BasePattern
-{
-    public function daoExists()
+namespace OnPhp {
+    /**
+     * @ingroup Patterns
+     **/
+    final class StraightMappingPattern extends BasePattern
     {
-        return true;
+        public function daoExists()
+        {
+            return true;
+        }
     }
 }
-
 ?>

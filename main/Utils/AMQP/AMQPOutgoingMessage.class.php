@@ -9,55 +9,56 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class AMQPOutgoingMessage extends AMQPBaseMessage
-{
-    protected $mandatory = false;
-    protected $immediate = false;
-
-
-    /**
-     * @param AMQPBitmaskResolver $config
-     * @return mixed
-     */
-    public function getBitmask(AMQPBitmaskResolver $config)
+namespace OnPhp {
+    class AMQPOutgoingMessage extends AMQPBaseMessage
     {
-        return $config->getBitmask($this);
-    }
+        protected $mandatory = false;
+        protected $immediate = false;
 
-    /**
-     * @return bool
-     */
-    public function getMandatory()
-    {
-        return $this->mandatory;
-    }
 
-    /**
-     * @return AMQPOutgoingMessage
-     **/
-    public function setMandatory($mandatory)
-    {
-        $this->mandatory = $mandatory;
+        /**
+         * @param AMQPBitmaskResolver $config
+         * @return mixed
+         */
+        public function getBitmask(AMQPBitmaskResolver $config)
+        {
+            return $config->getBitmask($this);
+        }
 
-        return $this;
-    }
+        /**
+         * @return bool
+         */
+        public function getMandatory()
+        {
+            return $this->mandatory;
+        }
 
-    /**
-     * @return bool
-     */
-    public function getImmediate()
-    {
-        return $this->immediate;
-    }
+        /**
+         * @return AMQPOutgoingMessage
+         **/
+        public function setMandatory($mandatory)
+        {
+            $this->mandatory = $mandatory;
 
-    /**
-     * @return AMQPOutgoingMessage
-     **/
-    public function setImmediate($immediate)
-    {
-        $this->immediate = $immediate;
+            return $this;
+        }
 
-        return $this;
+        /**
+         * @return bool
+         */
+        public function getImmediate()
+        {
+            return $this->immediate;
+        }
+
+        /**
+         * @return AMQPOutgoingMessage
+         **/
+        public function setImmediate($immediate)
+        {
+            $this->immediate = $immediate;
+
+            return $this;
+        }
     }
 }
-

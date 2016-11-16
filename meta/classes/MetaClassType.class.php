@@ -8,26 +8,26 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup MetaBase
- **/
-final class MetaClassType extends Enumeration
-{
-    const CLASS_FINAL = 'final';
-    const CLASS_ABSTRACT = 'abstract';
-    const CLASS_SPOOKED = 'spooked';
-
-    protected $names = [
-        self::CLASS_FINAL => self::CLASS_FINAL,
-        self::CLASS_ABSTRACT => self::CLASS_ABSTRACT,
-        self::CLASS_SPOOKED => self::CLASS_SPOOKED
-    ];
-
-    public static function getAnyId() : int
+namespace OnPhp {
+    /**
+     * @ingroup MetaBase
+     **/
+    final class MetaClassType extends Enumeration
     {
-        return self::CLASS_SPOOKED;
+        const CLASS_FINAL = 'final';
+        const CLASS_ABSTRACT = 'abstract';
+        const CLASS_SPOOKED = 'spooked';
+
+        protected $names = [
+            self::CLASS_FINAL => self::CLASS_FINAL,
+            self::CLASS_ABSTRACT => self::CLASS_ABSTRACT,
+            self::CLASS_SPOOKED => self::CLASS_SPOOKED
+        ];
+
+        public static function getAnyId() : int
+        {
+            return self::CLASS_SPOOKED;
+        }
     }
 }
-
 ?>

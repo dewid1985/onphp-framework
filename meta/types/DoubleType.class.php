@@ -8,16 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-final class DoubleType extends FloatType
-{
-    public function toColumnType()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    final class DoubleType extends FloatType
     {
-        return '(new DataType(DataType::DOUBLE))';
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::DOUBLE))';
+        }
     }
 }
-
 ?>

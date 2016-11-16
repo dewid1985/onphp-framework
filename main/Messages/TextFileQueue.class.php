@@ -9,33 +9,40 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class TextFileQueue implements MessageQueue
-{
-    private $fileName = null;
-    private $offset = null;
-
-    public function getFileName()
+namespace OnPhp {
+    /**
+     * Class TextFileQueue
+     * @ingroup Messages
+     * @package OnPhp
+     */
+    class TextFileQueue implements MessageQueue
     {
-        return $this->fileName;
-    }
+        private $fileName = null;
+        private $offset = null;
 
-    public function setFileName($fileName)
-    {
-        $this->fileName = $fileName;
+        public function getFileName()
+        {
+            return $this->fileName;
+        }
 
-        return $this;
-    }
+        public function setFileName($fileName)
+        {
+            $this->fileName = $fileName;
 
-    public function getOffset()
-    {
-        return $this->offset;
-    }
+            return $this;
+        }
 
-    public function setOffset($offset)
-    {
-        $this->offset = $offset;
+        public function getOffset()
+        {
+            return $this->offset;
+        }
 
-        return $this;
+        public function setOffset($offset)
+        {
+            $this->offset = $offset;
+
+            return $this;
+        }
     }
 }
 

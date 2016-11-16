@@ -8,334 +8,335 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-class TuringImage
-{
-    /** @var ColorArray|null */
-    private $textColors = null;
-
-    /** @var ColorArray|null */
-    private $backgroundColors = null;
-
-    private $font = null;
-
-    private $imageId = null;
-
-    private $width = null;
-    private $height = null;
-
-    /** @var CodeGenerator|null */
-    private $generator = null;
-
-    /** @var TextDrawer|null */
-    private $drawer = null;
-
-    /** @var BackgroundDrawer|null */
-    private $backgroundDrawer = null;
-
-    private $code = null;
-
-
+namespace OnPhp {
     /**
-     * @param $width
-     * @param $height
-     */
-    public function __construct($width, $height)
-    {
-        $this->width = $width;
-        $this->height = $height;
-    }
-
-
-    /**
-     * @return TuringImage
+     * @ingroup Turing
      **/
-    public function setGeneratedCode($code)
+    class TuringImage
     {
-        $this->code = $code;
+        /** @var ColorArray|null */
+        private $textColors = null;
 
-        return $this;
-    }
+        /** @var ColorArray|null */
+        private $backgroundColors = null;
 
-    public function getTextColors()
-    {
-        return $this->textColors;
-    }
+        private $font = null;
 
-    /**
-     * @param $textColors
-     * @return TuringImage
-     */
-    public function setTextColors(ColorArray $textColors)
-    {
-        $this->textColors = $textColors;
-        return $this;
-    }
+        private $imageId = null;
 
-    public function getFont()
-    {
-        return $this->font;
-    }
+        private $width = null;
+        private $height = null;
 
-    /**
-     * Set path and font
-     * example: /srv/public_html/example.com/web/font/example.ttf
-     *
-     * @param $font
-     * @return $this
-     */
-    public function setFont($font)
-    {
-        $this->font = $font;
+        /** @var CodeGenerator|null */
+        private $generator = null;
 
-        return $this;
-    }
+        /** @var TextDrawer|null */
+        private $drawer = null;
 
-    /**
-     * @return TuringImage
-     **/
-    public function setTextDrawer(TextDrawer $drawer)
-    {
-        $drawer->setTuringImage($this);
-        $this->drawer = $drawer;
+        /** @var BackgroundDrawer|null */
+        private $backgroundDrawer = null;
 
-        return $this;
-    }
+        private $code = null;
 
-    /**
-     * @return TuringImage
-     **/
-    public function setBackgroundDrawer(BackgroundDrawer $drawer)
-    {
-        $drawer->setTuringImage($this);
-        $this->backgroundDrawer = $drawer;
 
-        return $this;
-    }
-
-    /**
-     * @return CodeGenerator
-     **/
-    public function getCodeGenerator()
-    {
-        return $this->generator;
-    }
-
-    public function setCodeGenerator(CodeGenerator $generator)
-    {
-        $this->generator = $generator;
-        return $this;
-    }
-
-    /**
-     * @return int
-     * @throws MissingElementException
-     * @throws WrongStateException
-     */
-    public function getOneCharacterColor()
-    {
-        if (!$this->textColors instanceof ColorArray) {
-            throw new MissingElementException('Please set the textColors');
+        /**
+         * @param $width
+         * @param $height
+         */
+        public function __construct($width, $height)
+        {
+            $this->width = $width;
+            $this->height = $height;
         }
 
-        $textColor = $this->textColors->getRandomTextColor();
 
-        return $this->getColorIdentifier($textColor);
-    }
+        /**
+         * @return TuringImage
+         **/
+        public function setGeneratedCode($code)
+        {
+            $this->code = $code;
 
-    /**
-     * @param Color $color
-     * @return int
-     */
-    public function getColorIdentifier(Color $color)
-    {
-        $colorId =
-            imagecolorexact(
-                $this->imageId,
-                $color->getRed(),
-                $color->getGreen(),
-                $color->getBlue()
-            );
+            return $this;
+        }
 
-        if ($colorId === -1) {
+        public function getTextColors()
+        {
+            return $this->textColors;
+        }
+
+        /**
+         * @param $textColors
+         * @return TuringImage
+         */
+        public function setTextColors(ColorArray $textColors)
+        {
+            $this->textColors = $textColors;
+            return $this;
+        }
+
+        public function getFont()
+        {
+            return $this->font;
+        }
+
+        /**
+         * Set path and font
+         * example: /srv/public_html/example.com/web/font/example.ttf
+         *
+         * @param $font
+         * @return $this
+         */
+        public function setFont($font)
+        {
+            $this->font = $font;
+
+            return $this;
+        }
+
+        /**
+         * @return TuringImage
+         **/
+        public function setTextDrawer(TextDrawer $drawer)
+        {
+            $drawer->setTuringImage($this);
+            $this->drawer = $drawer;
+
+            return $this;
+        }
+
+        /**
+         * @return TuringImage
+         **/
+        public function setBackgroundDrawer(BackgroundDrawer $drawer)
+        {
+            $drawer->setTuringImage($this);
+            $this->backgroundDrawer = $drawer;
+
+            return $this;
+        }
+
+        /**
+         * @return CodeGenerator
+         **/
+        public function getCodeGenerator()
+        {
+            return $this->generator;
+        }
+
+        public function setCodeGenerator(CodeGenerator $generator)
+        {
+            $this->generator = $generator;
+            return $this;
+        }
+
+        /**
+         * @return int
+         * @throws MissingElementException
+         * @throws WrongStateException
+         */
+        public function getOneCharacterColor()
+        {
+            if (!$this->textColors instanceof ColorArray) {
+                throw new MissingElementException('Please set the textColors');
+            }
+
+            $textColor = $this->textColors->getRandomTextColor();
+
+            return $this->getColorIdentifier($textColor);
+        }
+
+        /**
+         * @param Color $color
+         * @return int
+         */
+        public function getColorIdentifier(Color $color)
+        {
             $colorId =
-                imagecolorallocate(
+                imagecolorexact(
                     $this->imageId,
                     $color->getRed(),
                     $color->getGreen(),
                     $color->getBlue()
                 );
-        }
 
-        return $colorId;
-    }
-
-    /**
-     * @param ImageType $imageType
-     * @return TuringImage
-     * @throws UnimplementedFeatureException
-     * @throws WrongStateException
-     */
-    public function toImage(ImageType $imageType, $fileName = null)
-    {
-        if ($this->drawer === null) {
-            throw new WrongStateException('drawer must present');
-        }
-
-        $this->init();
-
-        $this->drawBackGround();
-
-        $this->drawer->draw($this->getGeneratedCode());
-
-        $this->outputImage($imageType, $fileName);
-
-        imagedestroy($this->getImageId());
-
-        return $this;
-    }
-
-    /**
-     * @return TuringImage
-     **/
-    private function init()
-    {
-        $imageId = imagecreate($this->getWidth(), $this->getHeight());
-        $this->imageId = $imageId;
-
-        $this->getColorIdentifier(new Color('FFFFFF')); // white background
-
-        return $this;
-    }
-
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    public function getHeight()
-    {
-        return $this->height;
-    }
-
-    /**
-     * @return $this
-     * @throws MissingElementException
-     */
-    private function drawBackGround()
-    {
-        if (!$this->getBackgroundColors() instanceof ColorArray) {
-            throw new MissingElementException('Please set the backgroundColors');
-        }
-
-        $backgroundColor = $this->backgroundColors->getRandomTextColor();
-        $backgroundColorId = $this->getColorIdentifier($backgroundColor);
-
-        imagefilledrectangle(
-            $this->imageId,
-            0,
-            0,
-            $this->getWidth(),
-            $this->getHeight(),
-            $backgroundColorId
-        );
-
-        if ($this->backgroundDrawer !== null) {
-            $this->backgroundDrawer->draw();
-        }
-
-        return $this;
-    }
-
-    public function getBackgroundColors()
-    {
-        return $this->backgroundColors;
-    }
-
-    /**
-     * @param ColorArray $backgroundColors
-     * @return $this
-     */
-    public function setBackgroundColors(ColorArray $backgroundColors)
-    {
-        $this->backgroundColors = $backgroundColors;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getGeneratedCode()
-    {
-        if (!$this->code) {
-            $this->code = $this->generator->generate();
-        }
-
-        return $this->code;
-    }
-
-    /**
-     * @param ImageType $imageType
-     * @return $this
-     * @throws UnimplementedFeatureException
-     */
-    private function outputImage(ImageType $imageType, $fileName)
-    {
-        switch ($imageType->getId()) {
-
-            case ImageType::WBMP: {
-                
-                if(is_null($fileName))
-                    $this->header('Content-type: image/vnd.wap.wbmp');
-                
-                imagewbmp($this->imageId, $fileName, 95);
-                break;
+            if ($colorId === -1) {
+                $colorId =
+                    imagecolorallocate(
+                        $this->imageId,
+                        $color->getRed(),
+                        $color->getGreen(),
+                        $color->getBlue()
+                    );
             }
 
-            case ImageType::PNG: {
-                
-                if(is_null($fileName))
-                    $this->header('Content-type: image/png');
-                
-                imagepng($this->imageId, $fileName, 95);
-                break;
-            }
-
-            case ImageType::JPEG: {
-                if(is_null($fileName))
-                    $this->header('Content-type: image/jpeg');
-                
-                imagejpeg($this->imageId, $fileName, 95);
-                break;
-            }
-
-            case ImageType::GIF: {
-                if(is_null($fileName))
-                    $this->header('Content-type: image/gif');
-                
-                imagegif($this->imageId, $fileName);
-                break;
-            }
-
-            default:
-                throw new UnimplementedFeatureException(
-                    'requesting non-supported format'
-                );
+            return $colorId;
         }
 
-        return $this;
-    }
-    
-    private function header($header)
-    {
-        if (!headers_sent()) header($header);
-    }
+        /**
+         * @param ImageType $imageType
+         * @return TuringImage
+         * @throws UnimplementedFeatureException
+         * @throws WrongStateException
+         */
+        public function toImage(ImageType $imageType, $fileName = null)
+        {
+            if ($this->drawer === null) {
+                throw new WrongStateException('drawer must present');
+            }
 
-    public function getImageId()
-    {
-        return $this->imageId;
+            $this->init();
+
+            $this->drawBackGround();
+
+            $this->drawer->draw($this->getGeneratedCode());
+
+            $this->outputImage($imageType, $fileName);
+
+            imagedestroy($this->getImageId());
+
+            return $this;
+        }
+
+        /**
+         * @return TuringImage
+         **/
+        private function init()
+        {
+            $imageId = imagecreate($this->getWidth(), $this->getHeight());
+            $this->imageId = $imageId;
+
+            $this->getColorIdentifier(new Color('FFFFFF')); // white background
+
+            return $this;
+        }
+
+        public function getWidth()
+        {
+            return $this->width;
+        }
+
+        public function getHeight()
+        {
+            return $this->height;
+        }
+
+        /**
+         * @return $this
+         * @throws MissingElementException
+         */
+        private function drawBackGround()
+        {
+            if (!$this->getBackgroundColors() instanceof ColorArray) {
+                throw new MissingElementException('Please set the backgroundColors');
+            }
+
+            $backgroundColor = $this->backgroundColors->getRandomTextColor();
+            $backgroundColorId = $this->getColorIdentifier($backgroundColor);
+
+            imagefilledrectangle(
+                $this->imageId,
+                0,
+                0,
+                $this->getWidth(),
+                $this->getHeight(),
+                $backgroundColorId
+            );
+
+            if ($this->backgroundDrawer !== null) {
+                $this->backgroundDrawer->draw();
+            }
+
+            return $this;
+        }
+
+        public function getBackgroundColors()
+        {
+            return $this->backgroundColors;
+        }
+
+        /**
+         * @param ColorArray $backgroundColors
+         * @return $this
+         */
+        public function setBackgroundColors(ColorArray $backgroundColors)
+        {
+            $this->backgroundColors = $backgroundColors;
+            return $this;
+        }
+
+        /**
+         * @return null|string
+         */
+        public function getGeneratedCode()
+        {
+            if (!$this->code) {
+                $this->code = $this->generator->generate();
+            }
+
+            return $this->code;
+        }
+
+        /**
+         * @param ImageType $imageType
+         * @return $this
+         * @throws UnimplementedFeatureException
+         */
+        private function outputImage(ImageType $imageType, $fileName)
+        {
+            switch ($imageType->getId()) {
+
+                case ImageType::WBMP: {
+
+                    if (is_null($fileName))
+                        $this->header('Content-type: image/vnd.wap.wbmp');
+
+                    imagewbmp($this->imageId, $fileName, 95);
+                    break;
+                }
+
+                case ImageType::PNG: {
+
+                    if (is_null($fileName))
+                        $this->header('Content-type: image/png');
+
+                    imagepng($this->imageId, $fileName, 95);
+                    break;
+                }
+
+                case ImageType::JPEG: {
+                    if (is_null($fileName))
+                        $this->header('Content-type: image/jpeg');
+
+                    imagejpeg($this->imageId, $fileName, 95);
+                    break;
+                }
+
+                case ImageType::GIF: {
+                    if (is_null($fileName))
+                        $this->header('Content-type: image/gif');
+
+                    imagegif($this->imageId, $fileName);
+                    break;
+                }
+
+                default:
+                    throw new UnimplementedFeatureException(
+                        'requesting non-supported format'
+                    );
+            }
+
+            return $this;
+        }
+
+        private function header($header)
+        {
+            if (!headers_sent()) header($header);
+        }
+
+        public function getImageId()
+        {
+            return $this->imageId;
+        }
     }
 }

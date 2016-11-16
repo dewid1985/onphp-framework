@@ -8,16 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * @ingroup Utils
+     **/
+    interface SynchronizableObject
+    {
+        public static function createFromMasterObject($masterObject);
 
-/**
- * @ingroup Utils
- **/
-interface SynchronizableObject
-{
-    public static function createFromMasterObject($masterObject);
+        public function isEqualTo($anotherObject);
 
-    public function isEqualTo($anotherObject);
-
-    public function __toString();
+        public function __toString();
+    }
 }
-

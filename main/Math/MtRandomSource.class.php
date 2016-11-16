@@ -8,32 +8,34 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * based on pseudorandom generator mt_rand
- *
- * @ingroup Math
- **/
-class MtRandomSource extends Singleton implements RandomSource
-{
+namespace OnPhp {
     /**
-     * @return MtRandomSource
-     **/
-    public static function me()
+     * based on pseudorandom generator mt_rand
+     *
+     * Class MtRandomSource
+     * @ingroup Math
+     * @package OnPhp
+     */
+    class MtRandomSource extends Singleton implements RandomSource
     {
-        return Singleton::getInstance(__CLASS__);
-    }
-
-    public function getBytes($numberOfBytes)
-    {
-        Assert::isPositiveInteger($numberOfBytes);
-
-        $bytes = null;
-        for ($i = 0; $i < $numberOfBytes; $i += 4) {
-            $bytes .= pack('L', mt_rand());
+        /**
+         * @return MtRandomSource
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
         }
 
-        return substr($bytes, 0, $numberOfBytes);
+        public function getBytes($numberOfBytes)
+        {
+            Assert::isPositiveInteger($numberOfBytes);
+
+            $bytes = null;
+            for ($i = 0; $i < $numberOfBytes; $i += 4) {
+                $bytes .= pack('L', mt_rand());
+            }
+
+            return substr($bytes, 0, $numberOfBytes);
+        }
     }
 }
-

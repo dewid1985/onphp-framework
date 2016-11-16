@@ -8,26 +8,26 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Patterns
- **/
-final class ValueObjectPattern extends BasePattern
-{
-    public function tableExists()
-    {
-        return false;
-    }
-
+namespace OnPhp {
     /**
-     * @return ValueObjectPattern
+     * @ingroup Patterns
      **/
-    protected function fullBuild(MetaClass $class)
+    final class ValueObjectPattern extends BasePattern
     {
-        return $this
-            ->buildBusiness($class)
-            ->buildProto($class);
+        public function tableExists()
+        {
+            return false;
+        }
+
+        /**
+         * @return ValueObjectPattern
+         **/
+        protected function fullBuild(MetaClass $class)
+        {
+            return $this
+                ->buildBusiness($class)
+                ->buildProto($class);
+        }
     }
 }
-
 ?>

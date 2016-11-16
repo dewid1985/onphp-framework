@@ -8,41 +8,41 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- * @see http://www.postgresql.org/docs/8.3/interactive/hstore.html
- **/
-final class HstoreType extends ObjectType
-{
-    public function getPrimitiveName()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     * @see http://www.postgresql.org/docs/8.3/interactive/hstore.html
+     **/
+    final class HstoreType extends ObjectType
     {
-        return 'hstore';
-    }
-
-    public function isGeneric()
-    {
-        return true;
-    }
-
-    public function isMeasurable()
-    {
-        return true;
-    }
-
-    public function getDeclaration()
-    {
-        if ($this->hasDefault()) {
-            return "'{$this->default}'";
+        public function getPrimitiveName()
+        {
+            return 'hstore';
         }
 
-        return 'null';
-    }
+        public function isGeneric()
+        {
+            return true;
+        }
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::TEXT))';
+        public function isMeasurable()
+        {
+            return true;
+        }
+
+        public function getDeclaration()
+        {
+            if ($this->hasDefault()) {
+                return "'{$this->default}'";
+            }
+
+            return 'null';
+        }
+
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::TEXT))';
+        }
     }
 }
-
 ?>

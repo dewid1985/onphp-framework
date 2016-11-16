@@ -8,71 +8,71 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-abstract class FileArchive
-{
-    protected $cmdBinPath = null;
-    protected $sourceFile = null;
-
-    public function __construct($cmdBinPath = null)
+namespace OnPhp {
+    /**
+     * @ingroup Utils
+     **/
+    abstract class FileArchive
     {
-        if ($cmdBinPath !== null) {
-            if (!is_executable($cmdBinPath)) {
+        protected $cmdBinPath = null;
+        protected $sourceFile = null;
+
+        public function __construct($cmdBinPath = null)
+        {
+            if ($cmdBinPath !== null) {
+                if (!is_executable($cmdBinPath)) {
+                    throw new WrongStateException(
+                        'cannot find executable ' . $cmdBinPath
+                    );
+                }
+
+                $this->cmdBinPath = $cmdBinPath;
+            }
+        }
+
+        abstract public function readFile($fileName);
+
+        /**
+         * @return FileArchive
+         **/
+        public function open($sourceFile)
+        {
+            if (!is_readable($sourceFile)) {
                 throw new WrongStateException(
-                    'cannot find executable ' . $cmdBinPath
+                    'cannot open file ' . $sourceFile
                 );
             }
 
-            $this->cmdBinPath = $cmdBinPath;
-        }
-    }
+            $this->sourceFile = $sourceFile;
 
-    abstract public function readFile($fileName);
-
-    /**
-     * @return FileArchive
-     **/
-    public function open($sourceFile)
-    {
-        if (!is_readable($sourceFile)) {
-            throw new WrongStateException(
-                'cannot open file ' . $sourceFile
-            );
+            return $this;
         }
 
-        $this->sourceFile = $sourceFile;
+        protected function execStdoutOptions($options)
+        {
+            if (!$this->cmdBinPath) {
+                throw new WrongStateException(
+                    'nothing to exec'
+                );
+            }
 
-        return $this;
-    }
+            $cmd = escapeshellcmd($this->cmdBinPath . ' ' . $options);
 
-    protected function execStdoutOptions($options)
-    {
-        if (!$this->cmdBinPath) {
-            throw new WrongStateException(
-                'nothing to exec'
-            );
+            ob_start();
+
+            $exitStatus = null;
+
+            passthru($cmd . ' 2>/dev/null', $exitStatus);
+
+            $output = ob_get_clean();
+
+            if ($exitStatus != 0) {
+                throw new ArchiverException(
+                    $this->cmdBinPath . ' failed with error code = ' . $exitStatus
+                );
+            }
+
+            return $output;
         }
-
-        $cmd = escapeshellcmd($this->cmdBinPath . ' ' . $options);
-
-        ob_start();
-
-        $exitStatus = null;
-
-        passthru($cmd . ' 2>/dev/null', $exitStatus);
-
-        $output = ob_get_clean();
-
-        if ($exitStatus != 0) {
-            throw new ArchiverException(
-                $this->cmdBinPath . ' failed with error code = ' . $exitStatus
-            );
-        }
-
-        return $output;
     }
 }
-

@@ -9,7 +9,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class AMQPServerConnectionException extends AMQPServerException
-{/**/
+namespace OnPhp {
+    /**
+     * Class AMQPServerConnectionException
+     * @package OnPhp
+     */
+    class AMQPServerConnectionException extends AMQPServerException
+    {
+        /**/
+    }
 }
 

@@ -8,38 +8,39 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Builders
- **/
-final class ContainerClassBuilder extends OnceBuilder
-{
-    public static function build(MetaClass $class)
+namespace OnPhp {
+    /**
+     * @ingroup Builders
+     **/
+    final class ContainerClassBuilder extends OnceBuilder
     {
-        throw new UnsupportedMethodException();
-    }
+        public static function build(MetaClass $class)
+        {
+            throw new UnsupportedMethodException();
+        }
 
-    public static function buildContainer(
-        MetaClass $class,
-        MetaClassProperty $holder
-    ) {
-        $out = self::getHead();
+        public static function buildContainer(
+            MetaClass $class,
+            MetaClassProperty $holder
+        )
+        {
+            $out = self::getHead();
 
-        $containerName = $class->getName() . ucfirst($holder->getName()) . 'DAO';
+            $containerName = $class->getName() . ucfirst($holder->getName()) . 'DAO';
 
-        $out .=
-            'final class '
-            . $containerName
-            . ' extends '
-            . $holder->getRelation()->toString() . 'Linked'
-            . "\n{\n";
+            $out .=
+                'final class '
+                . $containerName
+                . ' extends '
+                . $holder->getRelation()->toString() . 'Linked'
+                . "\n{\n";
 
-        $className = $class->getName();
-        $propertyName = strtolower($className[0]) . substr($className, 1);
+            $className = $class->getName();
+            $propertyName = strtolower($className[0]) . substr($className, 1);
 
-        $remoteColumnName = $holder->getType()->getClass()->getTableName();
+            $remoteColumnName = $holder->getType()->getClass()->getTableName();
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 public function __construct({$className} \${$propertyName}, \$lazy = false)
 {
     parent::__construct(
@@ -59,8 +60,8 @@ public static function create({$className} \${$propertyName}, \$lazy = false)
 
 EOT;
 
-        if ($holder->getRelation()->getId() == MetaRelation::MANY_TO_MANY) {
-            $out .= <<<EOT
+            if ($holder->getRelation()->getId() == MetaRelation::MANY_TO_MANY) {
+                $out .= <<<EOT
 
 public function getHelperTable()
 {
@@ -73,9 +74,9 @@ public function getChildIdField()
 }
 
 EOT;
-        }
+            }
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 
 public function getParentIdField()
 {
@@ -85,11 +86,11 @@ public function getParentIdField()
 EOT;
 
 
-        $out .= "}\n";
-        $out .= self::getHeel();
+            $out .= "}\n";
+            $out .= self::getHeel();
 
-        return $out;
+            return $out;
+        }
     }
 }
-
 ?>

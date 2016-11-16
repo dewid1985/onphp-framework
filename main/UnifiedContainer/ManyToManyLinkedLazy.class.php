@@ -8,59 +8,59 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Containers
- **/
-class ManyToManyLinkedLazy extends ManyToManyLinkedWorker
-{
+namespace OnPhp {
     /**
-     * @throws WrongArgumentException
-     * @return ManyToManyLinkedLazy
+     * @ingroup Containers
      **/
-    public function sync($insert, $update = [], $delete)
+    class ManyToManyLinkedLazy extends ManyToManyLinkedWorker
     {
-        Assert::isTrue($update === []);
+        /**
+         * @throws WrongArgumentException
+         * @return ManyToManyLinkedLazy
+         **/
+        public function sync($insert, $update = [], $delete)
+        {
+            Assert::isTrue($update === []);
 
-        $dao = $this->container->getDao();
+            $dao = $this->container->getDao();
 
-        $db = DBPool::getByDao($dao);
+            $db = DBPool::getByDao($dao);
 
-        if ($insert) {
-            for ($i = 0, $size = count($insert); $i < $size; ++$i) {
-                $db->queryNull($this->makeInsertQuery($insert[$i]));
+            if ($insert) {
+                for ($i = 0, $size = count($insert); $i < $size; ++$i) {
+                    $db->queryNull($this->makeInsertQuery($insert[$i]));
+                }
             }
+
+            if ($delete) {
+                $db->queryNull($this->makeDeleteQuery($delete));
+
+                $dao->uncacheByIds($delete);
+            }
+
+            return $this;
         }
 
-        if ($delete) {
-            $db->queryNull($this->makeDeleteQuery($delete));
+        /**
+         * @return SelectQuery
+         **/
+        public function makeFetchQuery()
+        {
+            $uc = $this->container;
 
-            $dao->uncacheByIds($delete);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return SelectQuery
-     **/
-    public function makeFetchQuery()
-    {
-        $uc = $this->container;
-
-        return
-            $this
-                ->joinHelperTable(
-                    $this
-                        ->makeSelectQuery()
-                        ->dropFields()
-                        ->get(
-                            new DBField(
-                                $uc->getChildIdField(),
-                                $uc->getHelperTable()
+            return
+                $this
+                    ->joinHelperTable(
+                        $this
+                            ->makeSelectQuery()
+                            ->dropFields()
+                            ->get(
+                                new DBField(
+                                    $uc->getChildIdField(),
+                                    $uc->getHelperTable()
+                                )
                             )
-                        )
-                );
+                    );
+        }
     }
 }
-

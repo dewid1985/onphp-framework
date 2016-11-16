@@ -8,59 +8,60 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-class WavesBackgroundDrawer extends BackgroundDrawer
-{
-    const MIN_WAVE_DISTANCE = 8;
-    const MAX_WAVE_DISTANCE = 20;
-    const MAX_WAVE_OFFSET = 5;
-
+namespace OnPhp {
     /**
-     * @return WavesBackgroundDrawer
+     * @ingroup Turing
      **/
-    public function draw()
+    class WavesBackgroundDrawer extends BackgroundDrawer
     {
-        $y = mt_rand(-self::MAX_WAVE_OFFSET, self::MAX_WAVE_OFFSET);
+        const MIN_WAVE_DISTANCE = 8;
+        const MAX_WAVE_DISTANCE = 20;
+        const MAX_WAVE_OFFSET = 5;
 
-        while ($y < $this->getTuringImage()->getHeight()) {
-            $this->drawWave($y);
+        /**
+         * @return WavesBackgroundDrawer
+         **/
+        public function draw()
+        {
+            $y = mt_rand(-self::MAX_WAVE_OFFSET, self::MAX_WAVE_OFFSET);
 
-            $y += mt_rand(self::MIN_WAVE_DISTANCE, self::MAX_WAVE_DISTANCE);
+            while ($y < $this->getTuringImage()->getHeight()) {
+                $this->drawWave($y);
+
+                $y += mt_rand(self::MIN_WAVE_DISTANCE, self::MAX_WAVE_DISTANCE);
+            }
+
+            return $this;
         }
 
-        return $this;
-    }
+        /* void */
+        private function drawWave($y)
+        {
+            $radius = 5;
+            $frequency = 30;
 
-    /* void */
-    private function drawWave($y)
-    {
-        $radius = 5;
-        $frequency = 30;
+            $imageId = $this->getTuringImage()->getImageId();
 
-        $imageId = $this->getTuringImage()->getImageId();
+            for (
+                $x = 0, $width = $this->getTuringImage()->getWidth();
+                $x < $width;
+                ++$x
+            ) {
+                $color = $this->makeColor();
+                $colorId = $this->getTuringImage()->getColorIdentifier($color);
 
-        for (
-            $x = 0, $width = $this->getTuringImage()->getWidth();
-            $x < $width;
-            ++$x
-        ) {
-            $color = $this->makeColor();
-            $colorId = $this->getTuringImage()->getColorIdentifier($color);
+                $angle = $x % $frequency;
+                $angle = 2 * M_PI * $angle / $frequency;
 
-            $angle = $x % $frequency;
-            $angle = 2 * M_PI * $angle / $frequency;
+                $dy = $radius * sin($angle);
 
-            $dy = $radius * sin($angle);
-
-            imagesetpixel(
-                $imageId,
-                $x,
-                $y + $dy,
-                $colorId
-            );
+                imagesetpixel(
+                    $imageId,
+                    $x,
+                    $y + $dy,
+                    $colorId
+                );
+            }
         }
     }
 }

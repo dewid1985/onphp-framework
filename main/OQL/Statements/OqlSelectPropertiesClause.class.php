@@ -8,28 +8,29 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-class OqlSelectPropertiesClause extends OqlProjectionClause
-{
-    private $distinct = false;
-
-
-    public function isDistinct()
-    {
-        return $this->distinct;
-    }
-
+namespace OnPhp {
     /**
-     * @return OqlSelectPropertiesClause
+     * @ingroup OQL
      **/
-    public function setDistinct($orly = true)
+    class OqlSelectPropertiesClause extends OqlProjectionClause
     {
-        $this->distinct = ($orly === true);
+        private $distinct = false;
 
-        return $this;
+
+        public function isDistinct()
+        {
+            return $this->distinct;
+        }
+
+        /**
+         * @return OqlSelectPropertiesClause
+         **/
+        public function setDistinct($orly = true)
+        {
+            $this->distinct = ($orly === true);
+
+            return $this;
+        }
     }
 }
 

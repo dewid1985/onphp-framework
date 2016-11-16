@@ -8,40 +8,40 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * URN is an absolute URI without authority part.
- *
- * @ingroup Net
- **/
-class Urn extends GenericUri
-{
-    protected static $knownSubSchemes = [
-        'urn' => 'Urn',
-        'mailto' => 'Urn',
-        'news' => 'Urn',
-        'isbn' => 'Urn',
-        'tel' => 'Urn',
-        'fax' => 'Urn',
-    ];
-    protected $schemeSpecificPart = null;
-
-
-    public static function getKnownSubSchemes()
+namespace OnPhp {
+    /**
+     * URN is an absolute URI without authority part.
+     *
+     * @ingroup Net
+     **/
+    class Urn extends GenericUri
     {
-        return static::$knownSubSchemes;
-    }
+        protected static $knownSubSchemes = [
+            'urn' => 'Urn',
+            'mailto' => 'Urn',
+            'news' => 'Urn',
+            'isbn' => 'Urn',
+            'tel' => 'Urn',
+            'fax' => 'Urn',
+        ];
+        protected $schemeSpecificPart = null;
 
-    public function isValid()
-    {
-        if (
-            $this->scheme === null
-            || $this->getAuthority() !== null
-        ) {
-            return false;
+
+        public static function getKnownSubSchemes()
+        {
+            return static::$knownSubSchemes;
         }
 
-        return parent::isValid();
+        public function isValid()
+        {
+            if (
+                $this->scheme === null
+                || $this->getAuthority() !== null
+            ) {
+                return false;
+            }
+
+            return parent::isValid();
+        }
     }
 }
-

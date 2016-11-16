@@ -8,131 +8,131 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * URL is either absolute URI with authority part or relative one without
- * authority part.
- *
- * @ingroup Net
- **/
-class Url extends GenericUri
-{
-    protected static $knownSubSchemes = [
-        'http' => 'HttpUrl',
-        'https' => 'HttpUrl',
-        'ftp' => 'Url',
-        'nntp' => 'Url',
-        'telnet' => 'Url',
-        'gopher' => 'Url',
-        'wais' => 'Url',
-        'file' => 'Url',
-        'prospero' => 'Url'
-    ];
-
-
-    public function isValid()
+namespace OnPhp {
+    /**
+     * URL is either absolute URI with authority part or relative one without
+     * authority part.
+     *
+     * @ingroup Net
+     **/
+    class Url extends GenericUri
     {
-        if (!parent::isValid()) {
-            return false;
+        protected static $knownSubSchemes = [
+            'http' => 'HttpUrl',
+            'https' => 'HttpUrl',
+            'ftp' => 'Url',
+            'nntp' => 'Url',
+            'telnet' => 'Url',
+            'gopher' => 'Url',
+            'wais' => 'Url',
+            'file' => 'Url',
+            'prospero' => 'Url'
+        ];
+
+
+        public function isValid()
+        {
+            if (!parent::isValid()) {
+                return false;
+            }
+
+            return
+                ($this->isAbsolute() && $this->getAuthority() !== null)
+                || ($this->isRelative() && $this->getAuthority() === null);
         }
 
-        return
-            ($this->isAbsolute() && $this->getAuthority() !== null)
-            || ($this->isRelative() && $this->getAuthority() === null);
-    }
+        /**
+         * see: rfc3986, sec. 4.2, paragraph 4; rfc 2396, sec 3.1
+         **/
+        public function fixMistakenPath()
+        {
+            if ($this->scheme || $this->getAuthority()) {
+                return $this;
+            }
 
-    /**
-     * see: rfc3986, sec. 4.2, paragraph 4; rfc 2396, sec 3.1
-     **/
-    public function fixMistakenPath()
-    {
-        if ($this->scheme || $this->getAuthority()) {
+            $urlSubSchemes = (new Url)->getKnownSubSchemes();
+
+            $matches = [];
+
+            if (
+                !preg_match('/^([a-z][a-z0-9.+-]*):(.*)/i', $this->path, $matches)
+                || !isset($urlSubSchemes[strtolower($matches[1])])
+            ) {
+                // localhost:80 not a scheme+authority
+                return $this;
+            }
+
+            // but http:anything:80/... and http:/anything:80/.. becomes
+            // http://anything:80/...
+
+            $this->setScheme($matches[1]);
+            $this->setPath($matches[2]);
+
+            $this->fixAuthorityFromPath();
+
             return $this;
         }
 
-        $urlSubSchemes = (new Url)->getKnownSubSchemes();
+        public static function getKnownSubSchemes()
+        {
+            return static::$knownSubSchemes;
+        }
 
-        $matches = [];
+        /**
+         * If scheme is present but authority is empty, authority part is
+         * taken from fisrt non-empty segment, i.e: http:////anything/...
+         * becomes http://anything/...
+         **/
+        public function fixAuthorityFromPath()
+        {
+            if ($this->scheme && !$this->getAuthority()) {
+                $segments = explode('/', $this->path);
 
-        if (
-            !preg_match('/^([a-z][a-z0-9.+-]*):(.*)/i', $this->path, $matches)
-            || !isset($urlSubSchemes[strtolower($matches[1])])
-        ) {
-            // localhost:80 not a scheme+authority
+                while ($segments && empty($segments[0])) {
+                    array_shift($segments);
+                }
+
+                if ($segments) {
+                    $this->setAuthority(array_shift($segments));
+                    $this->setPath('/' . implode('/', $segments));
+                }
+            }
+
             return $this;
         }
 
-        // but http:anything:80/... and http:/anything:80/.. becomes
-        // http://anything:80/...
+        public function toSmallString()
+        {
+            $result = null;
 
-        $this->setScheme($matches[1]);
-        $this->setPath($matches[2]);
+            $authority = $this->getAuthority();
 
-        $this->fixAuthorityFromPath();
-
-        return $this;
-    }
-
-    public static function getKnownSubSchemes()
-    {
-        return static::$knownSubSchemes;
-    }
-
-    /**
-     * If scheme is present but authority is empty, authority part is
-     * taken from fisrt non-empty segment, i.e: http:////anything/...
-     * becomes http://anything/...
-     **/
-    public function fixAuthorityFromPath()
-    {
-        if ($this->scheme && !$this->getAuthority()) {
-            $segments = explode('/', $this->path);
-
-            while ($segments && empty($segments[0])) {
-                array_shift($segments);
+            if ($authority !== null) {
+                $result .= $authority;
             }
 
-            if ($segments) {
-                $this->setAuthority(array_shift($segments));
-                $this->setPath('/' . implode('/', $segments));
+            $result .= $this->path;
+
+            if ($this->query !== null) {
+                $result .= '?' . $this->query;
             }
+
+            if ($this->fragment !== null) {
+                $result .= '#' . $this->fragment;
+            }
+
+            return $result;
         }
 
-        return $this;
-    }
+        public function normalize()
+        {
+            parent::normalize();
 
-    public function toSmallString()
-    {
-        $result = null;
+            if ($this->getPort() === '') {
+                $this->setPort(null);
+            }
 
-        $authority = $this->getAuthority();
-
-        if ($authority !== null) {
-            $result .= $authority;
+            return $this;
         }
-
-        $result .= $this->path;
-
-        if ($this->query !== null) {
-            $result .= '?' . $this->query;
-        }
-
-        if ($this->fragment !== null) {
-            $result .= '#' . $this->fragment;
-        }
-
-        return $result;
-    }
-
-    public function normalize()
-    {
-        parent::normalize();
-
-        if ($this->getPort() === '') {
-            $this->setPort(null);
-        }
-
-        return $this;
     }
 }
-

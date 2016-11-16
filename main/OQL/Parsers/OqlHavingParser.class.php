@@ -9,33 +9,38 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-class OqlHavingParser extends OqlParser
-{
-    const CLASS_NAME = 'HavingProjection';
-
-
+namespace OnPhp {
     /**
-     * @return OqlHavingClause
-     **/
-    protected function makeOqlObject()
+     * Class OqlHavingParser
+     * @package OnPhp
+     */
+    class OqlHavingParser extends OqlParser
     {
-        return new OqlHavingClause();
-    }
+        const CLASS_NAME = 'HavingProjection';
 
-    protected function handleState()
-    {
-        if ($this->state == self::INITIAL_STATE) {
-            if ($argument = $this->getLogicExpression()) {
-                $this->oqlObject->setExpression(
-                    $this->makeQueryExpression(self::CLASS_NAME, $argument)
-                );
 
-            } else {
-                $this->error("expecting 'having' expression");
-            }
+        /**
+         * @return OqlHavingClause
+         **/
+        protected function makeOqlObject()
+        {
+            return new OqlHavingClause();
         }
 
-        return self::FINAL_STATE;
+        protected function handleState()
+        {
+            if ($this->state == self::INITIAL_STATE) {
+                if ($argument = $this->getLogicExpression()) {
+                    $this->oqlObject->setExpression(
+                        $this->makeQueryExpression(self::CLASS_NAME, $argument)
+                    );
+
+                } else {
+                    $this->error("expecting 'having' expression");
+                }
+            }
+
+            return self::FINAL_STATE;
+        }
     }
 }
-

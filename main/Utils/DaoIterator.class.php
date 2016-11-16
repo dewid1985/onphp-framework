@@ -8,154 +8,154 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class DaoIterator implements Iterator
-{
-    private $dao = null;
-    private $projection = null;
-    private $keyProperty = 'id';
-
-    private $chunkSize = 42;
-
-    private $chunk = null;
-    private $offset = 0;
-
+namespace OnPhp {
     /**
-     * @return ProtoDAO
+     * @ingroup Utils
      **/
-    public function getDao()
+    class DaoIterator implements Iterator
     {
-        return $this->dao;
-    }
+        private $dao = null;
+        private $projection = null;
+        private $keyProperty = 'id';
 
-    public function setDao(ProtoDAO $dao)
-    {
-        $this->dao = $dao;
+        private $chunkSize = 42;
 
-        return $this;
-    }
+        private $chunk = null;
+        private $offset = 0;
 
-    /**
-     * @return ObjectProjection
-     **/
-    public function getProjection()
-    {
-        return $this->projection;
-    }
-
-    public function setProjection(ObjectProjection $projection)
-    {
-        $this->projection = $projection;
-
-        return $this;
-    }
-
-    public function getChunkSize()
-    {
-        return $this->chunkSize;
-    }
-
-    public function setChunkSize($chunkSize)
-    {
-        $this->chunkSize = $chunkSize;
-
-        return $this;
-    }
-
-    public function getKeyProperty()
-    {
-        return $this->keyProperty;
-    }
-
-    public function setKeyProperty($keyProperty)
-    {
-        $this->keyProperty = $keyProperty;
-
-        return $this;
-    }
-
-    public function rewind()
-    {
-        $this->loadNextChunk(null);
-
-        return $this;
-    }
-
-    private function loadNextChunk($id)
-    {
-        Assert::isNotNull($this->dao);
-
-        $this->offset = 0;
-
-        $criteria = new Criteria($this->dao);
-
-        if ($this->projection) {
-            $criteria->setProjection($this->projection);
+        /**
+         * @return ProtoDAO
+         **/
+        public function getDao()
+        {
+            return $this->dao;
         }
 
-        $criteria
-            ->addOrder($this->keyProperty)
-            ->setLimit($this->chunkSize);
+        public function setDao(ProtoDAO $dao)
+        {
+            $this->dao = $dao;
 
-        if ($id !== null) {
-            $criteria->add(
-                Expression::gt($this->keyProperty, $id)
-            );
+            return $this;
         }
 
-        // preserving memory bloat
-        $this->dao->dropIdentityMap();
-
-        $this->chunk = $criteria->getList();
-
-        return $this->chunk;
-    }
-
-    public function next()
-    {
-        if (!$this->valid()) {
-            return null;
+        /**
+         * @return ObjectProjection
+         **/
+        public function getProjection()
+        {
+            return $this->projection;
         }
 
-        $key = $this->key();
+        public function setProjection(ObjectProjection $projection)
+        {
+            $this->projection = $projection;
 
-        ++$this->offset;
-
-        if ($this->offset >= $this->chunkSize) {
-            $this->loadNextChunk($key);
+            return $this;
         }
 
-        return $this;
-    }
+        public function getChunkSize()
+        {
+            return $this->chunkSize;
+        }
 
-    public function valid()
-    {
-        if ($this->chunk === null) {
+        public function setChunkSize($chunkSize)
+        {
+            $this->chunkSize = $chunkSize;
+
+            return $this;
+        }
+
+        public function getKeyProperty()
+        {
+            return $this->keyProperty;
+        }
+
+        public function setKeyProperty($keyProperty)
+        {
+            $this->keyProperty = $keyProperty;
+
+            return $this;
+        }
+
+        public function rewind()
+        {
             $this->loadNextChunk(null);
+
+            return $this;
         }
 
-        return isset($this->chunk[$this->offset]);
-    }
+        private function loadNextChunk($id)
+        {
+            Assert::isNotNull($this->dao);
 
-    public function key()
-    {
-        $method = 'get' . ucfirst($this->keyProperty);
+            $this->offset = 0;
 
-        Assert::methodExists($this->current(), $method);
+            $criteria = new Criteria($this->dao);
 
-        return $this->current()->$method();
-    }
+            if ($this->projection) {
+                $criteria->setProjection($this->projection);
+            }
 
-    public function current()
-    {
-        if (!$this->valid()) {
-            return null;
+            $criteria
+                ->addOrder($this->keyProperty)
+                ->setLimit($this->chunkSize);
+
+            if ($id !== null) {
+                $criteria->add(
+                    Expression::gt($this->keyProperty, $id)
+                );
+            }
+
+            // preserving memory bloat
+            $this->dao->dropIdentityMap();
+
+            $this->chunk = $criteria->getList();
+
+            return $this->chunk;
         }
 
-        return $this->chunk[$this->offset];
+        public function next()
+        {
+            if (!$this->valid()) {
+                return null;
+            }
+
+            $key = $this->key();
+
+            ++$this->offset;
+
+            if ($this->offset >= $this->chunkSize) {
+                $this->loadNextChunk($key);
+            }
+
+            return $this;
+        }
+
+        public function valid()
+        {
+            if ($this->chunk === null) {
+                $this->loadNextChunk(null);
+            }
+
+            return isset($this->chunk[$this->offset]);
+        }
+
+        public function key()
+        {
+            $method = 'get' . ucfirst($this->keyProperty);
+
+            Assert::methodExists($this->current(), $method);
+
+            return $this->current()->$method();
+        }
+
+        public function current()
+        {
+            if (!$this->valid()) {
+                return null;
+            }
+
+            return $this->chunk[$this->offset];
+        }
     }
 }
-

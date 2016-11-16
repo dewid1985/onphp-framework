@@ -9,49 +9,55 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-class OqlOrderByParser extends OqlParser
-{
+namespace OnPhp {
     /**
-     * @return OqlOrderByClause
-     **/
-    protected function makeOqlObject()
+     * Class OqlOrderByParser
+     * @package OnPhp
+     */
+    class OqlOrderByParser extends OqlParser
     {
-        return new OqlOrderByClause();
-    }
+        /**
+         * @return OqlOrderByClause
+         **/
+        protected function makeOqlObject()
+        {
+            return new OqlOrderByClause();
+        }
 
-    protected function handleState()
-    {
-        if ($this->state == self::INITIAL_STATE) {
-            $list = $this->getCommaSeparatedList(
-                [$this, 'getArgumentExpression'],
-                "expecting expression in 'order by'"
-            );
+        protected function handleState()
+        {
+            if ($this->state == self::INITIAL_STATE) {
+                $list = $this->getCommaSeparatedList(
+                    [$this, 'getArgumentExpression'],
+                    "expecting expression in 'order by'"
+                );
 
-            foreach ($list as $argument) {
-                $this->oqlObject->add($argument);
+                foreach ($list as $argument) {
+                    $this->oqlObject->add($argument);
+                }
             }
+
+            return self::FINAL_STATE;
         }
 
-        return self::FINAL_STATE;
-    }
+        /**
+         * @return OqlOrderByExpression
+         **/
+        protected function getArgumentExpression()
+        {
+            $expression = $this->getLogicExpression();
 
-    /**
-     * @return OqlOrderByExpression
-     **/
-    protected function getArgumentExpression()
-    {
-        $expression = $this->getLogicExpression();
+            $token = $this->tokenizer->peek();
+            if ($this->checkKeyword($token, ['asc', 'desc'])) {
+                $direction = ($token->getValue() == 'asc');
+                $this->tokenizer->next();
 
-        $token = $this->tokenizer->peek();
-        if ($this->checkKeyword($token, ['asc', 'desc'])) {
-            $direction = ($token->getValue() == 'asc');
-            $this->tokenizer->next();
+            } else {
+                $direction = null;
+            }
 
-        } else {
-            $direction = null;
+            return new OqlOrderByExpression($expression, $direction);
         }
-
-        return new OqlOrderByExpression($expression, $direction);
     }
 }
 

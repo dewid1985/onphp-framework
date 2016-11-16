@@ -8,65 +8,66 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class PhpViewResolver implements ViewResolver
-{
-    private $prefix = null;
-    private $postfix = null;
-
-    public function __construct($prefix = null, $postfix = null)
-    {
-        $this->prefix = $prefix;
-        $this->postfix = $postfix;
-    }
-
+namespace OnPhp {
     /**
-     * @return SimplePhpView
+     * @ingroup Flow
      **/
-    public function resolveViewName($viewName)
+    class PhpViewResolver implements ViewResolver
     {
-        return
-            new SimplePhpView(
-                $this->prefix . $viewName . $this->postfix,
-                $this
-            );
-    }
+        private $prefix = null;
+        private $postfix = null;
 
-    public function viewExists($viewName)
-    {
-        return is_readable($this->prefix . $viewName . $this->postfix);
-    }
+        public function __construct($prefix = null, $postfix = null)
+        {
+            $this->prefix = $prefix;
+            $this->postfix = $postfix;
+        }
 
-    public function getPrefix()
-    {
-        return $this->prefix;
-    }
+        /**
+         * @return SimplePhpView
+         **/
+        public function resolveViewName($viewName)
+        {
+            return
+                new SimplePhpView(
+                    $this->prefix . $viewName . $this->postfix,
+                    $this
+                );
+        }
 
-    /**
-     * @return PhpViewResolver
-     **/
-    public function setPrefix($prefix)
-    {
-        $this->prefix = $prefix;
+        public function viewExists($viewName)
+        {
+            return is_readable($this->prefix . $viewName . $this->postfix);
+        }
 
-        return $this;
-    }
+        public function getPrefix()
+        {
+            return $this->prefix;
+        }
 
-    public function getPostfix()
-    {
-        return $this->postfix;
-    }
+        /**
+         * @return PhpViewResolver
+         **/
+        public function setPrefix($prefix)
+        {
+            $this->prefix = $prefix;
 
-    /**
-     * @return PhpViewResolver
-     **/
-    public function setPostfix($postfix)
-    {
-        $this->postfix = $postfix;
+            return $this;
+        }
 
-        return $this;
+        public function getPostfix()
+        {
+            return $this->postfix;
+        }
+
+        /**
+         * @return PhpViewResolver
+         **/
+        public function setPostfix($postfix)
+        {
+            $this->postfix = $postfix;
+
+            return $this;
+        }
     }
 }

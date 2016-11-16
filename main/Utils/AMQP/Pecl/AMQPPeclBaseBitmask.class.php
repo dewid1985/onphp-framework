@@ -9,29 +9,34 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-abstract class AMQPPeclBaseBitmask implements AMQPBitmaskResolver
-{
-    public function getBitmask($config)
+namespace OnPhp {
+    /**
+     * Class AMQPPeclBaseBitmask
+     * @package OnPhp
+     */
+    abstract class AMQPPeclBaseBitmask implements AMQPBitmaskResolver
     {
-        $bitmask = 0;
+        public function getBitmask($config)
+        {
+            $bitmask = 0;
 
-        if ($config->getPassive()) {
-            $bitmask = $bitmask | AMQP_PASSIVE;
+            if ($config->getPassive()) {
+                $bitmask = $bitmask | AMQP_PASSIVE;
+            }
+
+            if ($config->getDurable()) {
+                $bitmask = $bitmask | AMQP_DURABLE;
+            }
+
+            if ($config->getAutodelete()) {
+                $bitmask = $bitmask | AMQP_AUTODELETE;
+            }
+
+            if ($config->getNowait()) {
+                throw new UnimplementedFeatureException();
+            }
+
+            return $bitmask;
         }
-
-        if ($config->getDurable()) {
-            $bitmask = $bitmask | AMQP_DURABLE;
-        }
-
-        if ($config->getAutodelete()) {
-            $bitmask = $bitmask | AMQP_AUTODELETE;
-        }
-
-        if ($config->getNowait()) {
-            throw new UnimplementedFeatureException();
-        }
-
-        return $bitmask;
     }
 }
-

@@ -8,65 +8,65 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Containers
- **/
-class OneToManyLinkedFull extends OneToManyLinkedWorker
-{
+namespace OnPhp {
     /**
-     * @return SelectQuery
+     * @ingroup Containers
      **/
-    public function makeFetchQuery()
+    class OneToManyLinkedFull extends OneToManyLinkedWorker
     {
-        return $this->targetize($this->makeSelectQuery());
-    }
+        /**
+         * @return SelectQuery
+         **/
+        public function makeFetchQuery()
+        {
+            return $this->targetize($this->makeSelectQuery());
+        }
 
-    /**
-     * @return OneToManyLinkedFull
-     **/
-    public function sync($insert, $update = [], $delete)
-    {
-        $uc = $this->container;
-        $dao = $uc->getDao();
+        /**
+         * @return OneToManyLinkedFull
+         **/
+        public function sync($insert, $update = [], $delete)
+        {
+            $uc = $this->container;
+            $dao = $uc->getDao();
 
-        if ($delete) {
-            DBPool::getByDao($dao)
-                ->queryNull(
-                    (new OSQL())
-                        ->delete()
-                        ->from($dao->getTable())
-                        ->where(
-                            Expression::eq(
-                                new DBField($uc->getParentIdField()),
-                                $uc->getParentObject()->getId()
+            if ($delete) {
+                DBPool::getByDao($dao)
+                    ->queryNull(
+                        (new OSQL())
+                            ->delete()
+                            ->from($dao->getTable())
+                            ->where(
+                                Expression::eq(
+                                    new DBField($uc->getParentIdField()),
+                                    $uc->getParentObject()->getId()
+                                )
                             )
-                        )
-                        ->
-                        andWhere(
-                            Expression::in(
-                                $uc->getChildIdField(),
-                                ArrayUtils::getIdsArray($delete)
+                            ->
+                            andWhere(
+                                Expression::in(
+                                    $uc->getChildIdField(),
+                                    ArrayUtils::getIdsArray($delete)
+                                )
                             )
-                        )
-                );
+                    );
 
-            $dao->uncacheByIds(ArrayUtils::getIdsArray($delete));
-        }
-
-        if ($insert) {
-            for ($i = 0, $size = count($insert); $i < $size; ++$i) {
-                $dao->add($insert[$i]);
+                $dao->uncacheByIds(ArrayUtils::getIdsArray($delete));
             }
-        }
 
-        if ($update) {
-            for ($i = 0, $size = count($update); $i < $size; ++$i) {
-                $dao->save($update[$i]);
+            if ($insert) {
+                for ($i = 0, $size = count($insert); $i < $size; ++$i) {
+                    $dao->add($insert[$i]);
+                }
             }
-        }
 
-        return $this;
+            if ($update) {
+                for ($i = 0, $size = count($update); $i < $size; ++$i) {
+                    $dao->save($update[$i]);
+                }
+            }
+
+            return $this;
+        }
     }
 }
-

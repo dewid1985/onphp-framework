@@ -9,43 +9,44 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class AMQPExchangeType extends Enumeration
-{
-    const DIRECT = 1;
-    const FANOUT = 2;
-    const TOPIC = 3;
-    const HEADER = 4;
-
-    protected $names = [
-        self::DIRECT => "direct",
-        self::FANOUT => "fanout",
-        self::TOPIC => "topic",
-        self::HEADER => "header"
-    ];
-
-    public function getDefault()
+namespace  OnPhp {
+    class AMQPExchangeType extends Enumeration
     {
-        return self::DIRECT;
-    }
+        const DIRECT = 1;
+        const FANOUT = 2;
+        const TOPIC = 3;
+        const HEADER = 4;
 
-    public function isDirect()
-    {
-        return $this->id == self::DIRECT;
-    }
+        protected $names = [
+            self::DIRECT => "direct",
+            self::FANOUT => "fanout",
+            self::TOPIC => "topic",
+            self::HEADER => "header"
+        ];
 
-    public function isFanout()
-    {
-        return $this->id == self::FANOUT;
-    }
+        public function getDefault()
+        {
+            return self::DIRECT;
+        }
 
-    public function isTopic()
-    {
-        return $this->id == self::TOPIC;
-    }
+        public function isDirect()
+        {
+            return $this->id == self::DIRECT;
+        }
 
-    public function isHeader()
-    {
-        return $this->id == self::HEADER;
+        public function isFanout()
+        {
+            return $this->id == self::FANOUT;
+        }
+
+        public function isTopic()
+        {
+            return $this->id == self::TOPIC;
+        }
+
+        public function isHeader()
+        {
+            return $this->id == self::HEADER;
+        }
     }
 }
-

@@ -8,56 +8,56 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class IntegerType extends BasePropertyType
-{
-    public function getSize()
-    {
-        return 4;
-    }
-
-    public function getPrimitiveName()
-    {
-        return 'integer';
-    }
-
+namespace OnPhp {
     /**
-     * @throws WrongArgumentException
-     * @return IntegerType
+     * @ingroup Types
      **/
-    public function setDefault($default)
+    class IntegerType extends BasePropertyType
     {
-        Assert::isInteger(
-            $default,
-            "strange default value given - '{$default}'"
-        );
-
-        $this->default = $default;
-
-        return $this;
-    }
-
-    public function getDeclaration()
-    {
-        if ($this->hasDefault()) {
-            return $this->default;
+        public function getSize()
+        {
+            return 4;
         }
 
-        return 'null';
-    }
+        public function getPrimitiveName()
+        {
+            return 'integer';
+        }
 
-    public function isMeasurable()
-    {
-        return false;
-    }
+        /**
+         * @throws WrongArgumentException
+         * @return IntegerType
+         **/
+        public function setDefault($default)
+        {
+            Assert::isInteger(
+                $default,
+                "strange default value given - '{$default}'"
+            );
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::INTEGER))';
+            $this->default = $default;
+
+            return $this;
+        }
+
+        public function getDeclaration()
+        {
+            if ($this->hasDefault()) {
+                return $this->default;
+            }
+
+            return 'null';
+        }
+
+        public function isMeasurable()
+        {
+            return false;
+        }
+
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::INTEGER))';
+        }
     }
 }
-
 ?>

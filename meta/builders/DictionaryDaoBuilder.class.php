@@ -8,32 +8,32 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Builders
- **/
-final class DictionaryDaoBuilder extends BaseBuilder
-{
-    public static function build(MetaClass $class)
+namespace OnPhp {
+    /**
+     * @ingroup Builders
+     **/
+    final class DictionaryDaoBuilder extends BaseBuilder
     {
-        $out = self::getHead();
+        public static function build(MetaClass $class)
+        {
+            $out = self::getHead();
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 abstract class Auto{$class->getName()}DAO extends StorableDAO
 {
 
 EOT;
 
-        $pointers = self::buildPointers($class);
+            $pointers = self::buildPointers($class);
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 {$pointers}
 }
 
 EOT;
 
-        return $out . self::getHeel();
+            return $out . self::getHeel();
+        }
     }
 }
-
 ?>

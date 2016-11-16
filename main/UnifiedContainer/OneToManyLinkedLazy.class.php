@@ -8,84 +8,84 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Containers
- **/
-class OneToManyLinkedLazy extends OneToManyLinkedWorker
-{
+namespace OnPhp {
     /**
-     * @return SelectQuery
+     * @ingroup Containers
      **/
-    public function makeFetchQuery()
+    class OneToManyLinkedLazy extends OneToManyLinkedWorker
     {
-        $query =
-            $this
-                ->makeSelectQuery()
-                ->dropFields()
-                ->get($this->container->getChildIdField());
+        /**
+         * @return SelectQuery
+         **/
+        public function makeFetchQuery()
+        {
+            $query =
+                $this
+                    ->makeSelectQuery()
+                    ->dropFields()
+                    ->get($this->container->getChildIdField());
 
-        return $this->targetize($query);
-    }
-
-    /**
-     * @throws WrongArgumentException
-     * @return OneToManyLinkedLazy
-     **/
-    public function sync($insert, $update = [], $delete)
-    {
-        Assert::isTrue($update === []);
-
-        $db = DBPool::getByDao($this->container->getDao());
-
-        $uc = $this->container;
-        $dao = $uc->getDao();
-
-        if ($insert) {
-            $db->queryNull($this->makeMassUpdateQuery($insert));
+            return $this->targetize($query);
         }
 
-        if ($delete) {
-            // unlink or drop
-            $uc->isUnlinkable()
-                ?
-                $db->queryNull($this->makeMassUpdateQuery($delete))
-                :
-                $db->queryNull(
-                    (new OSQL())
-                        ->delete()
-                        ->from($dao->getTable())
-                        ->where(
-                            Expression::in(
-                                $uc->getChildIdField(),
-                                $delete
+        /**
+         * @throws WrongArgumentException
+         * @return OneToManyLinkedLazy
+         **/
+        public function sync($insert, $update = [], $delete)
+        {
+            Assert::isTrue($update === []);
+
+            $db = DBPool::getByDao($this->container->getDao());
+
+            $uc = $this->container;
+            $dao = $uc->getDao();
+
+            if ($insert) {
+                $db->queryNull($this->makeMassUpdateQuery($insert));
+            }
+
+            if ($delete) {
+                // unlink or drop
+                $uc->isUnlinkable()
+                    ?
+                    $db->queryNull($this->makeMassUpdateQuery($delete))
+                    :
+                    $db->queryNull(
+                        (new OSQL())
+                            ->delete()
+                            ->from($dao->getTable())
+                            ->where(
+                                Expression::in(
+                                    $uc->getChildIdField(),
+                                    $delete
+                                )
                             )
-                        )
-                );
+                    );
 
-            $dao->uncacheByIds($delete);
+                $dao->uncacheByIds($delete);
+            }
+
+            return $this;
         }
 
-        return $this;
-    }
+        /**
+         * @return UpdateQuery
+         **/
+        private function makeMassUpdateQuery($ids)
+        {
+            $uc = $this->container;
 
-    /**
-     * @return UpdateQuery
-     **/
-    private function makeMassUpdateQuery($ids)
-    {
-        $uc = $this->container;
-
-        return
-            (new OSQL())
-                ->update($uc->getDao()->getTable())
-                ->set($uc->getParentIdField(), null)
-                ->where(
-                    Expression::in(
-                        $uc->getChildIdField(),
-                        $ids
-                    )
-                );
+            return
+                (new OSQL())
+                    ->update($uc->getDao()->getTable())
+                    ->set($uc->getParentIdField(), null)
+                    ->where(
+                        Expression::in(
+                            $uc->getChildIdField(),
+                            $ids
+                        )
+                    );
+        }
     }
 }
-

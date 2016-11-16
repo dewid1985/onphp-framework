@@ -8,15 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Patterns
- **/
-final class AbstractClassPattern extends BasePattern
-{
-    public function tableExists()
+namespace OnPhp {
+    /**
+     * @ingroup Patterns
+     **/
+    final class AbstractClassPattern extends BasePattern
     {
-        return false;
+        public function tableExists()
+        {
+            return false;
+        }
     }
 }
 

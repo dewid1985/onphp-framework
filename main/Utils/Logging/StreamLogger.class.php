@@ -8,84 +8,84 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class StreamLogger extends BaseLogger
-{
-    private $stream = null;
-
+namespace OnPhp {
     /**
-     *
-     */
-    public function __destruct()
-    {
-        try {
-            $this->close();
-        } catch (BaseException $e) {
-            // boo.
-        }
-    }
-
-    /**
-     * @return StreamLogger
+     * @ingroup Utils
      **/
-    public function close()
+    class StreamLogger extends BaseLogger
     {
-        if ($this->stream) {
+        private $stream = null;
 
-            $this->flush();
-            $this->stream->close();
-
-            $this->stream = null;
+        /**
+         *
+         */
+        public function __destruct()
+        {
+            try {
+                $this->close();
+            } catch (BaseException $e) {
+                // boo.
+            }
         }
 
-        return $this;
-    }
+        /**
+         * @return StreamLogger
+         **/
+        public function close()
+        {
+            if ($this->stream) {
 
-    /**
-     * @return StreamLogger
-     **/
-    public function flush()
-    {
-        if ($this->stream) {
-            $this->stream->flush();
-        }
+                $this->flush();
+                $this->stream->close();
 
-        return $this;
-    }
+                $this->stream = null;
+            }
 
-    /**
-     * @return OutputStream
-     **/
-    public function getOutputStream()
-    {
-        return $this->stream;
-    }
-
-    /**
-     * @return StreamLogger
-     **/
-    public function setOutputStream(OutputStream $stream)
-    {
-        $this->stream = $stream;
-
-        return $this;
-    }
-
-    /**
-     * @return StreamLogger
-     **/
-    protected function publish(LogRecord $record)
-    {
-        if (!$this->stream) {
             return $this;
         }
 
-        $this->stream->write($record->toString() . "\n");
+        /**
+         * @return StreamLogger
+         **/
+        public function flush()
+        {
+            if ($this->stream) {
+                $this->stream->flush();
+            }
 
-        return $this;
+            return $this;
+        }
+
+        /**
+         * @return OutputStream
+         **/
+        public function getOutputStream()
+        {
+            return $this->stream;
+        }
+
+        /**
+         * @return StreamLogger
+         **/
+        public function setOutputStream(OutputStream $stream)
+        {
+            $this->stream = $stream;
+
+            return $this;
+        }
+
+        /**
+         * @return StreamLogger
+         **/
+        protected function publish(LogRecord $record)
+        {
+            if (!$this->stream) {
+                return $this;
+            }
+
+            $this->stream->write($record->toString() . "\n");
+
+            return $this;
+        }
     }
 }
-

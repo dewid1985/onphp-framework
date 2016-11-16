@@ -8,59 +8,59 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class FloatType extends IntegerType
-{
-    protected $precision = 0;
-
-    public function getPrimitiveName()
-    {
-        return 'float';
-    }
-
+namespace OnPhp {
     /**
-     * @throws WrongArgumentException
-     * @return FloatType
+     * @ingroup Types
      **/
-    public function setDefault($default)
+    class FloatType extends IntegerType
     {
-        Assert::isFloat(
-            $default,
-            "strange default value given - '{$default}'"
-        );
+        protected $precision = 0;
 
-        $this->default = $default;
+        public function getPrimitiveName()
+        {
+            return 'float';
+        }
 
-        return $this;
-    }
+        /**
+         * @throws WrongArgumentException
+         * @return FloatType
+         **/
+        public function setDefault($default)
+        {
+            Assert::isFloat(
+                $default,
+                "strange default value given - '{$default}'"
+            );
 
-    public function getPrecision()
-    {
-        return $this->precision;
-    }
+            $this->default = $default;
 
-    /**
-     * @return NumericType
-     **/
-    public function setPrecision($precision)
-    {
-        $this->precision = $precision;
+            return $this;
+        }
 
-        return $this;
-    }
+        public function getPrecision()
+        {
+            return $this->precision;
+        }
 
-    public function isMeasurable()
-    {
-        return true;
-    }
+        /**
+         * @return NumericType
+         **/
+        public function setPrecision($precision)
+        {
+            $this->precision = $precision;
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::REAL))';
+            return $this;
+        }
+
+        public function isMeasurable()
+        {
+            return true;
+        }
+
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::REAL))';
+        }
     }
 }
-
 ?>

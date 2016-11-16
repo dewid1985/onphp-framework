@@ -8,26 +8,26 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * @ingroup Patterns
+     **/
+    interface GenerationPattern
+    {
+        /// builds everything for given class
+        public static function getInstance($class /*, $args = null*/);
 
-/**
- * @ingroup Patterns
- **/
-interface GenerationPattern
-{
-    /// builds everything for given class
-    public static function getInstance($class /*, $args = null*/);
+        /// indicates DAO availability for classes which uses this pattern
 
-    /// indicates DAO availability for classes which uses this pattern
+        public function build(MetaClass $class);
 
-    public function build(MetaClass $class);
+        /// guess what
 
-    /// guess what
+        public function daoExists();
 
-    public function daoExists();
+        /// forcing patterns to be singletones
 
-    /// forcing patterns to be singletones
-
-    public function tableExists();
+        public function tableExists();
+    }
 }
-
 ?>

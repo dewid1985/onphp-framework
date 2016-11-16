@@ -8,94 +8,95 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class RedirectView extends CleanRedirectView
-{
-    private $falseAsUnset = null;
-    private $buildArrays = null;
-
-
+namespace OnPhp {
     /**
-     * @return RedirectView
+     * @ingroup Flow
      **/
-    public function setFalseAsUnset($really)
+    class RedirectView extends CleanRedirectView
     {
-        Assert::isBoolean($really);
+        private $falseAsUnset = null;
+        private $buildArrays = null;
 
-        $this->falseAsUnset = $really;
 
-        return $this;
-    }
+        /**
+         * @return RedirectView
+         **/
+        public function setFalseAsUnset($really)
+        {
+            Assert::isBoolean($really);
 
-    public function isBuildArrays()
-    {
-        return $this->buildArrays;
-    }
+            $this->falseAsUnset = $really;
 
-    /**
-     * @return RedirectView
-     **/
-    public function setBuildArrays($really)
-    {
-        Assert::isBoolean($really);
-
-        $this->buildArrays = $really;
-
-        return $this;
-    }
-
-    protected function getLocationUrl($model = null)
-    {
-        $postfix = null;
-
-        if ($model && $model->getList()) {
-            $qs = [];
-
-            foreach ($model->getList() as $key => $val) {
-                if (
-                    (null === $val)
-                    || is_object($val)
-                ) {
-                    continue;
-                } elseif (is_array($val)) {
-                    if ($this->buildArrays) {
-                        $qs[] = http_build_query(
-                            [$key => $val], null, '&'
-                        );
-                    }
-
-                    continue;
-
-                } elseif (is_bool($val)) {
-                    if ($this->isFalseAsUnset() && (false === $val)) {
-                        continue;
-                    }
-
-                    $val = (int) $val;
-                }
-
-                $qs[] = $key . '=' . urlencode($val);
-            }
-
-            if (strpos($this->getUrl(), '?') === false) {
-                $first = '?';
-            } else {
-                $first = '&';
-            }
-
-            if ($qs) {
-                $postfix = $first . implode('&', $qs);
-            }
+            return $this;
         }
 
-        return $this->getUrl() . $postfix;
-    }
+        public function isBuildArrays()
+        {
+            return $this->buildArrays;
+        }
 
-    public function isFalseAsUnset()
-    {
-        return $this->falseAsUnset;
+        /**
+         * @return RedirectView
+         **/
+        public function setBuildArrays($really)
+        {
+            Assert::isBoolean($really);
+
+            $this->buildArrays = $really;
+
+            return $this;
+        }
+
+        protected function getLocationUrl($model = null)
+        {
+            $postfix = null;
+
+            if ($model && $model->getList()) {
+                $qs = [];
+
+                foreach ($model->getList() as $key => $val) {
+                    if (
+                        (null === $val)
+                        || is_object($val)
+                    ) {
+                        continue;
+                    } elseif (is_array($val)) {
+                        if ($this->buildArrays) {
+                            $qs[] = http_build_query(
+                                [$key => $val], null, '&'
+                            );
+                        }
+
+                        continue;
+
+                    } elseif (is_bool($val)) {
+                        if ($this->isFalseAsUnset() && (false === $val)) {
+                            continue;
+                        }
+
+                        $val = (int)$val;
+                    }
+
+                    $qs[] = $key . '=' . urlencode($val);
+                }
+
+                if (strpos($this->getUrl(), '?') === false) {
+                    $first = '?';
+                } else {
+                    $first = '&';
+                }
+
+                if ($qs) {
+                    $postfix = $first . implode('&', $qs);
+                }
+            }
+
+            return $this->getUrl() . $postfix;
+        }
+
+        public function isFalseAsUnset()
+        {
+            return $this->falseAsUnset;
+        }
     }
 }

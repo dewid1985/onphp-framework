@@ -8,102 +8,103 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-abstract class TextDrawer extends Drawer
-{
-    const SPACE_RATIO = 10;
-
-    private $size = null;
-
-    public function __construct($size)
-    {
-        $this->size = $size;
-    }
-
-    abstract public function draw($text);
-
+namespace OnPhp {
     /**
-     * @return TextDrawer
+     * @ingroup Turing
      **/
-    public function drawCraracter($angle, $x, $y, $character)
+    abstract class TextDrawer extends Drawer
     {
-        $color = $this->getTuringImage()->getOneCharacterColor();
+        const SPACE_RATIO = 10;
 
-        imagettftext(
-            $this->getTuringImage()->getImageId(),
-            $this->size,
-            $angle,
-            $x,
-            $y,
-            $color,
-            $this->getFont(),
-            $character
-        );
+        private $size = null;
 
-        return $this;
-    }
-
-    private function getFont()
-    {
-        if (!$font = $this->getTuringImage()->getFont()) {
-            throw new MissingElementException('the font is not installed');
+        public function __construct($size)
+        {
+            $this->size = $size;
         }
 
-        return $font;
-    }
+        abstract public function draw($text);
 
-    /**
-     * @return TextDrawer
-     **/
-    protected function showError()
-    {
-        $drawer = new ErrorDrawer($this->getTuringImage());
-        $drawer->draw();
+        /**
+         * @return TextDrawer
+         **/
+        public function drawCraracter($angle, $x, $y, $character)
+        {
+            $color = $this->getTuringImage()->getOneCharacterColor();
 
-        return $this;
-    }
+            imagettftext(
+                $this->getTuringImage()->getImageId(),
+                $this->size,
+                $angle,
+                $x,
+                $y,
+                $color,
+                $this->getFont(),
+                $character
+            );
 
-    protected function getTextWidth($string)
-    {
-        $textWidth = 0;
-
-        for ($i = 0, $length = strlen($string); $i < $length; ++$i) {
-            $character = $string[$i];
-            $textWidth += $this->getStringWidth($character) + $this->getSpace();
+            return $this;
         }
 
-        return $textWidth;
-    }
+        private function getFont()
+        {
+            if (!$font = $this->getTuringImage()->getFont()) {
+                throw new MissingElementException('the font is not installed');
+            }
 
-    protected function getStringWidth($string)
-    {
-        $bounds = imagettfbbox($this->size, 0, $this->getFont(), $string);
+            return $font;
+        }
 
-        return $bounds[2] - $bounds[0];
-    }
+        /**
+         * @return TextDrawer
+         **/
+        protected function showError()
+        {
+            $drawer = new ErrorDrawer($this->getTuringImage());
+            $drawer->draw();
 
-    protected function getSpace()
-    {
-        return $this->getSize() / TextDrawer::SPACE_RATIO;
-    }
+            return $this;
+        }
 
-    protected function getSize()
-    {
-        return $this->size;
-    }
+        protected function getTextWidth($string)
+        {
+            $textWidth = 0;
 
-    protected function getMaxCharacterHeight()
-    {
-        return $this->getStringHeight('W'); // bigest character
-    }
+            for ($i = 0, $length = strlen($string); $i < $length; ++$i) {
+                $character = $string[$i];
+                $textWidth += $this->getStringWidth($character) + $this->getSpace();
+            }
 
-    protected function getStringHeight($string)
-    {
-        $bounds = imagettfbbox($this->size, 0, $this->getFont(), $string);
+            return $textWidth;
+        }
 
-        return $bounds[1] - $bounds[7];
+        protected function getStringWidth($string)
+        {
+            $bounds = imagettfbbox($this->size, 0, $this->getFont(), $string);
+
+            return $bounds[2] - $bounds[0];
+        }
+
+        protected function getSpace()
+        {
+            return $this->getSize() / TextDrawer::SPACE_RATIO;
+        }
+
+        protected function getSize()
+        {
+            return $this->size;
+        }
+
+        protected function getMaxCharacterHeight()
+        {
+            return $this->getStringHeight('W'); // bigest character
+        }
+
+        protected function getStringHeight($string)
+        {
+            $bounds = imagettfbbox($this->size, 0, $this->getFont(), $string);
+
+            return $bounds[1] - $bounds[7];
+        }
     }
 }

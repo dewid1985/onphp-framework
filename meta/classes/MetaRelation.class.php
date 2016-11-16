@@ -8,44 +8,44 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup MetaBase
- **/
-final class MetaRelation extends Enumeration
-{
-    const ONE_TO_ONE = 1;
-    const ONE_TO_MANY = 2;
-    const MANY_TO_MANY = 3;
-
-    protected $names = [
-        self::ONE_TO_ONE => 'OneToOne',
-        self::ONE_TO_MANY => 'OneToMany',
-        self::MANY_TO_MANY => 'ManyToMany'
-    ];
-
-    function __construct($id)
-    {
-        parent::__construct($id);
-    }
-
+namespace OnPhp {
     /**
-     * @param $name
-     * @return $this
-     * @throws MissingElementException
-     * @throws WrongArgumentException
-     */
-    public static function makeFromName($name)
+     * @ingroup MetaBase
+     **/
+    final class MetaRelation extends Enumeration
     {
-        $self = new self(self::getAnyId());
-        $id = array_search($name, $self->getNameList());
+        const ONE_TO_ONE = 1;
+        const ONE_TO_MANY = 2;
+        const MANY_TO_MANY = 3;
 
-        if ($id) {
-            return $self->setId($id);
+        protected $names = [
+            self::ONE_TO_ONE => 'OneToOne',
+            self::ONE_TO_MANY => 'OneToMany',
+            self::MANY_TO_MANY => 'ManyToMany'
+        ];
+
+        function __construct($id)
+        {
+            parent::__construct($id);
         }
 
-        throw new WrongArgumentException();
+        /**
+         * @param $name
+         * @return $this
+         * @throws MissingElementException
+         * @throws WrongArgumentException
+         */
+        public static function makeFromName($name)
+        {
+            $self = new self(self::getAnyId());
+            $id = array_search($name, $self->getNameList());
+
+            if ($id) {
+                return $self->setId($id);
+            }
+
+            throw new WrongArgumentException();
+        }
     }
 }
-
 ?>

@@ -8,80 +8,80 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * PECL ZipArchive proxy with Info-Zip wrapper.
- *
- * @see http://pecl.php.net/package/zip
- *
- * @ingroup Utils
- **/
-class InfoZipArchive extends FileArchive
-{
-    private $zipArchive = null;
-
-    public function __construct($cmdBinPath = '/usr/bin/unzip')
+namespace OnPhp {
+    /**
+     * PECL ZipArchive proxy with Info-Zip wrapper.
+     *
+     * @see http://pecl.php.net/package/zip
+     *
+     * @ingroup Utils
+     **/
+    class InfoZipArchive extends FileArchive
     {
-        $usingCmd = $cmdBinPath;
+        private $zipArchive = null;
 
-        if (class_exists('ZipArchive', false)) {
+        public function __construct($cmdBinPath = '/usr/bin/unzip')
+        {
+            $usingCmd = $cmdBinPath;
 
-            $this->zipArchive = new ZipArchive();
-            $usingCmd = null;
+            if (class_exists('ZipArchive', false)) {
 
-        } elseif ($usingCmd === null) {
-            throw
-            new UnsupportedMethodException(
-                'no built-in support for zip'
-            );
-        }
+                $this->zipArchive = new ZipArchive();
+                $usingCmd = null;
 
-        parent::__construct($usingCmd);
-    }
-
-    public function open($sourceFile)
-    {
-        parent::open($sourceFile);
-
-        if ($this->zipArchive) {
-            $resultCode = $this->zipArchive->open($sourceFile);
-
-            if ($resultCode !== true) {
-                throw new ArchiverException(
-                    'ZipArchive::open() returns error code == ' . $resultCode
-                );
-            }
-        }
-
-        return $this;
-    }
-
-    public function readFile($fileName)
-    {
-        if (!$this->sourceFile) {
-            throw
-            new WrongStateException(
-                'dude, open an archive first.'
-            );
-        }
-
-        if ($this->zipArchive) {
-            $result = $this->zipArchive->getFromName($fileName);
-
-            if ($result === false) {
-                throw new ArchiverException(
-                    'ZipArchive::getFromName() failed'
+            } elseif ($usingCmd === null) {
+                throw
+                new UnsupportedMethodException(
+                    'no built-in support for zip'
                 );
             }
 
-            return $result;
+            parent::__construct($usingCmd);
         }
 
-        $options = '-c -q'
-            . ' ' . escapeshellarg($this->sourceFile)
-            . ' ' . escapeshellarg($fileName);
+        public function open($sourceFile)
+        {
+            parent::open($sourceFile);
 
-        return $this->execStdoutOptions($options);
+            if ($this->zipArchive) {
+                $resultCode = $this->zipArchive->open($sourceFile);
+
+                if ($resultCode !== true) {
+                    throw new ArchiverException(
+                        'ZipArchive::open() returns error code == ' . $resultCode
+                    );
+                }
+            }
+
+            return $this;
+        }
+
+        public function readFile($fileName)
+        {
+            if (!$this->sourceFile) {
+                throw
+                new WrongStateException(
+                    'dude, open an archive first.'
+                );
+            }
+
+            if ($this->zipArchive) {
+                $result = $this->zipArchive->getFromName($fileName);
+
+                if ($result === false) {
+                    throw new ArchiverException(
+                        'ZipArchive::getFromName() failed'
+                    );
+                }
+
+                return $result;
+            }
+
+            $options = '-c -q'
+                . ' ' . escapeshellarg($this->sourceFile)
+                . ' ' . escapeshellarg($fileName);
+
+            return $this->execStdoutOptions($options);
+        }
     }
 }
-

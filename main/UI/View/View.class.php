@@ -8,16 +8,17 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-interface View
-{
-    const ERROR_VIEW = 'error';
-
+namespace OnPhp {
     /**
-     * @param $model null or Model
+     * @ingroup Flow
      **/
-    public function render($model = null);
+    interface View
+    {
+        const ERROR_VIEW = 'error';
+
+        /**
+         * @param $model null or Model
+         **/
+        public function render($model = null);
+    }
 }

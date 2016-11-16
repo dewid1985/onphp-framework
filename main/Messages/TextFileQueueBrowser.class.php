@@ -9,31 +9,37 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class TextFileQueueBrowser implements MessageQueueBrowser
-{
-    private $queue = null;
-
+namespace OnPhp {
     /**
-     * @return MessageQueue
-     **/
-    public function getQueue()
+     * Class TextFileQueueBrowser
+     * @ingroup Messages
+     * @package OnPhp
+     */
+    class TextFileQueueBrowser implements MessageQueueBrowser
     {
-        return $this->queue;
-    }
+        private $queue = null;
 
-    /**
-     * @return TextFileQueueBrowser
-     **/
-    public function setQueue(MessageQueue $queue)
-    {
-        $this->queue = $queue;
+        /**
+         * @return MessageQueue
+         **/
+        public function getQueue()
+        {
+            return $this->queue;
+        }
 
-        return $this;
-    }
+        /**
+         * @return TextFileQueueBrowser
+         **/
+        public function setQueue(MessageQueue $queue)
+        {
+            $this->queue = $queue;
 
-    public function getNextMessage()
-    {
-        throw new UnimplementedFeatureException;
+            return $this;
+        }
+
+        public function getNextMessage()
+        {
+            throw new UnimplementedFeatureException;
+        }
     }
 }
-

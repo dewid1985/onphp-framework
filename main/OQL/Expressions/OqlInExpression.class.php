@@ -8,49 +8,50 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-class OqlInExpression extends OqlQueryExpression
-{
-    private $logic = null;
-
-    public function __construct(
-        OqlQueryParameter $left,
-        OqlQueryParameter $right,
-        $logic
-    ) {
-        $this
-            ->addParameter($left)
-            ->addParameter($right);
-
-        $this->logic = $logic;
-    }
-
+namespace OnPhp {
     /**
-     * @return InExpression
+     * @ingroup OQL
      **/
-    public function evaluate($values)
+    class OqlInExpression extends OqlQueryExpression
     {
-        switch ($this->logic) {
-            case InExpression::IN:
-                return Expression::in(
-                    $this->getParameter(0)->evaluate($values),
-                    $this->getParameter(1)->evaluate($values)
-                );
+        private $logic = null;
 
-            case InExpression::NOT_IN:
-                return Expression::notIn(
-                    $this->getParameter(0)->evaluate($values),
-                    $this->getParameter(1)->evaluate($values)
-                );
+        public function __construct(
+            OqlQueryParameter $left,
+            OqlQueryParameter $right,
+            $logic
+        )
+        {
+            $this
+                ->addParameter($left)
+                ->addParameter($right);
 
-            default:
-                throw new UnsupportedMethodException(
-                    "'{$this->logic}' doesn't supported yet"
-                );
+            $this->logic = $logic;
+        }
+
+        /**
+         * @return InExpression
+         **/
+        public function evaluate($values)
+        {
+            switch ($this->logic) {
+                case InExpression::IN:
+                    return Expression::in(
+                        $this->getParameter(0)->evaluate($values),
+                        $this->getParameter(1)->evaluate($values)
+                    );
+
+                case InExpression::NOT_IN:
+                    return Expression::notIn(
+                        $this->getParameter(0)->evaluate($values),
+                        $this->getParameter(1)->evaluate($values)
+                    );
+
+                default:
+                    throw new UnsupportedMethodException(
+                        "'{$this->logic}' doesn't supported yet"
+                    );
+            }
         }
     }
 }
-

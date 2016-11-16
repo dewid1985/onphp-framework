@@ -8,21 +8,21 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class SmallIntegerType extends IntegerType
-{
-    public function getSize()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    class SmallIntegerType extends IntegerType
     {
-        return 2;
-    }
+        public function getSize()
+        {
+            return 2;
+        }
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::SMALLINT))';
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::SMALLINT))';
+        }
     }
 }
-
 ?>

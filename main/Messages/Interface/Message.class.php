@@ -9,11 +9,18 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface Message
-{
+namespace OnPhp {
     /**
-     * @return Timestamp
-     **/
-    public function getTimestamp();
+     * Interface Message
+     * @ingroup Messages
+     * @package OnPhp
+     */
+    interface Message
+    {
+        /**
+         * @return Timestamp
+         **/
+        public function getTimestamp();
+    }
 }
 

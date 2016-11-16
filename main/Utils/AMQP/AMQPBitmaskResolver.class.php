@@ -9,8 +9,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-interface AMQPBitmaskResolver
-{
-    public function getBitmask($config);
+namespace OnPhp {
+    /**
+     * Interface AMQPBitmaskResolver
+     * @package OnPhp
+     */
+    interface AMQPBitmaskResolver
+    {
+        public function getBitmask($config);
+    }
 }
 

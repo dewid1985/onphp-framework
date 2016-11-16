@@ -9,34 +9,35 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * Unordered indexed list of Identifiable objects.
- *
- * @ingroup onSPL
- **/
-class IndexedList extends AbstractList
-{s
+namespace OnPhp {
     /**
-     * @param mixed $offset
-     * @param mixed $value
-     * @return $this
-     * @throws WrongArgumentException
-     */
-    public function offsetSet($offset, $value)
+     * Unordered indexed list of Identifiable objects.
+     *
+     * @ingroup onSPL
+     **/
+    class IndexedList extends AbstractList
     {
-        Assert::isTrue($value instanceof Identifiable);
+        /**
+         * @param mixed $offset
+         * @param mixed $value
+         * @return $this
+         * @throws WrongArgumentException
+         */
+        public function offsetSet($offset, $value)
+        {
+            Assert::isTrue($value instanceof Identifiable);
 
-        $offset = $value->getId();
+            $offset = $value->getId();
 
-        if ($this->offsetExists($offset)) {
-            throw new WrongArgumentException(
-                "object with id == '{$offset}' already exists"
-            );
+            if ($this->offsetExists($offset)) {
+                throw new WrongArgumentException(
+                    "object with id == '{$offset}' already exists"
+                );
+            }
+
+            $this->list[$offset] = $value;
+
+            return $this;
         }
-
-        $this->list[$offset] = $value;
-
-        return $this;
     }
 }
-

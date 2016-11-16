@@ -8,228 +8,230 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Utilities for file handling.
- *
- * @ingroup Utils
- **/
-class FileUtils extends StaticFactory
-{
+namespace OnPhp {
     /**
-     * Recursively walks through $dir and converts line
-     * endings of all but listed in $ignore files.
+     * Utilities for file handling.
+     *
+     * @ingroup Utils
      **/
-    public static function convertLineEndings(
-        $dir,
-        $ignore,
-        $from = "\r\n",
-        $to = "\n"
-    ) {
-        $converted = 0;
+    class FileUtils extends StaticFactory
+    {
+        /**
+         * Recursively walks through $dir and converts line
+         * endings of all but listed in $ignore files.
+         **/
+        public static function convertLineEndings(
+            $dir,
+            $ignore,
+            $from = "\r\n",
+            $to = "\n"
+        )
+        {
+            $converted = 0;
 
-        if (!is_dir($dir) || !is_readable($dir)) {
-            throw new WrongArgumentException();
-        }
+            if (!is_dir($dir) || !is_readable($dir)) {
+                throw new WrongArgumentException();
+            }
 
-        $files = scandir($dir);
+            $files = scandir($dir);
 
-        foreach ($files as $file) {
-            if (
-                '.' != $file
-                && '..' != $file
-                &&
-                !in_array(
-                    substr($file, strrpos($file, '.')), $ignore, true
-                )
-            ) {
-                if (is_dir($path = $dir . DIRECTORY_SEPARATOR . $file)) {
-                    $converted += self::convertLineEndings(
-                        $path, $ignore, $from, $to
-                    );
-                } else {
-                    file_put_contents(
-                        $path,
-                        preg_replace(
-                            "/$from/",
-                            $to,
-                            file_get_contents($path)
-                        )
-                    );
+            foreach ($files as $file) {
+                if (
+                    '.' != $file
+                    && '..' != $file
+                    &&
+                    !in_array(
+                        substr($file, strrpos($file, '.')), $ignore, true
+                    )
+                ) {
+                    if (is_dir($path = $dir . DIRECTORY_SEPARATOR . $file)) {
+                        $converted += self::convertLineEndings(
+                            $path, $ignore, $from, $to
+                        );
+                    } else {
+                        file_put_contents(
+                            $path,
+                            preg_replace(
+                                "/$from/",
+                                $to,
+                                file_get_contents($path)
+                            )
+                        );
 
-                    ++$converted;
+                        ++$converted;
+                    }
                 }
             }
+
+            return $converted;
         }
 
-        return $converted;
-    }
+        public static function makeTempFile(
+            $where = 'file-utils/',
+            $prefix = '',
+            $mkdirMode = 0700
+        )
+        {
+            $directory = ONPHP_TEMP_PATH . $where;
 
-    public static function makeTempFile(
-        $where = 'file-utils/',
-        $prefix = '',
-        $mkdirMode = 0700
-    ) {
-        $directory = ONPHP_TEMP_PATH . $where;
+            if (!is_writable($directory)) {
+                if (!mkdir($directory, $mkdirMode, true)) {
+                    throw new WrongArgumentException(
+                        "can not write to '{$directory}'"
+                    );
+                }
+            }
 
-        if (!is_writable($directory)) {
-            if (!mkdir($directory, $mkdirMode, true)) {
+            $result = tempnam($directory, $prefix);
+
+            if ($result === false) {
                 throw new WrongArgumentException(
-                    "can not write to '{$directory}'"
-                );
-            }
-        }
-
-        $result = tempnam($directory, $prefix);
-
-        if ($result === false) {
-            throw new WrongArgumentException(
-                'failed to create temp file in ' . $directory
-            );
-        }
-
-        return $result;
-    }
-
-    public static function makeTempDirectory(
-        $where = 'file-utils/',
-        $prefix = '',
-        $mode = 0700
-    ) {
-        $directory = ONPHP_TEMP_PATH . $where;
-
-        if (substr($directory, -1) != DIRECTORY_SEPARATOR) {
-            $directory .= DIRECTORY_SEPARATOR;
-        }
-
-        $attempts = 42;    // it's more than enough ;)
-
-        do {
-            --$attempts;
-            $path = $directory . $prefix . mt_rand();
-        } while (
-            !mkdir($path, $mode, true)
-            && $attempts > 0
-            // not to rape fs
-            && !usleep(100)
-        );
-
-        if ($attempts == 0) {
-            throw new WrongArgumentException(
-                'failed to create subdirectory in ' . $directory
-            );
-        }
-
-        return $path;
-    }
-
-    public static function makeUniqueName($fileName)
-    {
-        $extensionPosition = strrpos($fileName, '.');
-
-        return
-            substr($fileName, 0, $extensionPosition)
-            . '_' . uniqid()
-            . substr($fileName, $extensionPosition);
-    }
-
-    public static function makeUniqueLatinName($originalName)
-    {
-        $extension = substr($originalName, strrpos($originalName, '.'));
-
-        Assert::isEqual(
-            (preg_match('/\.[^0-9a-zA-Z]/', $extension)),
-            0,
-            'I don\'t know how to work with this extension: ' . $extension
-        );
-
-        return time() . '_' . uniqid() . $extension;
-
-    }
-
-    /* void */
-    public static function removeDirectory($directory, $recursive = false)
-    {
-        if (!$recursive) {
-            try {
-                rmdir($directory);
-            } catch (BaseException $e) {
-                throw new WrongArgumentException($e->getMessage());
-            }
-        } else {
-            if (!is_dir($directory)) {
-                throw new WrongStateException(
-                    'Unable to found target directory: ' . $directory
+                    'failed to create temp file in ' . $directory
                 );
             }
 
-            $directoryIterator = new DirectoryIterator($directory);
+            return $result;
+        }
 
-            foreach ($directoryIterator as $file) {
-                if ($file->isDot()) {
-                    continue;
+        public static function makeTempDirectory(
+            $where = 'file-utils/',
+            $prefix = '',
+            $mode = 0700
+        )
+        {
+            $directory = ONPHP_TEMP_PATH . $where;
+
+            if (substr($directory, -1) != DIRECTORY_SEPARATOR) {
+                $directory .= DIRECTORY_SEPARATOR;
+            }
+
+            $attempts = 42;    // it's more than enough ;)
+
+            do {
+                --$attempts;
+                $path = $directory . $prefix . mt_rand();
+            } while (
+                !mkdir($path, $mode, true)
+                && $attempts > 0
+                // not to rape fs
+                && !usleep(100)
+            );
+
+            if ($attempts == 0) {
+                throw new WrongArgumentException(
+                    'failed to create subdirectory in ' . $directory
+                );
+            }
+
+            return $path;
+        }
+
+        public static function makeUniqueName($fileName)
+        {
+            $extensionPosition = strrpos($fileName, '.');
+
+            return
+                substr($fileName, 0, $extensionPosition)
+                . '_' . uniqid()
+                . substr($fileName, $extensionPosition);
+        }
+
+        public static function makeUniqueLatinName($originalName)
+        {
+            $extension = substr($originalName, strrpos($originalName, '.'));
+
+            Assert::isEqual(
+                (preg_match('/\.[^0-9a-zA-Z]/', $extension)),
+                0,
+                'I don\'t know how to work with this extension: ' . $extension
+            );
+
+            return time() . '_' . uniqid() . $extension;
+
+        }
+
+        /* void */
+        public static function removeDirectory($directory, $recursive = false)
+        {
+            if (!$recursive) {
+                try {
+                    rmdir($directory);
+                } catch (BaseException $e) {
+                    throw new WrongArgumentException($e->getMessage());
+                }
+            } else {
+                if (!is_dir($directory)) {
+                    throw new WrongStateException(
+                        'Unable to found target directory: ' . $directory
+                    );
                 }
 
-                if ($file->isDir()) {
-                    self::removeDirectory($file->getPathname(), $recursive);
-                } elseif (!unlink($file->getPathname())) {
+                $directoryIterator = new DirectoryIterator($directory);
+
+                foreach ($directoryIterator as $file) {
+                    if ($file->isDot()) {
+                        continue;
+                    }
+
+                    if ($file->isDir()) {
+                        self::removeDirectory($file->getPathname(), $recursive);
+                    } elseif (!unlink($file->getPathname())) {
+                        throw new WrongStateException(
+                            "cannot unlink {$file->getPathname()}"
+                        );
+                    }
+                }
+
+                try {
+                    rmdir($directory);
+                } catch (BaseException $e) {
                     throw new WrongStateException(
-                        "cannot unlink {$file->getPathname()}"
+                        "cannot unlink {$directory}, though it should be empty now"
                     );
                 }
             }
+        }
 
-            try {
-                rmdir($directory);
-            } catch (BaseException $e) {
-                throw new WrongStateException(
-                    "cannot unlink {$directory}, though it should be empty now"
-                );
+        public static function upload($source, $target)
+        {
+            if (
+                is_readable($source)
+                && is_writable(pathinfo($target, PATHINFO_DIRNAME))
+            ) {
+                return move_uploaded_file($source, $target);
             }
-        }
-    }
 
-    public static function upload($source, $target)
-    {
-        if (
-            is_readable($source)
-            && is_writable(pathinfo($target, PATHINFO_DIRNAME))
-        ) {
-            return move_uploaded_file($source, $target);
+            throw new WrongArgumentException(
+                "can not move {$source} to {$target}"
+            );
         }
 
-        throw new WrongArgumentException(
-            "can not move {$source} to {$target}"
-        );
-    }
+        public static function move($source, $target)
+        {
+            if (
+                is_readable($source)
+                && is_writable(pathinfo($target, PATHINFO_DIRNAME))
+            ) {
+                return rename($source, $target);
+            }
 
-    public static function move($source, $target)
-    {
-        if (
-            is_readable($source)
-            && is_writable(pathinfo($target, PATHINFO_DIRNAME))
-        ) {
-            return rename($source, $target);
+            throw new WrongArgumentException(
+                "can not move {$source} to {$target}"
+            );
         }
 
-        throw new WrongArgumentException(
-            "can not move {$source} to {$target}"
-        );
-    }
+        public static function unlink($filePath)
+        {
+            if (
+                file_exists($filePath)
+                && is_writable(pathinfo($filePath, PATHINFO_DIRNAME))
+            ) {
+                return unlink($filePath);
+            }
 
-    public static function unlink($filePath)
-    {
-        if (
-            file_exists($filePath)
-            && is_writable(pathinfo($filePath, PATHINFO_DIRNAME))
-        ) {
-            return unlink($filePath);
+            throw new WrongArgumentException(
+                "can not unlink {$filePath}"
+            );
         }
-
-        throw new WrongArgumentException(
-            "can not unlink {$filePath}"
-        );
     }
 }
-
-

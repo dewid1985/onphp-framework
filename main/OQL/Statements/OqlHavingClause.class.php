@@ -8,28 +8,29 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-class OqlHavingClause extends OqlQueryExpressionClause
-{
-
+namespace OnPhp {
     /**
-     * @param OqlQueryExpression $expression
-     * @throws WrongArgumentException
-     */
-    protected static function checkExpression(OqlQueryExpression $expression)
-    {
-        Assert::isInstance($expression->getClassName(), 'HavingProjection');
-    }
-
-    /**
-     * @return HavingProjection
+     * @ingroup OQL
      **/
-    public function toProjection()
+    class OqlHavingClause extends OqlQueryExpressionClause
     {
-        return $this->toLogic();
-    }
-}
 
+        /**
+         * @param OqlQueryExpression $expression
+         * @throws WrongArgumentException
+         */
+        protected static function checkExpression(OqlQueryExpression $expression)
+        {
+            Assert::isInstance($expression->getClassName(), 'HavingProjection');
+        }
+
+        /**
+         * @return HavingProjection
+         **/
+        public function toProjection()
+        {
+            return $this->toLogic();
+        }
+    }
+
+}

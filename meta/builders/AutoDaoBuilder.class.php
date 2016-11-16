@@ -8,41 +8,41 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Builders
- **/
-final class AutoDaoBuilder extends BaseBuilder
-{
-    public static function build(MetaClass $class)
+namespace OnPhp {
+    /**
+     * @ingroup Builders
+     **/
+    final class AutoDaoBuilder extends BaseBuilder
     {
-        if (!$class->hasBuildableParent()) {
-            return DictionaryDaoBuilder::build($class);
-        } else {
-            $parent = $class->getParent();
-        }
+        public static function build(MetaClass $class)
+        {
+            if (!$class->hasBuildableParent()) {
+                return DictionaryDaoBuilder::build($class);
+            } else {
+                $parent = $class->getParent();
+            }
 
-        if (
-            $class->getParent()->getPattern()
-            instanceof InternalClassPattern
-        ) {
-            $parentName = 'StorableDAO';
-        } else {
-            $parentName = $parent->getName() . 'DAO';
-        }
+            if (
+                $class->getParent()->getPattern()
+                instanceof InternalClassPattern
+            ) {
+                $parentName = 'StorableDAO';
+            } else {
+                $parentName = $parent->getName() . 'DAO';
+            }
 
-        $out = self::getHead();
+            $out = self::getHead();
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 abstract class Auto{$class->getName()}DAO extends {$parentName}
 {
 
 EOT;
 
-        $out .= self::buildPointers($class) . "\n}\n";
+            $out .= self::buildPointers($class) . "\n}\n";
 
-        return $out . self::getHeel();
+            return $out . self::getHeel();
+        }
     }
 }
-
 ?>

@@ -8,54 +8,54 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class StringType extends BasePropertyType
-{
-    public function getPrimitiveName()
-    {
-        return 'string';
-    }
-
+namespace OnPhp {
     /**
-     * @throws WrongArgumentException
-     * @return StringType
+     * @ingroup Types
      **/
-    public function setDefault($default)
+    class StringType extends BasePropertyType
     {
-        Assert::isString(
-            $default,
-            "strange default value given - '{$default}'"
-        );
-
-        $this->default = $default;
-
-        return $this;
-    }
-
-    public function getDeclaration()
-    {
-        if ($this->hasDefault()) {
-            return "'{$this->default}'";
+        public function getPrimitiveName()
+        {
+            return 'string';
         }
 
-        return 'null';
-    }
+        /**
+         * @throws WrongArgumentException
+         * @return StringType
+         **/
+        public function setDefault($default)
+        {
+            Assert::isString(
+                $default,
+                "strange default value given - '{$default}'"
+            );
 
-    public function isMeasurable()
-    {
-        return true;
-    }
+            $this->default = $default;
 
-    public function toColumnType($length = null)
-    {
-        return
-            $length
-                ? '(new DataType(DataType::VARCHAR))'
-                : '(new DataType(DataType::TEXT))';
+            return $this;
+        }
+
+        public function getDeclaration()
+        {
+            if ($this->hasDefault()) {
+                return "'{$this->default}'";
+            }
+
+            return 'null';
+        }
+
+        public function isMeasurable()
+        {
+            return true;
+        }
+
+        public function toColumnType($length = null)
+        {
+            return
+                $length
+                    ? '(new DataType(DataType::VARCHAR))'
+                    : '(new DataType(DataType::TEXT))';
+        }
     }
 }
-
 ?>

@@ -8,27 +8,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see http://www.php.net/manual/en/amqp.constants.php
- **/
-class AMQPPeclOutgoingMessageBitmask implements AMQPBitmaskResolver
-{
-    public function getBitmask($config)
+namespace OnPhp {
+    /**
+     * @see http://www.php.net/manual/en/amqp.constants.php
+     **/
+    class AMQPPeclOutgoingMessageBitmask implements AMQPBitmaskResolver
     {
-        Assert::isInstance($config, 'AMQPOutgoingMessage');
+        public function getBitmask($config)
+        {
+            Assert::isInstance($config, 'AMQPOutgoingMessage');
 
-        $bitmask = 0;
+            $bitmask = 0;
 
-        if ($config->getMandatory()) {
-            $bitmask = $bitmask | AMQP_MANDATORY;
+            if ($config->getMandatory()) {
+                $bitmask = $bitmask | AMQP_MANDATORY;
+            }
+
+            if ($config->getImmediate()) {
+                $bitmask = $bitmask | AMQP_IMMEDIATE;
+            }
+
+            return $bitmask;
         }
-
-        if ($config->getImmediate()) {
-            $bitmask = $bitmask | AMQP_IMMEDIATE;
-        }
-
-        return $bitmask;
     }
 }
-

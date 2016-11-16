@@ -8,16 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-final class NumericType extends FloatType
-{
-    public function toColumnType()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    final class NumericType extends FloatType
     {
-        return '(new DataType(DataType::NUMERIC))';
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::NUMERIC))';
+        }
     }
 }
-
 ?>

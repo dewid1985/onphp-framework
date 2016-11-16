@@ -9,26 +9,27 @@
  *                                                                         *
  ***************************************************************************/
 /*$id$*/
-
-/**
- * using java.utils.Collection Interface
- * see http://java.sun.com/javase/6/docs/api/java/util/Collection.html
- *
- * @ingroup Http
- **/
-class CookieCollection extends AbstractCollection
-{
-
+namespace OnPhp {
     /**
-     * @return $this
-     */
-    public function httpSetAll()
+     * using java.utils.Collection Interface
+     * see http://java.sun.com/javase/6/docs/api/java/util/Collection.html
+     *
+     * @ingroup Http
+     **/
+    class CookieCollection extends AbstractCollection
     {
-        foreach ($this->items as $item) {
-            $item->httpSet();
-        }
 
-        return $this;
+        /**
+         * @return $this
+         */
+        public function httpSetAll()
+        {
+            foreach ($this->items as $item) {
+                $item->httpSet();
+            }
+
+            return $this;
+        }
     }
 }
 

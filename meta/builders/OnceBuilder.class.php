@@ -8,22 +8,22 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Builders
- **/
-abstract class OnceBuilder extends BaseBuilder
-{
-    protected static function getHead()
+namespace OnPhp {
+    /**
+     * @ingroup Builders
+     **/
+    abstract class OnceBuilder extends BaseBuilder
     {
-        $head = self::startCap();
+        protected static function getHead()
+        {
+            $head = self::startCap();
 
-        $head .=
-            ' *   This file will never be generated again -'
-            . ' feel free to edit.            *';
+            $head .=
+                ' *   This file will never be generated again -'
+                . ' feel free to edit.            *';
 
-        return $head . "\n" . self::endCap();
+            return $head . "\n" . self::endCap();
+        }
     }
 }
-
 ?>

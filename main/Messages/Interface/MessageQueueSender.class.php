@@ -9,16 +9,22 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface MessageQueueSender
-{
+namespace OnPhp {
     /**
-     * @return MessageQueueReceiver
-     **/
-    public function send(Message $message);
+     * Interface MessageQueueSender
+     * @ingroup Messages
+     * @package OnPhp
+     */
+    interface MessageQueueSender
+    {
+        /**
+         * @return MessageQueueReceiver
+         **/
+        public function send(Message $message);
 
-    /**
-     * @return MessageQueue
-     **/
-    public function getQueue();
+        /**
+         * @return MessageQueue
+         **/
+        public function getQueue();
+    }
 }
-

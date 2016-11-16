@@ -8,45 +8,46 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class CleanRedirectView implements View
-{
-    protected $url = null;
-
+namespace OnPhp {
     /**
-     * CleanRedirectView constructor.
-     * @param $url
-     */
-    public function __construct($url)
+     * @ingroup Flow
+     **/
+    class CleanRedirectView implements View
     {
-        $this->url = $url;
-    }
+        protected $url = null;
 
-    /**
-     * @param null $model
-     */
-    public function render($model = null)
-    {
-        HeaderUtils::redirectRaw($this->getLocationUrl($model));
-    }
+        /**
+         * CleanRedirectView constructor.
+         * @param $url
+         */
+        public function __construct($url)
+        {
+            $this->url = $url;
+        }
 
-    /**
-     * @param null $model
-     * @return null
-     */
-    protected function getLocationUrl($model = null)
-    {
-        return $this->getUrl();
-    }
+        /**
+         * @param null $model
+         */
+        public function render($model = null)
+        {
+            HeaderUtils::redirectRaw($this->getLocationUrl($model));
+        }
 
-    /**
-     * @return null
-     */
-    public function getUrl()
-    {
-        return $this->url;
+        /**
+         * @param null $model
+         * @return null
+         */
+        protected function getLocationUrl($model = null)
+        {
+            return $this->getUrl();
+        }
+
+        /**
+         * @return null
+         */
+        public function getUrl()
+        {
+            return $this->url;
+        }
     }
 }

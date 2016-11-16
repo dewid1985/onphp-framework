@@ -9,214 +9,215 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class AMQPIncomingMessage extends AMQPBaseMessage
-{
-    const COUNT = 'count';
-    const ROUTING_KEY = 'routing_key';
-    const DELIVERY_TAG = 'delivery_tag';
-    const EXCHANGE = 'exchange';
-    const BODY = 'msg';
-    const CONSUME_BODY = 'message_body';
-    const CONSUMER_TAG = 'consumer_tag';
-    const REDELIVERED = 'redelivered';
-    protected static $mandatoryFields = [
-        self::ROUTING_KEY, self::DELIVERY_TAG, self::EXCHANGE
-    ];
-    protected $count = 0;
-    protected $routingKey = null;
-    protected $exchange = null;
-    protected $deliveryTag = null;
-    protected $redelivered = null;
-    protected $consumerTag = null;
-
-    /**
-     * @return AMQPIncomingMessage
-     **/
-    public static function spawn(array $assoc)
+namespace OnPhp {
+    class AMQPIncomingMessage extends AMQPBaseMessage
     {
-        return (new self())->fill($assoc);
-    }
+        const COUNT = 'count';
+        const ROUTING_KEY = 'routing_key';
+        const DELIVERY_TAG = 'delivery_tag';
+        const EXCHANGE = 'exchange';
+        const BODY = 'msg';
+        const CONSUME_BODY = 'message_body';
+        const CONSUMER_TAG = 'consumer_tag';
+        const REDELIVERED = 'redelivered';
+        protected static $mandatoryFields = [
+            self::ROUTING_KEY, self::DELIVERY_TAG, self::EXCHANGE
+        ];
+        protected $count = 0;
+        protected $routingKey = null;
+        protected $exchange = null;
+        protected $deliveryTag = null;
+        protected $redelivered = null;
+        protected $consumerTag = null;
 
-    /**
-     * @return AMQPIncomingMessage
-     **/
-    protected function fill(array $assoc)
-    {
-        $this->checkMandatory($assoc);
-
-        if (isset($assoc[self::COUNT])) {
-            $this->setCount($assoc[self::COUNT]);
-            unset($assoc[self::COUNT]);
+        /**
+         * @return AMQPIncomingMessage
+         **/
+        public static function spawn(array $assoc)
+        {
+            return (new self())->fill($assoc);
         }
 
-        $this->setRoutingKey($assoc[self::ROUTING_KEY]);
-        $this->setDeliveryTag($assoc[self::DELIVERY_TAG]);
-        $this->setExchange($assoc[self::EXCHANGE]);
+        /**
+         * @return AMQPIncomingMessage
+         **/
+        protected function fill(array $assoc)
+        {
+            $this->checkMandatory($assoc);
 
-        if (isset($assoc[self::BODY])) {
-            $this->setBody($assoc[self::BODY]);
-            unset($assoc[self::BODY]);
-        }
+            if (isset($assoc[self::COUNT])) {
+                $this->setCount($assoc[self::COUNT]);
+                unset($assoc[self::COUNT]);
+            }
 
-        if (isset($assoc[self::CONSUME_BODY])) {
-            $this->setBody($assoc[self::CONSUME_BODY]);
-            unset($assoc[self::CONSUME_BODY]);
-        }
+            $this->setRoutingKey($assoc[self::ROUTING_KEY]);
+            $this->setDeliveryTag($assoc[self::DELIVERY_TAG]);
+            $this->setExchange($assoc[self::EXCHANGE]);
 
-        if (isset($assoc[self::CONSUMER_TAG])) {
-            $this->setConsumerTag($assoc[self::CONSUMER_TAG]);
-            unset($assoc[self::CONSUMER_TAG]);
-        }
+            if (isset($assoc[self::BODY])) {
+                $this->setBody($assoc[self::BODY]);
+                unset($assoc[self::BODY]);
+            }
 
-        if (isset($assoc[self::REDELIVERED])) {
-            $this->setRedelivered($assoc[self::REDELIVERED]);
-            unset($assoc[self::REDELIVERED]);
-        }
+            if (isset($assoc[self::CONSUME_BODY])) {
+                $this->setBody($assoc[self::CONSUME_BODY]);
+                unset($assoc[self::CONSUME_BODY]);
+            }
 
-        //unset mandatory
-        unset(
-            $assoc[self::ROUTING_KEY],
-            $assoc[self::DELIVERY_TAG],
-            $assoc[self::EXCHANGE]
-        );
+            if (isset($assoc[self::CONSUMER_TAG])) {
+                $this->setConsumerTag($assoc[self::CONSUMER_TAG]);
+                unset($assoc[self::CONSUMER_TAG]);
+            }
 
-        $this->setProperties($assoc);
+            if (isset($assoc[self::REDELIVERED])) {
+                $this->setRedelivered($assoc[self::REDELIVERED]);
+                unset($assoc[self::REDELIVERED]);
+            }
 
-        return $this;
-    }
-
-    /**
-     * @param array $assoc
-     * @return $this
-     * @throws WrongArgumentException
-     */
-    protected function checkMandatory(array $assoc)
-    {
-        foreach (self::$mandatoryFields as $field) {
-            Assert::isIndexExists(
-                $assoc, $field, "Mandatory field '{$field}' not found"
+            //unset mandatory
+            unset(
+                $assoc[self::ROUTING_KEY],
+                $assoc[self::DELIVERY_TAG],
+                $assoc[self::EXCHANGE]
             );
+
+            $this->setProperties($assoc);
+
+            return $this;
         }
 
-        return $this;
-    }
+        /**
+         * @param array $assoc
+         * @return $this
+         * @throws WrongArgumentException
+         */
+        protected function checkMandatory(array $assoc)
+        {
+            foreach (self::$mandatoryFields as $field) {
+                Assert::isIndexExists(
+                    $assoc, $field, "Mandatory field '{$field}' not found"
+                );
+            }
+
+            return $this;
+        }
 
 
-    /**
-     * @return null
-     */
-    public function getRedelivered()
-    {
-        return $this->redelivered;
-    }
+        /**
+         * @return null
+         */
+        public function getRedelivered()
+        {
+            return $this->redelivered;
+        }
 
-    /**
-     * @return AMQPIncomingMessage
-     **/
-    public function setRedelivered($redelivered)
-    {
-        $this->redelivered = $redelivered;
+        /**
+         * @return AMQPIncomingMessage
+         **/
+        public function setRedelivered($redelivered)
+        {
+            $this->redelivered = $redelivered;
 
-        return $this;
-    }
+            return $this;
+        }
 
 
-    /**
-     * @return null
-     */
-    public function getConsumerTag()
-    {
-        return $this->consumerTag;
-    }
+        /**
+         * @return null
+         */
+        public function getConsumerTag()
+        {
+            return $this->consumerTag;
+        }
 
-    /**
-     * @return AMQPIncomingMessage
-     **/
-    public function setConsumerTag($consumerTag)
-    {
-        $this->consumerTag = $consumerTag;
+        /**
+         * @return AMQPIncomingMessage
+         **/
+        public function setConsumerTag($consumerTag)
+        {
+            $this->consumerTag = $consumerTag;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return int
-     */
-    public function getCount()
-    {
-        return $this->count;
-    }
+        /**
+         * @return int
+         */
+        public function getCount()
+        {
+            return $this->count;
+        }
 
-    /**
-     * @return AMQPIncomingMessage
-     **/
-    public function setCount($count)
-    {
-        $this->count = $count;
+        /**
+         * @return AMQPIncomingMessage
+         **/
+        public function setCount($count)
+        {
+            $this->count = $count;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return null
-     */
-    public function getRoutingKey()
-    {
-        return $this->routingKey;
-    }
+        /**
+         * @return null
+         */
+        public function getRoutingKey()
+        {
+            return $this->routingKey;
+        }
 
-    /**
-     * @return AMQPIncomingMessage
-     **/
-    public function setRoutingKey($routingKey)
-    {
-        $this->routingKey = $routingKey;
+        /**
+         * @return AMQPIncomingMessage
+         **/
+        public function setRoutingKey($routingKey)
+        {
+            $this->routingKey = $routingKey;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return null
-     */
-    public function getExchange()
-    {
-        return $this->exchange;
-    }
+        /**
+         * @return null
+         */
+        public function getExchange()
+        {
+            return $this->exchange;
+        }
 
-    /**
-     * @return AMQPIncomingMessage
-     **/
-    public function setExchange($exchange)
-    {
-        $this->exchange = $exchange;
+        /**
+         * @return AMQPIncomingMessage
+         **/
+        public function setExchange($exchange)
+        {
+            $this->exchange = $exchange;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return null
-     */
-    public function getDeliveryTag()
-    {
-        return $this->deliveryTag;
-    }
+        /**
+         * @return null
+         */
+        public function getDeliveryTag()
+        {
+            return $this->deliveryTag;
+        }
 
-    /**
-     * @return AMQPIncomingMessage
-     **/
-    public function setDeliveryTag($deliveryTag)
-    {
-        $this->deliveryTag = $deliveryTag;
+        /**
+         * @return AMQPIncomingMessage
+         **/
+        public function setDeliveryTag($deliveryTag)
+        {
+            $this->deliveryTag = $deliveryTag;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return bool
-     */
-    public function isEmptyQueue()
-    {
-        return $this->count == -1;
+        /**
+         * @return bool
+         */
+        public function isEmptyQueue()
+        {
+            return $this->count == -1;
+        }
     }
 }
-

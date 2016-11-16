@@ -8,187 +8,188 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class ContentTypeHeader
-{
-    private $mediaType = null;
-    private $parameters = [];
-
-    private $charset = null; // reference
-
-
+namespace OnPhp {
     /**
-     * @return null
-     */
-    public function getMediaType()
-    {
-        return $this->mediaType;
-    }
-
-    /**
-     * @return ContentTypeHeader
+     * @ingroup Utils
      **/
-    public function setMediaType($mediaType)
+    class ContentTypeHeader
     {
-        $this->mediaType = $mediaType;
+        private $mediaType = null;
+        private $parameters = [];
 
-        return $this;
-    }
+        private $charset = null; // reference
 
-    /**
-     * @return ContentTypeHeader
-     **/
-    public function setParameter($attribute, $value)
-    {
-        $this->parameters[$attribute] = $value;
 
-        return $this;
-    }
-
-    /**
-     * @param $attribute
-     * @return $this
-     * @throws MissingElementException
-     */
-    public function dropParameter($attribute)
-    {
-        if (!isset($this->parameters[$attribute])) {
-            throw new MissingElementException();
+        /**
+         * @return null
+         */
+        public function getMediaType()
+        {
+            return $this->mediaType;
         }
 
-        unset($this->parameters[$attribute]);
+        /**
+         * @return ContentTypeHeader
+         **/
+        public function setMediaType($mediaType)
+        {
+            $this->mediaType = $mediaType;
 
-        return $this;
-    }
-
-    /**
-     * @param $attribute
-     * @return bool
-     */
-    public function hasParameter($attribute)
-    {
-        return isset($this->parameters[$attribute]);
-    }
-
-    /**
-     * @param $attribute
-     * @return mixed
-     * @throws MissingElementException
-     */
-    public function getParameter($attribute)
-    {
-        if (!isset($this->parameters[$attribute])) {
-            throw new MissingElementException();
+            return $this;
         }
 
-        return $this->parameters[$attribute];
-    }
+        /**
+         * @return ContentTypeHeader
+         **/
+        public function setParameter($attribute, $value)
+        {
+            $this->parameters[$attribute] = $value;
 
-    /**
-     * @return ContentTypeHeader
-     **/
-    public function setParametersList($parameters)
-    {
-        Assert::isArray($parameters);
-
-        $this->parameters = $parameters;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getParametersList()
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * @return null
-     */
-    public function getCharset()
-    {
-        return $this->charset;
-    }
-
-    /**
-     * @return ContentTypeHeader
-     **/
-    public function setCharset($charset)
-    {
-        if (!$this->charset) {
-            $this->parameters['charset'] = $charset;
-            $this->charset = &$this->parameters['charset'];
-        } else {
-            $this->charset = $charset;
+            return $this;
         }
 
-        return $this;
-    }
+        /**
+         * @param $attribute
+         * @return $this
+         * @throws MissingElementException
+         */
+        public function dropParameter($attribute)
+        {
+            if (!isset($this->parameters[$attribute])) {
+                throw new MissingElementException();
+            }
 
-    /**
-     * @return ContentTypeHeader
-     *
-     * sample argument: text/html; charset="utf-8"
-     **/
-    public function import($string)
-    {
-        $this->charset = null;
-        $this->parameters = [];
-        $matches = [];
+            unset($this->parameters[$attribute]);
 
-        if (
-        preg_match(
-            '~^[\s\t]*([^/\s\t;]+/[^\s\t;]+)[\s\t]*(.*)$~',
-            $string, $matches
-        )
-        ) {
-            $this->mediaType = $matches[1];
-            $remainingString = $matches[2];
+            return $this;
+        }
 
-            preg_match_all(
-                '~;[\s\t]*([^\s\t\=]+)[\s\t]*\=[\s\t]*'    // 1: attribute
-                . '(?:([^"\s\t;]+)|(?:"(.*?(?<!\\\))"))'    // 2 or 3: value
-                . '[\s\t]*~',
-                $remainingString, $matches
-            );
+        /**
+         * @param $attribute
+         * @return bool
+         */
+        public function hasParameter($attribute)
+        {
+            return isset($this->parameters[$attribute]);
+        }
 
-            foreach ($matches[1] as $i => $attribute) {
-                $attribute = strtolower($attribute);
+        /**
+         * @param $attribute
+         * @return mixed
+         * @throws MissingElementException
+         */
+        public function getParameter($attribute)
+        {
+            if (!isset($this->parameters[$attribute])) {
+                throw new MissingElementException();
+            }
 
-                $value =
-                    empty($matches[2][$i])
-                        ? $matches[3][$i]
-                        : $matches[2][$i];
+            return $this->parameters[$attribute];
+        }
 
-                $this->parameters[$attribute] = $value;
+        /**
+         * @return ContentTypeHeader
+         **/
+        public function setParametersList($parameters)
+        {
+            Assert::isArray($parameters);
 
-                if ($attribute == 'charset') // NOTE: reference
-                {
-                    $this->charset = &$this->parameters[$attribute];
+            $this->parameters = $parameters;
+
+            return $this;
+        }
+
+        /**
+         * @return array
+         */
+        public function getParametersList()
+        {
+            return $this->parameters;
+        }
+
+        /**
+         * @return null
+         */
+        public function getCharset()
+        {
+            return $this->charset;
+        }
+
+        /**
+         * @return ContentTypeHeader
+         **/
+        public function setCharset($charset)
+        {
+            if (!$this->charset) {
+                $this->parameters['charset'] = $charset;
+                $this->charset = &$this->parameters['charset'];
+            } else {
+                $this->charset = $charset;
+            }
+
+            return $this;
+        }
+
+        /**
+         * @return ContentTypeHeader
+         *
+         * sample argument: text/html; charset="utf-8"
+         **/
+        public function import($string)
+        {
+            $this->charset = null;
+            $this->parameters = [];
+            $matches = [];
+
+            if (
+            preg_match(
+                '~^[\s\t]*([^/\s\t;]+/[^\s\t;]+)[\s\t]*(.*)$~',
+                $string, $matches
+            )
+            ) {
+                $this->mediaType = $matches[1];
+                $remainingString = $matches[2];
+
+                preg_match_all(
+                    '~;[\s\t]*([^\s\t\=]+)[\s\t]*\=[\s\t]*'    // 1: attribute
+                    . '(?:([^"\s\t;]+)|(?:"(.*?(?<!\\\))"))'    // 2 or 3: value
+                    . '[\s\t]*~',
+                    $remainingString, $matches
+                );
+
+                foreach ($matches[1] as $i => $attribute) {
+                    $attribute = strtolower($attribute);
+
+                    $value =
+                        empty($matches[2][$i])
+                            ? $matches[3][$i]
+                            : $matches[2][$i];
+
+                    $this->parameters[$attribute] = $value;
+
+                    if ($attribute == 'charset') // NOTE: reference
+                    {
+                        $this->charset = &$this->parameters[$attribute];
+                    }
                 }
             }
+
+            return $this;
         }
 
-        return $this;
-    }
+        /**
+         * @return string
+         */
+        public function toString() : string
+        {
+            $parts = [$this->mediaType];
 
-    /**
-     * @return string
-     */
-    public function toString() : string
-    {
-        $parts = [$this->mediaType];
+            foreach ($this->parameters as $attribute => $value) {
+                $parts[] = $attribute . '="' . $value . '"';
+            }
 
-        foreach ($this->parameters as $attribute => $value) {
-            $parts[] = $attribute . '="' . $value . '"';
+            return implode('; ', $parts);
         }
-
-        return implode('; ', $parts);
     }
 }
 

@@ -8,23 +8,23 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-final class UnsignedIntegerType extends IntegerType
-{
-    public function getSize()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    final class UnsignedIntegerType extends IntegerType
     {
-        return 4 & LightMetaProperty::UNSIGNED_FLAG;
-    }
+        public function getSize()
+        {
+            return 4 & LightMetaProperty::UNSIGNED_FLAG;
+        }
 
-    public function toColumnType()
-    {
-        return
-            parent::toColumnType()
-            . '->setUnsigned(true)';
+        public function toColumnType()
+        {
+            return
+                parent::toColumnType()
+                . '->setUnsigned(true)';
+        }
     }
 }
-
 ?>

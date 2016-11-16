@@ -9,11 +9,17 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface MessageQueueBrowser
-{
+namespace OnPhp {
     /**
-     * @return Message
-     **/
-    public function getNextMessage();
+     * Interface MessageQueueBrowser
+     * @ingroup Messages
+     * @package OnPhp
+     */
+    interface MessageQueueBrowser
+    {
+        /**
+         * @return Message
+         **/
+        public function getNextMessage();
+    }
 }
-

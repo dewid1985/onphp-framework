@@ -8,96 +8,97 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class LogRecord
-{
-    private $message = null;
-    private $level = LogLevel::INFO;
-
-    private $date = null;
-
+namespace OnPhp {
     /**
-     * LogRecord constructor.
-     */
-    public function __construct()
-    {
-        $this->date = Timestamp::makeNow();
-    }
-
-
-    /**
-     * @return null
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * @return LogRecord
+     * @ingroup Utils
      **/
-    public function setMessage($message)
+    class LogRecord
     {
-        Assert::isString($message);
+        private $message = null;
+        private $level = LogLevel::INFO;
 
-        $this->message = $message;
+        private $date = null;
 
-        return $this;
-    }
+        /**
+         * LogRecord constructor.
+         */
+        public function __construct()
+        {
+            $this->date = Timestamp::makeNow();
+        }
 
-    /**
-     * @return Timestamp
-     **/
-    public function getDate()
-    {
-        return $this->date;
-    }
 
-    /**
-     * @return LogRecord
-     **/
-    public function setDate(Timestamp $date)
-    {
-        $this->date = $date;
+        /**
+         * @return null
+         */
+        public function getMessage()
+        {
+            return $this->message;
+        }
 
-        return $this;
-    }
+        /**
+         * @return LogRecord
+         **/
+        public function setMessage($message)
+        {
+            Assert::isString($message);
 
-    /**
-     * @return LogLevel
-     **/
-    public function getLevel()
-    {
-        return $this->level;
-    }
+            $this->message = $message;
 
-    /**
-     * @return LogRecord
-     **/
-    public function setLevel(LogLevel $level)
-    {
-        $this->level = $level;
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return Timestamp
+         **/
+        public function getDate()
+        {
+            return $this->date;
+        }
 
-    /**
-     * returns message in human readable form, ex:
-     *
-     * Jul  7 07:07:07 warning: all your base are belong to us
-     **/
-    public function toString()
-    {
-        return sprintf(
-            '%s %2s %s %s: %s',
-            date('M', $this->date->toStamp()), $this->date->getDay(),
-            $this->date->toTime(':', ':'),
-            $this->level->getName(),
-            $this->message
-        );
+        /**
+         * @return LogRecord
+         **/
+        public function setDate(Timestamp $date)
+        {
+            $this->date = $date;
+
+            return $this;
+        }
+
+        /**
+         * @return LogLevel
+         **/
+        public function getLevel()
+        {
+            return $this->level;
+        }
+
+        /**
+         * @return LogRecord
+         **/
+        public function setLevel(LogLevel $level)
+        {
+            $this->level = $level;
+
+            return $this;
+        }
+
+        /**
+         * returns message in human readable form, ex:
+         *
+         * Jul  7 07:07:07 warning: all your base are belong to us
+         **/
+        public function toString()
+        {
+            return sprintf(
+                '%s %2s %s %s: %s',
+                date('M', $this->date->toStamp()), $this->date->getDay(),
+                $this->date->toTime(':', ':'),
+                $this->level->getName(),
+                $this->message
+            );
+        }
     }
 }
 

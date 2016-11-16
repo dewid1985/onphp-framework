@@ -8,62 +8,63 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-class CellBackgroundDrawer extends BackgroundDrawer
-{
-    private $step = null;
-
-    public function __construct($step)
-    {
-        $this->step = $step;
-    }
-
+namespace OnPhp {
     /**
-     * @return CellBackgroundDrawer
+     * @ingroup Turing
      **/
-    public function draw()
+    class CellBackgroundDrawer extends BackgroundDrawer
     {
-        $x = mt_rand(-$this->step, $this->step);
-        $width = $this->getTuringImage()->getWidth();
+        private $step = null;
 
-        while ($x < $width) {
-            $color = $this->makeColor();
-            $colorId = $this->getTuringImage()->getColorIdentifier($color);
-
-            imageline(
-                $this->getTuringImage()->getImageId(),
-                $x,
-                0,
-                $x,
-                $this->getTuringImage()->getHeight(),
-                $colorId
-            );
-
-            $x += $this->step;
+        public function __construct($step)
+        {
+            $this->step = $step;
         }
 
-        $y = mt_rand(-$this->step, $this->step);
-        $height = $this->getTuringImage()->getHeight();
+        /**
+         * @return CellBackgroundDrawer
+         **/
+        public function draw()
+        {
+            $x = mt_rand(-$this->step, $this->step);
+            $width = $this->getTuringImage()->getWidth();
 
-        while ($y < $height) {
-            $color = $this->makeColor();
-            $colorId = $this->getTuringImage()->getColorIdentifier($color);
+            while ($x < $width) {
+                $color = $this->makeColor();
+                $colorId = $this->getTuringImage()->getColorIdentifier($color);
 
-            imageline(
-                $this->getTuringImage()->getImageId(),
-                0,
-                $y,
-                $this->getTuringImage()->getWidth(),
-                $y,
-                $colorId
-            );
+                imageline(
+                    $this->getTuringImage()->getImageId(),
+                    $x,
+                    0,
+                    $x,
+                    $this->getTuringImage()->getHeight(),
+                    $colorId
+                );
 
-            $y += $this->step;
+                $x += $this->step;
+            }
+
+            $y = mt_rand(-$this->step, $this->step);
+            $height = $this->getTuringImage()->getHeight();
+
+            while ($y < $height) {
+                $color = $this->makeColor();
+                $colorId = $this->getTuringImage()->getColorIdentifier($color);
+
+                imageline(
+                    $this->getTuringImage()->getImageId(),
+                    0,
+                    $y,
+                    $this->getTuringImage()->getWidth(),
+                    $y,
+                    $colorId
+                );
+
+                $y += $this->step;
+            }
+
+            return $this;
         }
-
-        return $this;
     }
 }

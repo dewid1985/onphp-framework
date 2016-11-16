@@ -8,45 +8,45 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Builders
- **/
-final class DaoBuilder extends OnceBuilder
-{
-    public static function build(MetaClass $class)
+namespace OnPhp {
+    /**
+     * @ingroup Builders
+     **/
+    final class DaoBuilder extends OnceBuilder
     {
-        $out = self::getHead();
+        public static function build(MetaClass $class)
+        {
+            $out = self::getHead();
 
-        $type = $class->getType();
+            $type = $class->getType();
 
-        if ($type) {
-            switch ($type->getId()) {
+            if ($type) {
+                switch ($type->getId()) {
 
-                case MetaClassType::CLASS_ABSTRACT:
+                    case MetaClassType::CLASS_ABSTRACT:
 
-                    $abstract = 'abstract ';
-                    $notes = 'nothing here yet';
+                        $abstract = 'abstract ';
+                        $notes = 'nothing here yet';
 
-                    break;
+                        break;
 
-                case MetaClassType::CLASS_FINAL:
+                    case MetaClassType::CLASS_FINAL:
 
-                    $abstract = 'final ';
-                    $notes = 'last chance for customization';
+                        $abstract = 'final ';
+                        $notes = 'last chance for customization';
 
-                    break;
+                        break;
 
-                default:
+                    default:
 
-                    throw new WrongStateException('unknown class type');
+                        throw new WrongStateException('unknown class type');
+                }
+            } else {
+                $abstract = null;
+                $notes = 'your brilliant stuff goes here';
             }
-        } else {
-            $abstract = null;
-            $notes = 'your brilliant stuff goes here';
-        }
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 {$abstract}class {$class->getName()}DAO extends Auto{$class->getName()}DAO
 {
 // {$notes}
@@ -54,8 +54,8 @@ final class DaoBuilder extends OnceBuilder
 
 EOT;
 
-        return $out . self::getHeel();
+            return $out . self::getHeel();
+        }
     }
 }
-
 ?>

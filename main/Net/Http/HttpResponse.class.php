@@ -8,28 +8,28 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Http
- **/
-interface HttpResponse
-{
+namespace OnPhp {
     /**
-     * @return HttpStatus
+     * @ingroup Http
      **/
-    public function getStatus();
+    interface HttpResponse
+    {
+        /**
+         * @return HttpStatus
+         **/
+        public function getStatus();
 
-    public function getReasonPhrase();
+        public function getReasonPhrase();
 
-    /**
-     * @return array of headers
-     **/
-    public function getHeaders();
+        /**
+         * @return array of headers
+         **/
+        public function getHeaders();
 
-    public function hasHeader($name);
+        public function hasHeader($name);
 
-    public function getHeader($name);
+        public function getHeader($name);
 
-    public function getBody();
+        public function getBody();
+    }
 }
-

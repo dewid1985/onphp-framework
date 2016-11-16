@@ -8,21 +8,21 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-final class TimestampTZType extends DateType
-{
-    public function getPrimitiveName()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    final class TimestampTZType extends DateType
     {
-        return 'timestampTZ';
-    }
+        public function getPrimitiveName()
+        {
+            return 'timestampTZ';
+        }
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::TIMESTAMPTZ))->setTimezoned(true)';
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::TIMESTAMPTZ))->setTimezoned(true)';
+        }
     }
 }
-
 ?>

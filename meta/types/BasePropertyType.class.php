@@ -8,51 +8,53 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-abstract class BasePropertyType
-{
-    protected $default = null;
-
-    abstract public function getDeclaration();
-
-    abstract public function isMeasurable();
-
-    abstract public function toColumnType();
-
-    abstract public function getPrimitiveName();
-
-    public function isGeneric()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    abstract class BasePropertyType
     {
-        return true;
-    }
+        protected $default = null;
 
-    public function toMethods(
-        MetaClass $class,
-        MetaClassProperty $property,
-        MetaClassProperty $holder = null
-    ) {
-        return
-            $this->toGetter($class, $property, $holder)
-            . $this->toSetter($class, $property, $holder);
-    }
+        abstract public function getDeclaration();
 
-    public function toGetter(
-        MetaClass $class,
-        MetaClassProperty $property,
-        MetaClassProperty $holder = null
-    ) {
-        if ($holder) {
-            $name = $holder->getName() . '->get' . ucfirst($property->getName()) . '()';
-        } else {
-            $name = $property->getName();
+        abstract public function isMeasurable();
+
+        abstract public function toColumnType();
+
+        abstract public function getPrimitiveName();
+
+        public function isGeneric()
+        {
+            return true;
         }
 
-        $methodName = 'get' . ucfirst($property->getName());
+        public function toMethods(
+            MetaClass $class,
+            MetaClassProperty $property,
+            MetaClassProperty $holder = null
+        )
+        {
+            return
+                $this->toGetter($class, $property, $holder)
+                . $this->toSetter($class, $property, $holder);
+        }
 
-        return <<<EOT
+        public function toGetter(
+            MetaClass $class,
+            MetaClassProperty $property,
+            MetaClassProperty $holder = null
+        )
+        {
+            if ($holder) {
+                $name = $holder->getName() . '->get' . ucfirst($property->getName()) . '()';
+            } else {
+                $name = $property->getName();
+            }
+
+            $methodName = 'get' . ucfirst($property->getName());
+
+            return <<<EOT
 
 public function {$methodName}()
 {
@@ -60,18 +62,19 @@ public function {$methodName}()
 }
 
 EOT;
-    }
+        }
 
-    public function toSetter(
-        MetaClass $class,
-        MetaClassProperty $property,
-        MetaClassProperty $holder = null
-    ) {
-        $name = $property->getName();
-        $methodName = 'set' . ucfirst($name);
+        public function toSetter(
+            MetaClass $class,
+            MetaClassProperty $property,
+            MetaClassProperty $holder = null
+        )
+        {
+            $name = $property->getName();
+            $methodName = 'set' . ucfirst($name);
 
-        if ($holder) {
-            return <<<EOT
+            if ($holder) {
+                return <<<EOT
 
 /**
  * @return {$holder->getClass()->getName()}
@@ -84,8 +87,8 @@ public function {$methodName}(\${$name})
 }
 
 EOT;
-        } else {
-            return <<<EOT
+            } else {
+                return <<<EOT
 
 /**
  * @return {$class->getName()}
@@ -98,31 +101,32 @@ public function {$methodName}(\${$name})
 }
 
 EOT;
+            }
+
+            Assert::isUnreachable();
         }
 
-        Assert::isUnreachable();
-    }
+        public function hasDefault()
+        {
+            return ($this->default !== null);
+        }
 
-    public function hasDefault()
-    {
-        return ($this->default !== null);
-    }
+        public function getDefault()
+        {
+            return $this->default;
+        }
 
-    public function getDefault()
-    {
-        return $this->default;
-    }
+        public function setDefault($default)
+        {
+            throw new UnsupportedMethodException(
+                'only generic non-object types can have default values atm'
+            );
+        }
 
-    public function setDefault($default)
-    {
-        throw new UnsupportedMethodException(
-            'only generic non-object types can have default values atm'
-        );
-    }
-
-    public function getHint()
-    {
-        return null;
+        public function getHint()
+        {
+            return null;
+        }
     }
 }
 

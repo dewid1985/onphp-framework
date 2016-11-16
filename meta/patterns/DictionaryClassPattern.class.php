@@ -8,16 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Patterns
- **/
-final class DictionaryClassPattern extends BasePattern
-{
-    public function daoExists()
+namespace OnPhp {
+    /**
+     * @ingroup Patterns
+     **/
+    final class DictionaryClassPattern extends BasePattern
     {
-        return true;
+        public function daoExists()
+        {
+            return true;
+        }
     }
 }
-
 ?>

@@ -9,30 +9,33 @@
  *                                                                          *
  ****************************************************************************/
 
-/**
- *
- **/
-class PinbedMemcached extends SocketMemcached
-{
-    public function __construct(
-        $host = SocketMemcached::DEFAULT_HOST,
-        $port = SocketMemcached::DEFAULT_PORT,
-        $buffer = SocketMemcached::DEFAULT_BUFFER
-    ) {
-        if (PinbaClient::isEnabled()) {
-            PinbaClient::me()->timerStart(
-                'memcached_' . $host . '_' . $port . '_connect',
-                ['memcached_connect' => $host . '_' . $port]
-            );
-        }
+namespace OnPhp {
+    /**
+     * Class PinbedMemcached
+     * @package OnPhp
+     */
+    class PinbedMemcached extends SocketMemcached
+    {
+        public function __construct(
+            $host = SocketMemcached::DEFAULT_HOST,
+            $port = SocketMemcached::DEFAULT_PORT,
+            $buffer = SocketMemcached::DEFAULT_BUFFER
+        )
+        {
+            if (PinbaClient::isEnabled()) {
+                PinbaClient::me()->timerStart(
+                    'memcached_' . $host . '_' . $port . '_connect',
+                    ['memcached_connect' => $host . '_' . $port]
+                );
+            }
 
-        parent::__construct($host, $port, $buffer);
+            parent::__construct($host, $port, $buffer);
 
-        if (PinbaClient::isEnabled()) {
-            PinbaClient::me()->timerStop(
-                'memcached_' . $host . '_' . $port . '_connect'
-            );
+            if (PinbaClient::isEnabled()) {
+                PinbaClient::me()->timerStop(
+                    'memcached_' . $host . '_' . $port . '_connect'
+                );
+            }
         }
     }
 }
-

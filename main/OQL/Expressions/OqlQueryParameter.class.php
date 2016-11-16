@@ -8,96 +8,96 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-class OqlQueryParameter
-{
-    private $value = null;
-    private $bindable = false;
-
-
+namespace OnPhp {
     /**
-     * @param $values
-     * @return array|null
-     * @throws WrongArgumentException
-     */
-    public function evaluate($values)
+     * @ingroup OQL
+     **/
+    class OqlQueryParameter
     {
-        if ($this->isBindable()) {
-            Assert::isPositiveInteger(
-                $this->getValue(),
-                'wrong substitution number: $' . $this->getValue()
-            );
-            Assert::isIndexExists(
-                $values,
-                $this->getValue(),
-                'parameter $' . $this->getValue() . ' is not binded'
-            );
+        private $value = null;
+        private $bindable = false;
 
-            $value = $values[$this->getValue()];
 
-        } else {
-            $value = $this->getValue();
-        }
+        /**
+         * @param $values
+         * @return array|null
+         * @throws WrongArgumentException
+         */
+        public function evaluate($values)
+        {
+            if ($this->isBindable()) {
+                Assert::isPositiveInteger(
+                    $this->getValue(),
+                    'wrong substitution number: $' . $this->getValue()
+                );
+                Assert::isIndexExists(
+                    $values,
+                    $this->getValue(),
+                    'parameter $' . $this->getValue() . ' is not binded'
+                );
 
-        if ($value instanceof Query) {
-            return $value;
+                $value = $values[$this->getValue()];
 
-        } elseif ($value instanceof Identifiable) {
-            return $value->getId();
-
-        } elseif (is_array($value)) {
-            $list = [];
-            foreach ($value as $key => $parameter) {
-                if ($parameter instanceof OqlQueryParameter) {
-                    $list[$key] = $parameter->evaluate($values);
-                } else {
-                    $list[$key] = $parameter;
-                }
+            } else {
+                $value = $this->getValue();
             }
 
-            return $list;
+            if ($value instanceof Query) {
+                return $value;
+
+            } elseif ($value instanceof Identifiable) {
+                return $value->getId();
+
+            } elseif (is_array($value)) {
+                $list = [];
+                foreach ($value as $key => $parameter) {
+                    if ($parameter instanceof OqlQueryParameter) {
+                        $list[$key] = $parameter->evaluate($values);
+                    } else {
+                        $list[$key] = $parameter;
+                    }
+                }
+
+                return $list;
+            }
+
+            return $value;
         }
 
-        return $value;
-    }
+        /**
+         * @return bool
+         */
+        public function isBindable() : bool
+        {
+            return $this->bindable;
+        }
 
-    /**
-     * @return bool
-     */
-    public function isBindable() : bool
-    {
-        return $this->bindable;
-    }
+        /**
+         * @return OqlQueryParameter
+         **/
+        public function setBindable($orly = true)
+        {
+            $this->bindable = ($orly === true);
 
-    /**
-     * @return OqlQueryParameter
-     **/
-    public function setBindable($orly = true)
-    {
-        $this->bindable = ($orly === true);
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return null
+         */
+        public function getValue()
+        {
+            return $this->value;
+        }
 
-    /**
-     * @return null
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
+        /**
+         * @return OqlQueryParameter
+         **/
+        public function setValue($value)
+        {
+            $this->value = $value;
 
-    /**
-     * @return OqlQueryParameter
-     **/
-    public function setValue($value)
-    {
-        $this->value = $value;
-
-        return $this;
+            return $this;
+        }
     }
 }
-

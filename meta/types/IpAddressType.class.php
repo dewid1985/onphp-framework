@@ -8,30 +8,31 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class IpAddressType extends ObjectType
-{
-    public function getPrimitiveName()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    class IpAddressType extends ObjectType
     {
-        return 'ipAddress';
-    }
+        public function getPrimitiveName()
+        {
+            return 'ipAddress';
+        }
 
-    public function isGeneric()
-    {
-        return true;
-    }
+        public function isGeneric()
+        {
+            return true;
+        }
 
-    public function isMeasurable()
-    {
-        return true;
-    }
+        public function isMeasurable()
+        {
+            return true;
+        }
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::IP))';
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::IP))';
+        }
     }
 }
 

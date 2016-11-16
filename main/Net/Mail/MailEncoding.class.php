@@ -8,54 +8,54 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Mail
- **/
-class MailEncoding extends Enumeration
-{
-    const SEVEN_BITS = 0x01;
-    const EIGHT_BITS = 0x02;
-    const BASE64 = 0x03;
-    const QUOTED = 0x04;
-
-    protected $names = [
-        self::SEVEN_BITS => '7bit',
-        self::EIGHT_BITS => '8bit',
-        self::BASE64 => 'base64',
-        self::QUOTED => 'quoted-printable'
-    ];
-
+namespace OnPhp {
     /**
-     * @return MailEncoding
+     * @ingroup Mail
      **/
-    public static function seven()
+    class MailEncoding extends Enumeration
     {
-        return new self(self::SEVEN_BITS);
-    }
+        const SEVEN_BITS = 0x01;
+        const EIGHT_BITS = 0x02;
+        const BASE64 = 0x03;
+        const QUOTED = 0x04;
 
-    /**
-     * @return MailEncoding
-     **/
-    public static function eight()
-    {
-        return new self(self::EIGHT_BITS);
-    }
+        protected $names = [
+            self::SEVEN_BITS => '7bit',
+            self::EIGHT_BITS => '8bit',
+            self::BASE64 => 'base64',
+            self::QUOTED => 'quoted-printable'
+        ];
 
-    /**
-     * @return MailEncoding
-     **/
-    public static function base64()
-    {
-        return new self(self::BASE64);
-    }
+        /**
+         * @return MailEncoding
+         **/
+        public static function seven()
+        {
+            return new self(self::SEVEN_BITS);
+        }
 
-    /**
-     * @return MailEncoding
-     **/
-    public static function quoted()
-    {
-        return new self(self::QUOTED);
+        /**
+         * @return MailEncoding
+         **/
+        public static function eight()
+        {
+            return new self(self::EIGHT_BITS);
+        }
+
+        /**
+         * @return MailEncoding
+         **/
+        public static function base64()
+        {
+            return new self(self::BASE64);
+        }
+
+        /**
+         * @return MailEncoding
+         **/
+        public static function quoted()
+        {
+            return new self(self::QUOTED);
+        }
     }
 }
-

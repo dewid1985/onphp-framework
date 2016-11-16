@@ -8,25 +8,26 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-abstract class BackgroundDrawer extends Drawer
-{
-    abstract public function draw();
-
+namespace OnPhp {
     /**
-     * @return Color
+     * @ingroup Turing
      **/
-    public function makeColor()
+    abstract class BackgroundDrawer extends Drawer
     {
-        $color = $this->getTuringImage()->getTextColors()->getRandomTextColor();
+        abstract public function draw();
 
-        $invertColor = clone $color;
-        $invertColor->invertColor();
+        /**
+         * @return Color
+         **/
+        public function makeColor()
+        {
+            $color = $this->getTuringImage()->getTextColors()->getRandomTextColor();
 
-        return $invertColor;
+            $invertColor = clone $color;
+            $invertColor->invertColor();
+
+            return $invertColor;
+        }
     }
 }
 

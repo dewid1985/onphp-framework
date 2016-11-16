@@ -8,102 +8,103 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Builders
- **/
-class AutoProtoClassBuilder extends BaseBuilder
-{
+namespace OnPhp {
     /**
-     * @param MetaClass $class
-     * @return string
-     */
-    public static function build(MetaClass $class)
+     * @ingroup Builders
+     **/
+    class AutoProtoClassBuilder extends BaseBuilder
     {
-        $out = self::getHead();
+        /**
+         * @param MetaClass $class
+         * @return string
+         */
+        public static function build(MetaClass $class)
+        {
+            $out = self::getHead();
 
-        $parent = $class->getParent();
+            $parent = $class->getParent();
 
-        if ($class->hasBuildableParent()) {
-            $parentName = 'Proto' . $parent->getName();
-        } else {
-            $parentName = 'AbstractProtoClass';
-        }
+            if ($class->hasBuildableParent()) {
+                $parentName = 'Proto' . $parent->getName();
+            } else {
+                $parentName = 'AbstractProtoClass';
+            }
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 abstract class AutoProto{$class->getName()} extends {$parentName}
 {
 EOT;
-        $classDump = self::dumpMetaClass($class);
+            $classDump = self::dumpMetaClass($class);
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 
 {$classDump}
 }
 
 EOT;
 
-        return $out . self::getHeel();
-    }
+            return $out . self::getHeel();
+        }
 
-    /**
-     * @param MetaClass $class
-     * @return string
-     */
-    private static function dumpMetaClass(MetaClass $class) : string
-    {
-        $propertyList = $class->getWithInternalProperties();
+        /**
+         * @param MetaClass $class
+         * @return string
+         */
+        private static function dumpMetaClass(MetaClass $class) : string
+        {
+            $propertyList = $class->getWithInternalProperties();
 
-        $out = <<<EOT
+            $out = <<<EOT
 protected function makePropertyList()
 {
 
 EOT;
 
-        if ($class->hasBuildableParent()) {
-            $out .= <<<EOT
+            if ($class->hasBuildableParent()) {
+                $out .= <<<EOT
     return array_merge(
         parent::makePropertyList(),
         [
 
 EOT;
-            if ($class->getIdentifier()) {
-                $propertyList[$class->getIdentifier()->getName()] =
-                    $class->getIdentifier();
-            }
-        } else {
-            $out .= <<<EOT
+                if ($class->getIdentifier()) {
+                    $propertyList[$class->getIdentifier()->getName()] =
+                        $class->getIdentifier();
+                }
+            } else {
+                $out .= <<<EOT
     return
         [
 
 EOT;
-        }
+            }
 
-        $list = [];
+            $list = [];
 
-        foreach ($propertyList as $property) {
-            $list[] =
-                "            '{$property->getName()}' => "
-                . $property->toLightProperty($class)->toString();
-        }
+            foreach ($propertyList as $property) {
+                $list[] =
+                    "            '{$property->getName()}' => "
+                    . $property->toLightProperty($class)->toString();
+            }
 
-        $out .= implode(",\n", $list);
+            $out .= implode(",\n", $list);
 
-        if ($class->hasBuildableParent()) {
-            $out .= <<<EOT
+            if ($class->hasBuildableParent()) {
+                $out .= <<<EOT
 \n        ]
 \n    );
 \n}
 EOT;
 
-        } else {
+            } else {
 
-            $out .= <<<EOT
+                $out .= <<<EOT
 
         ];
 \n}
 EOT;
+            }
+            return $out;
         }
-        return $out;
     }
 }

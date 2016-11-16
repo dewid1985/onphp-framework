@@ -8,27 +8,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Math
- **/
-abstract class BigNumberFactory extends Singleton
-{
+namespace OnPhp {
     /**
-     * @return BigInteger
-     **/
-    abstract public function makeNumber($number, $base = 10);
+     * Class BigNumberFactory
+     * @ingroup Math
+     * @package OnPhp
+     */
+    abstract class BigNumberFactory extends Singleton
+    {
+        /**
+         * @return BigInteger
+         **/
+        abstract public function makeNumber($number, $base = 10);
 
-    /**
-     * make number from big-endian signed two's complement binary notation
-     * @return BigInteger
-     **/
-    abstract public function makeFromBinary($binary);
+        /**
+         * make number from big-endian signed two's complement binary notation
+         * @return BigInteger
+         **/
+        abstract public function makeFromBinary($binary);
 
-    /**
-     * @param $stop maximum random number
-     * @return BigInteger
-     **/
-    abstract public function makeRandom($stop, RandomSource $source);
+        /**
+         * @param $stop maximum random number
+         * @return BigInteger
+         **/
+        abstract public function makeRandom($stop, RandomSource $source);
+    }
 }
-

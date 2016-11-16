@@ -9,41 +9,42 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * GNU Tar wrapper.
- *
- * @see http://www.gnu.org/software/tar/
- *
- * @ingroup Utils
- **/
-class TarArchive extends FileArchive
-{
-    public function __construct($cmdBinPath = '/bin/tar')
+namespace OnPhp {
+    /**
+     * GNU Tar wrapper.
+     *
+     * @see http://www.gnu.org/software/tar/
+     *
+     * @ingroup Utils
+     **/
+    class TarArchive extends FileArchive
     {
-        if ($cmdBinPath === null) {
-            throw
-            new UnimplementedFeatureException(
-                'no built-in support for GNU Tar'
-            );
+        public function __construct($cmdBinPath = '/bin/tar')
+        {
+            if ($cmdBinPath === null) {
+                throw
+                new UnimplementedFeatureException(
+                    'no built-in support for GNU Tar'
+                );
+            }
+
+            parent::__construct($cmdBinPath);
         }
 
-        parent::__construct($cmdBinPath);
-    }
+        public function readFile($fileName)
+        {
+            if (!$this->sourceFile) {
+                throw
+                new WrongStateException(
+                    'dude, open an archive first.'
+                );
+            }
 
-    public function readFile($fileName)
-    {
-        if (!$this->sourceFile) {
-            throw
-            new WrongStateException(
-                'dude, open an archive first.'
-            );
+            $options = '--extract --to-stdout'
+                . ' --file ' . escapeshellarg($this->sourceFile)
+                . ' ' . escapeshellarg($fileName);
+
+            return $this->execStdoutOptions($options);
         }
-
-        $options = '--extract --to-stdout'
-            . ' --file ' . escapeshellarg($this->sourceFile)
-            . ' ' . escapeshellarg($fileName);
-
-        return $this->execStdoutOptions($options);
     }
 }
-

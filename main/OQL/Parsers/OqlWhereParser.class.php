@@ -9,29 +9,34 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-class OqlWhereParser extends OqlParser
-{
-
+namespace OnPhp {
     /**
-     * @return OqlWhereClause
-     **/
-    protected function makeOqlObject()
+     * Class OqlWhereParser
+     * @package OnPhp
+     */
+    class OqlWhereParser extends OqlParser
     {
-        return new OqlWhereClause();
-    }
 
-    protected function handleState()
-    {
-        if ($this->state == self::INITIAL_STATE) {
-            $argument = $this->getLogicExpression();
-            if ($argument instanceof OqlQueryExpression) {
-                $this->oqlObject->setExpression($argument);
-            } else {
-                $this->error("expecting 'where' expression");
-            }
+        /**
+         * @return OqlWhereClause
+         **/
+        protected function makeOqlObject()
+        {
+            return new OqlWhereClause();
         }
 
-        return self::FINAL_STATE;
+        protected function handleState()
+        {
+            if ($this->state == self::INITIAL_STATE) {
+                $argument = $this->getLogicExpression();
+                if ($argument instanceof OqlQueryExpression) {
+                    $this->oqlObject->setExpression($argument);
+                } else {
+                    $this->error("expecting 'where' expression");
+                }
+            }
+
+            return self::FINAL_STATE;
+        }
     }
 }
-

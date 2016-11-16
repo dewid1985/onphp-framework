@@ -8,83 +8,84 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class PartViewer
-{
-    protected $viewResolver = null;
-    protected $model = null;
-
-    public function __construct(ViewResolver $resolver, $model = null)
-    {
-        $this->viewResolver = $resolver;
-        $this->model = $model;
-    }
-
-    public function toString($partName, $model = null)
-    {
-        try {
-            ob_start();
-            $this->view($partName, $model);
-            return ob_get_clean();
-        } catch (Exception $e) {
-            ob_end_clean();
-            throw $e;
-        }
-    }
-
+namespace OnPhp {
     /**
-     * @return PartViewer
+     * @ingroup Flow
      **/
-    public function view($partName, $model = null)
+    class PartViewer
     {
-        Assert::isTrue($model === null || $model instanceof Model);
+        protected $viewResolver = null;
+        protected $model = null;
 
-        // use model from outer template if none specified
-        if ($model === null) {
-            $model = $this->model;
-
-            $parentModel = $this->model->has('parentModel')
-                ? $this->model->get('parentModel')
-                : null;
-
-        } else {
-            $parentModel = $this->model;
+        public function __construct(ViewResolver $resolver, $model = null)
+        {
+            $this->viewResolver = $resolver;
+            $this->model = $model;
         }
 
-        $model->set('parentModel', $parentModel);
-
-        $rootModel = $this->model->has('rootModel')
-            ? $this->model->get('rootModel')
-            : $this->model;
-
-        $model->set('rootModel', $rootModel);
-
-        if ($partName instanceof View) {
-            $partName->render($model);
-        } else {
-            $this->viewResolver->resolveViewName($partName)->render($model);
+        public function toString($partName, $model = null)
+        {
+            try {
+                ob_start();
+                $this->view($partName, $model);
+                return ob_get_clean();
+            } catch (Exception $e) {
+                ob_end_clean();
+                throw $e;
+            }
         }
 
-        return $this;
-    }
+        /**
+         * @return PartViewer
+         **/
+        public function view($partName, $model = null)
+        {
+            Assert::isTrue($model === null || $model instanceof Model);
 
-    /**
-     * @param $partName
-     * @return mixed
-     */
-    public function partExists($partName)
-    {
-        return $this->viewResolver->viewExists($partName);
-    }
+            // use model from outer template if none specified
+            if ($model === null) {
+                $model = $this->model;
 
-    /**
-     * @return Model
-     **/
-    public function getModel()
-    {
-        return $this->model;
+                $parentModel = $this->model->has('parentModel')
+                    ? $this->model->get('parentModel')
+                    : null;
+
+            } else {
+                $parentModel = $this->model;
+            }
+
+            $model->set('parentModel', $parentModel);
+
+            $rootModel = $this->model->has('rootModel')
+                ? $this->model->get('rootModel')
+                : $this->model;
+
+            $model->set('rootModel', $rootModel);
+
+            if ($partName instanceof View) {
+                $partName->render($model);
+            } else {
+                $this->viewResolver->resolveViewName($partName)->render($model);
+            }
+
+            return $this;
+        }
+
+        /**
+         * @param $partName
+         * @return mixed
+         */
+        public function partExists($partName)
+        {
+            return $this->viewResolver->viewExists($partName);
+        }
+
+        /**
+         * @return Model
+         **/
+        public function getModel()
+        {
+            return $this->model;
+        }
     }
 }

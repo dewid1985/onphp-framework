@@ -8,26 +8,26 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Patterns
- **/
-final class SpookedClassPattern extends Singleton implements GenerationPattern
-{
-    public function build(MetaClass $class)
+namespace OnPhp {
+    /**
+     * @ingroup Patterns
+     **/
+    final class SpookedClassPattern extends Singleton implements GenerationPattern
     {
-        return $this;
-    }
+        public function build(MetaClass $class)
+        {
+            return $this;
+        }
 
-    public function daoExists()
-    {
-        return false;
-    }
+        public function daoExists()
+        {
+            return false;
+        }
 
-    public function tableExists()
-    {
-        return false;
+        public function tableExists()
+        {
+            return false;
+        }
     }
 }
-
 ?>

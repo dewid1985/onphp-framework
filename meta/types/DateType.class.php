@@ -8,26 +8,26 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class DateType extends ObjectType
-{
-    public function getPrimitiveName()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    class DateType extends ObjectType
     {
-        return 'date';
-    }
+        public function getPrimitiveName()
+        {
+            return 'date';
+        }
 
-    public function isGeneric()
-    {
-        return true;
-    }
+        public function isGeneric()
+        {
+            return true;
+        }
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::DATE))';
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::DATE))';
+        }
     }
 }
-
 ?>

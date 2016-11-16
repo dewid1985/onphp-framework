@@ -8,58 +8,59 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-class ColorArray
-{
-    private $colors = [];
-
+namespace OnPhp {
     /**
-     * @return ColorArray
+     * @ingroup Turing
      **/
-    public function add(Color $color)
+    class ColorArray
     {
-        $this->colors[] = $color;
+        private $colors = [];
 
-        return $this;
-    }
+        /**
+         * @return ColorArray
+         **/
+        public function add(Color $color)
+        {
+            $this->colors[] = $color;
 
-    /**
-     * @return ColorArray
-     **/
-    public function clear()
-    {
-        unset($this->colors);
-
-        return $this;
-    }
-
-    /**
-     * @throws MissingElementException
-     * @return Color
-     **/
-    public function getRandomTextColor()
-    {
-        if ($this->isEmpty()) {
-            throw new MissingElementException('Not set colors in the object ');
+            return $this;
         }
 
-        return $this->colors[array_rand($this->colors)];
-    }
+        /**
+         * @return ColorArray
+         **/
+        public function clear()
+        {
+            unset($this->colors);
 
-    public function isEmpty()
-    {
-        if (count($this->colors) == 0) {
-            return true;
-        } else {
-            return false;
+            return $this;
         }
-    }
 
-    public function getColors()
-    {
-        return $this->colors;
+        /**
+         * @throws MissingElementException
+         * @return Color
+         **/
+        public function getRandomTextColor()
+        {
+            if ($this->isEmpty()) {
+                throw new MissingElementException('Not set colors in the object ');
+            }
+
+            return $this->colors[array_rand($this->colors)];
+        }
+
+        public function isEmpty()
+        {
+            if (count($this->colors) == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public function getColors()
+        {
+            return $this->colors;
+        }
     }
 }

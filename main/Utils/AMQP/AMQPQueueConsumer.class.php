@@ -9,7 +9,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class AMQPQueueConsumer extends AMQPDefaultConsumer
-{/**/
+namespace OnPhp {
+    /**
+     * Class AMQPQueueConsumer
+     * @package OnPhp
+     */
+    class AMQPQueueConsumer extends AMQPDefaultConsumer
+    {
+        /**/
+    }
 }
 

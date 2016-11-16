@@ -9,123 +9,125 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class AMQPCredentials
-{
-    const DEFAULT_HOST = 'localhost';
-    const DEFAULT_PORT = '5672';
-    const DEFAULT_LOGIN = 'guest';
-    const DEFAULT_PASSWORD = 'guest';
-    const DEFAULT_VHOST = '/';
-
-    protected $host = null;
-    protected $port = null;
-    protected $virtualHost = null;
-    protected $login = null;
-    protected $password = null;
-
-
-    /**
-     * @return AMQPCredentials
-     **/
-    public static function createDefault()
+namespace OnPhp {
+    class AMQPCredentials
     {
-        return
-            (new self())
-                ->setHost(self::DEFAULT_HOST)
-                ->setPort(self::DEFAULT_PORT)
-                ->setLogin(self::DEFAULT_LOGIN)
-                ->setPassword(self::DEFAULT_PASSWORD)
-                ->setVirtualHost(self::DEFAULT_VHOST);
-    }
+        const DEFAULT_HOST = 'localhost';
+        const DEFAULT_PORT = '5672';
+        const DEFAULT_LOGIN = 'guest';
+        const DEFAULT_PASSWORD = 'guest';
+        const DEFAULT_VHOST = '/';
 
-    /**
-     * @return null
-     */
-    public function getHost()
-    {
-        return $this->host;
-    }
+        protected $host = null;
+        protected $port = null;
+        protected $virtualHost = null;
+        protected $login = null;
+        protected $password = null;
 
-    /**
-     * @return AMQPCredentials
-     **/
-    public function setHost($host)
-    {
-        $this->host = $host;
 
-        return $this;
-    }
+        /**
+         * @return AMQPCredentials
+         **/
+        public static function createDefault()
+        {
+            return
+                (new self())
+                    ->setHost(self::DEFAULT_HOST)
+                    ->setPort(self::DEFAULT_PORT)
+                    ->setLogin(self::DEFAULT_LOGIN)
+                    ->setPassword(self::DEFAULT_PASSWORD)
+                    ->setVirtualHost(self::DEFAULT_VHOST);
+        }
 
-    /**
-     * @return null
-     */
-    public function getPort()
-    {
-        return $this->port;
-    }
+        /**
+         * @return null
+         */
+        public function getHost()
+        {
+            return $this->host;
+        }
 
-    /**
-     * @return AMQPCredentials
-     **/
-    public function setPort($port)
-    {
-        $this->port = $port;
+        /**
+         * @return AMQPCredentials
+         **/
+        public function setHost($host)
+        {
+            $this->host = $host;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return null
-     */
-    public function getVirtualHost()
-    {
-        return $this->virtualHost;
-    }
+        /**
+         * @return null
+         */
+        public function getPort()
+        {
+            return $this->port;
+        }
 
-    /**
-     * @return AMQPCredentials
-     **/
-    public function setVirtualHost($virtualHost)
-    {
-        $this->virtualHost = $virtualHost;
+        /**
+         * @return AMQPCredentials
+         **/
+        public function setPort($port)
+        {
+            $this->port = $port;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return null
-     */
-    public function getLogin()
-    {
-        return $this->login;
-    }
+        /**
+         * @return null
+         */
+        public function getVirtualHost()
+        {
+            return $this->virtualHost;
+        }
 
-    /**
-     * @return AMQPCredentials
-     **/
-    public function setLogin($login)
-    {
-        $this->login = $login;
+        /**
+         * @return AMQPCredentials
+         **/
+        public function setVirtualHost($virtualHost)
+        {
+            $this->virtualHost = $virtualHost;
 
-        return $this;
-    }
+            return $this;
+        }
 
-    /**
-     * @return null
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
+        /**
+         * @return null
+         */
+        public function getLogin()
+        {
+            return $this->login;
+        }
 
-    /**
-     * @return AMQPCredentials
-     **/
-    public function setPassword($password)
-    {
-        $this->password = $password;
+        /**
+         * @return AMQPCredentials
+         **/
+        public function setLogin($login)
+        {
+            $this->login = $login;
 
-        return $this;
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function getPassword()
+        {
+            return $this->password;
+        }
+
+        /**
+         * @return AMQPCredentials
+         **/
+        public function setPassword($password)
+        {
+            $this->password = $password;
+
+            return $this;
+        }
     }
 }
 

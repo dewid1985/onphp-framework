@@ -9,20 +9,21 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface RouterRule
-{
-    /**
-     * Matches a user submitted path with parts defined by a map.
-     * Assigns and returns an array of variables on a successful match.
-     *
-     * @return array An array of assigned values or empty array() on a mismatch
-     **/
-    public function match(HttpRequest $request);
+namespace OnPhp {
+    interface RouterRule
+    {
+        /**
+         * Matches a user submitted path with parts defined by a map.
+         * Assigns and returns an array of variables on a successful match.
+         *
+         * @return array An array of assigned values or empty array() on a mismatch
+         **/
+        public function match(HttpRequest $request);
 
-    public function assembly(
-        array $data = [],
-        $reset = false,
-        $encode = false
-    );
+        public function assembly(
+            array $data = [],
+            $reset = false,
+            $encode = false
+        );
+    }
 }
-

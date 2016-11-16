@@ -9,93 +9,94 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * @ingroup Containers
- **/
-abstract class ManyToManyLinkedWorker extends UnifiedContainerWorker
-{
+namespace OnPhp {
     /**
-     * @return InsertQuery
+     * @ingroup Containers
      **/
-    protected function makeInsertQuery($childId)
+    abstract class ManyToManyLinkedWorker extends UnifiedContainerWorker
     {
-        $uc = $this->container;
+        /**
+         * @return InsertQuery
+         **/
+        protected function makeInsertQuery($childId)
+        {
+            $uc = $this->container;
 
-        return
-            (new OSQL())
-                ->insert()
-                ->into($uc->getHelperTable())
-                ->set(
-                    $uc->getParentIdField(),
-                    $uc->getParentObject()->getId()
-                )
-                ->set($uc->getChildIdField(), $childId);
-    }
-
-    /**
-     * only unlinking, we don't want to drop original object
-     *
-     * @return DeleteQuery
-     **/
-    protected function makeDeleteQuery($delete)
-    {
-        $uc = $this->container;
-
-        return
-            (new OSQL())
-                ->delete()
-                ->from($uc->getHelperTable())
-                ->where(
-                    Expression::eq(
-                        new DBField($uc->getParentIdField()),
-                        new DBValue($uc->getParentObject()->getId())
-                    )
-                )
-                ->andWhere(
-                    Expression::in(
-                        $uc->getChildIdField(),
-                        $delete
-                    )
-                );
-    }
-
-    /**
-     * @return SelectQuery
-     **/
-    protected function joinHelperTable(SelectQuery $query)
-    {
-        $uc = $this->container;
-
-        if (!$query->hasJoinedTable($uc->getHelperTable())) {
-            $query
-                ->join(
-                    $uc->getHelperTable(),
-                    Expression::eq(
-                        new DBField(
-                            $uc->getParentTableIdField(),
-                            $uc->getDao()->getTable()
-                        ),
-                        new DBField(
-                            $uc->getChildIdField(),
-                            $uc->getHelperTable()
-                        )
-                    )
-                );
-        }
-
-        return
-            $query
-                ->andWhere(
-                Expression::eq(
-                    new DBField(
+            return
+                (new OSQL())
+                    ->insert()
+                    ->into($uc->getHelperTable())
+                    ->set(
                         $uc->getParentIdField(),
-                        $uc->getHelperTable()
-                    ),
-                    new DBValue(
                         $uc->getParentObject()->getId()
                     )
-                )
-            );
+                    ->set($uc->getChildIdField(), $childId);
+        }
+
+        /**
+         * only unlinking, we don't want to drop original object
+         *
+         * @return DeleteQuery
+         **/
+        protected function makeDeleteQuery($delete)
+        {
+            $uc = $this->container;
+
+            return
+                (new OSQL())
+                    ->delete()
+                    ->from($uc->getHelperTable())
+                    ->where(
+                        Expression::eq(
+                            new DBField($uc->getParentIdField()),
+                            new DBValue($uc->getParentObject()->getId())
+                        )
+                    )
+                    ->andWhere(
+                        Expression::in(
+                            $uc->getChildIdField(),
+                            $delete
+                        )
+                    );
+        }
+
+        /**
+         * @return SelectQuery
+         **/
+        protected function joinHelperTable(SelectQuery $query)
+        {
+            $uc = $this->container;
+
+            if (!$query->hasJoinedTable($uc->getHelperTable())) {
+                $query
+                    ->join(
+                        $uc->getHelperTable(),
+                        Expression::eq(
+                            new DBField(
+                                $uc->getParentTableIdField(),
+                                $uc->getDao()->getTable()
+                            ),
+                            new DBField(
+                                $uc->getChildIdField(),
+                                $uc->getHelperTable()
+                            )
+                        )
+                    );
+            }
+
+            return
+                $query
+                    ->andWhere(
+                        Expression::eq(
+                            new DBField(
+                                $uc->getParentIdField(),
+                                $uc->getHelperTable()
+                            ),
+                            new DBValue(
+                                $uc->getParentObject()->getId()
+                            )
+                        )
+                    );
+        }
     }
 }
-

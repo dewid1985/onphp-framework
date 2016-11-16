@@ -8,40 +8,41 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Containers
- **/
-abstract class OneToManyLinked extends UnifiedContainer
-{
-    public function __construct(
-        Identifiable $parent,
-        GenericDAO $dao,
-        $lazy = true
-    ) {
-        parent::__construct($parent, $dao, $lazy);
-
-        $worker =
-            $lazy
-                ? 'OneToManyLinkedLazy'
-                : 'OneToManyLinkedFull';
-
-        $this->worker = new $worker($this);
-    }
-
-    public function getChildIdField()
+namespace OnPhp {
+    /**
+     * @ingroup Containers
+     **/
+    abstract class OneToManyLinked extends UnifiedContainer
     {
-        return 'id';
-    }
+        public function __construct(
+            Identifiable $parent,
+            GenericDAO $dao,
+            $lazy = true
+        )
+        {
+            parent::__construct($parent, $dao, $lazy);
 
-    public function isUnlinkable()
-    {
-        return false;
-    }
+            $worker =
+                $lazy
+                    ? 'OneToManyLinkedLazy'
+                    : 'OneToManyLinkedFull';
 
-    public function getHelperTable()
-    {
-        return $this->dao->getTable();
+            $this->worker = new $worker($this);
+        }
+
+        public function getChildIdField()
+        {
+            return 'id';
+        }
+
+        public function isUnlinkable()
+        {
+            return false;
+        }
+
+        public function getHelperTable()
+        {
+            return $this->dao->getTable();
+        }
     }
 }
-

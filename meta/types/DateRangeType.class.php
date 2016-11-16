@@ -8,16 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class DateRangeType extends RangeType
-{
-    public function getPrimitiveName()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    class DateRangeType extends RangeType
     {
-        return 'dateRange';
+        public function getPrimitiveName()
+        {
+            return 'dateRange';
+        }
     }
 }
-
 ?>

@@ -8,35 +8,35 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-final class InetType extends IntegerType
-{
-    public function getPrimitiveName()
-    {
-        return 'inet';
-    }
-
-    public function getSize()
-    {
-        return null;
-    }
-
+namespace OnPhp {
     /**
-     * @throws WrongArgumentException
-     * @return InetType
+     * @ingroup Types
      **/
-    public function setDefault($default)
+    final class InetType extends IntegerType
     {
-        Assert::isTrue(
-            long2ip(ip2long($default)) == $default,
-            "strange default value given - '{$default}'"
-        );
+        public function getPrimitiveName()
+        {
+            return 'inet';
+        }
 
-        return parent::setDefault($default);
+        public function getSize()
+        {
+            return null;
+        }
+
+        /**
+         * @throws WrongArgumentException
+         * @return InetType
+         **/
+        public function setDefault($default)
+        {
+            Assert::isTrue(
+                long2ip(ip2long($default)) == $default,
+                "strange default value given - '{$default}'"
+            );
+
+            return parent::setDefault($default);
+        }
     }
 }
-
 ?>

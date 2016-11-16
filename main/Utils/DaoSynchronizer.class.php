@@ -8,71 +8,71 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Prototyped variant of DAO synchronizer.
- *
- * @ingroup Utils
- **/
-class DaoSynchronizer extends CustomizableDaoSynchronizer
-{
+namespace OnPhp {
     /**
-     * @return DaoSynchronizer
+     * Prototyped variant of DAO synchronizer.
+     *
+     * @ingroup Utils
      **/
-    public function setMaster(GenericDAO $master)
+    class DaoSynchronizer extends CustomizableDaoSynchronizer
     {
-        Assert::isInstance($master, 'ProtoDAO');
+        /**
+         * @return DaoSynchronizer
+         **/
+        public function setMaster(GenericDAO $master)
+        {
+            Assert::isInstance($master, 'ProtoDAO');
 
-        return parent::setMaster($master);
-    }
+            return parent::setMaster($master);
+        }
 
-    /**
-     * @return DaoSynchronizer
-     **/
-    public function setSlave(GenericDAO $slave)
-    {
-        Assert::isInstance($slave, 'ProtoDAO');
+        /**
+         * @return DaoSynchronizer
+         **/
+        public function setSlave(GenericDAO $slave)
+        {
+            Assert::isInstance($slave, 'ProtoDAO');
 
-        return parent::setSlave($slave);
-    }
+            return parent::setSlave($slave);
+        }
 
-    protected function sync($old, $object)
-    {
-        $changed = [];
+        protected function sync($old, $object)
+        {
+            $changed = [];
 
-        foreach (
-            $this->slave->getProtoClass()->getPropertyList() as $property
-        ) {
-            $getter = $property->getGetter();
+            foreach (
+                $this->slave->getProtoClass()->getPropertyList() as $property
+            ) {
+                $getter = $property->getGetter();
 
-            if ($property->getClassName() === null) {
-                if ($old->$getter() != $object->$getter()) {
-                    $changed[$property->getName()] = $property;
-                }
+                if ($property->getClassName() === null) {
+                    if ($old->$getter() != $object->$getter()) {
+                        $changed[$property->getName()] = $property;
+                    }
 
-            } else {
-                if (
-                    (
-                        is_object($old->$getter())
-                        && !$old->$getter()->isEqualTo($object->$getter())
-                    )
-                    || (!$old->$getter() && $object->$getter())
-                ) {
-                    $changed[$property->getName()] = $property;
+                } else {
+                    if (
+                        (
+                            is_object($old->$getter())
+                            && !$old->$getter()->isEqualTo($object->$getter())
+                        )
+                        || (!$old->$getter() && $object->$getter())
+                    ) {
+                        $changed[$property->getName()] = $property;
+                    }
                 }
             }
+
+            if ($changed) {
+                return $this->changed($old, $object, $changed);
+            }
+
+            return false;
         }
 
-        if ($changed) {
-            return $this->changed($old, $object, $changed);
+        protected function changed($old, $object, $properties)
+        {
+            return parent::sync($old, $object);
         }
-
-        return false;
-    }
-
-    protected function changed($old, $object, $properties)
-    {
-        return parent::sync($old, $object);
     }
 }
-

@@ -8,191 +8,192 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * Collection of static header functions.
- *
- * @ingroup Http
- **/
-class HeaderUtils extends StaticFactory
-{
-    private static $headerSent = false;
-    private static $redirectSent = false;
-    private static $cacheLifeTime = 3600;
-    private static $headers = [];
-
-    public static function redirectRaw($url)
+namespace OnPhp {
+    /**
+     * Collection of static header functions.
+     *
+     * @ingroup Http
+     **/
+    class HeaderUtils extends StaticFactory
     {
-        header("Location: {$url}");
+        private static $headerSent = false;
+        private static $redirectSent = false;
+        private static $cacheLifeTime = 3600;
+        private static $headers = [];
 
-        self::$headerSent = true;
-        self::$redirectSent = true;
-    }
+        public static function redirectRaw($url)
+        {
+            header("Location: {$url}");
 
-    public static function redirectBack()
-    {
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            header("Location: {$_SERVER['HTTP_REFERER']}");
             self::$headerSent = true;
             self::$redirectSent = true;
-            return $_SERVER['HTTP_REFERER'];
         }
 
-        return false;
-    }
+        public static function redirectBack()
+        {
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                header("Location: {$_SERVER['HTTP_REFERER']}");
+                self::$headerSent = true;
+                self::$redirectSent = true;
+                return $_SERVER['HTTP_REFERER'];
+            }
 
-    public static function getRequestHeader($name)
-    {
-        $name = self::extractHeader($name, "-", 0);
-        $list = self::getRequestHeaderList();
-
-        if (isset($list[$name])) {
-            return $list[$name];
+            return false;
         }
 
-        return null;
-    }
+        public static function getRequestHeader($name)
+        {
+            $name = self::extractHeader($name, "-", 0);
+            $list = self::getRequestHeaderList();
 
-    private static function extractHeader($name, $delimiter, $length)
-    {
-        return
-            str_replace(
-                " ",
-                "-",
-                ucwords(
-                    strtolower(
-                        str_replace(
-                            $delimiter,
-                            " ",
-                            $length
-                                ? substr($name, $length)
-                                : $name
+            if (isset($list[$name])) {
+                return $list[$name];
+            }
+
+            return null;
+        }
+
+        private static function extractHeader($name, $delimiter, $length)
+        {
+            return
+                str_replace(
+                    " ",
+                    "-",
+                    ucwords(
+                        strtolower(
+                            str_replace(
+                                $delimiter,
+                                " ",
+                                $length
+                                    ? substr($name, $length)
+                                    : $name
+                            )
                         )
                     )
-                )
-            );
-    }
+                );
+        }
 
-    public static function getRequestHeaderList()
-    {
-        if (!empty(self::$headers)) {
+        public static function getRequestHeaderList()
+        {
+            if (!empty(self::$headers)) {
+                return self::$headers;
+            }
+
+            if (function_exists('apache_request_headers')) {
+                self::$headers = apache_request_headers();
+            } else {
+                foreach ($_SERVER as $key => $value) {
+                    if (substr($key, 0, 5) == "HTTP_") {
+                        $name = self::extractHeader($key, "_", 5);
+                        self::$headers[$name] = $value;
+                    }
+                }
+            }
+
             return self::$headers;
         }
 
-        if (function_exists('apache_request_headers')) {
-            self::$headers = apache_request_headers();
-        } else {
-            foreach ($_SERVER as $key => $value) {
-                if (substr($key, 0, 5) == "HTTP_") {
-                    $name = self::extractHeader($key, "_", 5);
-                    self::$headers[$name] = $value;
+        public static function getParsedURI(/* ... */)
+        {
+            if ($num = func_num_args()) {
+                $out = self::getURI();
+                $uri = null;
+                $arr = func_get_args();
+
+                for ($i = 0; $i < $num; ++$i) {
+                    unset($out[$arr[$i]]);
                 }
-            }
-        }
 
-        return self::$headers;
-    }
-
-    public static function getParsedURI(/* ... */)
-    {
-        if ($num = func_num_args()) {
-            $out = self::getURI();
-            $uri = null;
-            $arr = func_get_args();
-
-            for ($i = 0; $i < $num; ++$i) {
-                unset($out[$arr[$i]]);
-            }
-
-            foreach ($out as $key => $val) {
-                if (is_array($val)) {
-                    foreach ($val as $k => $v) {
-                        $uri .= "&{$key}[{$k}]={$v}";
+                foreach ($out as $key => $val) {
+                    if (is_array($val)) {
+                        foreach ($val as $k => $v) {
+                            $uri .= "&{$key}[{$k}]={$v}";
+                        }
+                    } else {
+                        $uri .= "&{$key}={$val}";
                     }
-                } else {
-                    $uri .= "&{$key}={$val}";
                 }
+
+                return $uri;
             }
 
-            return $uri;
+            return null;
         }
 
-        return null;
-    }
+        private static function getURI()
+        {
+            $out = null;
 
-    private static function getURI()
-    {
-        $out = null;
+            parse_str($_SERVER['QUERY_STRING'], $out);
 
-        parse_str($_SERVER['QUERY_STRING'], $out);
+            return $out;
+        }
 
-        return $out;
-    }
+        public static function sendCachedHeader()
+        {
+            header('Cache-control: private, max-age=3600');
 
-    public static function sendCachedHeader()
-    {
-        header('Cache-control: private, max-age=3600');
+            header(
+                'Expires: '
+                . date('D, d M Y H:i:s', date('U') + self::$cacheLifeTime)
+                . ' GMT'
+            );
 
-        header(
-            'Expires: '
-            . date('D, d M Y H:i:s', date('U') + self::$cacheLifeTime)
-            . ' GMT'
-        );
+            self::$headerSent = true;
+        }
 
-        self::$headerSent = true;
-    }
+        public static function sendNotCachedHeader()
+        {
+            header('Cache-control: no-cache');
+            header(
+                'Expires: '
+                . date('D, d M Y H:i:s', date('U') - self::$cacheLifeTime)
+                . ' GMT'
+            );
 
-    public static function sendNotCachedHeader()
-    {
-        header('Cache-control: no-cache');
-        header(
-            'Expires: '
-            . date('D, d M Y H:i:s', date('U') - self::$cacheLifeTime)
-            . ' GMT'
-        );
+            self::$headerSent = true;
+        }
 
-        self::$headerSent = true;
-    }
+        public static function sendContentLength($length)
+        {
+            Assert::isInteger($length);
 
-    public static function sendContentLength($length)
-    {
-        Assert::isInteger($length);
+            header("Content-Length: {$length}");
 
-        header("Content-Length: {$length}");
+            self::$headerSent = true;
+        }
 
-        self::$headerSent = true;
-    }
+        public static function sendHttpStatus(HttpStatus $status)
+        {
+            header($status->toString());
 
-    public static function sendHttpStatus(HttpStatus $status)
-    {
-        header($status->toString());
+            self::$headerSent = true;
+        }
 
-        self::$headerSent = true;
-    }
+        public static function isHeaderSent()
+        {
+            return self::$headerSent;
+        }
 
-    public static function isHeaderSent()
-    {
-        return self::$headerSent;
-    }
+        public static function forceHeaderSent()
+        {
+            self::$headerSent = true;
+        }
 
-    public static function forceHeaderSent()
-    {
-        self::$headerSent = true;
-    }
+        public static function isRedirectSent()
+        {
+            return self::$redirectSent;
+        }
 
-    public static function isRedirectSent()
-    {
-        return self::$redirectSent;
-    }
+        public static function getCacheLifeTime()
+        {
+            return self::$cacheLifeTime;
+        }
 
-    public static function getCacheLifeTime()
-    {
-        return self::$cacheLifeTime;
-    }
-
-    public static function setCacheLifeTime($cacheLifeTime)
-    {
-        self::$cacheLifeTime = $cacheLifeTime;
+        public static function setCacheLifeTime($cacheLifeTime)
+        {
+            self::$cacheLifeTime = $cacheLifeTime;
+        }
     }
 }
 

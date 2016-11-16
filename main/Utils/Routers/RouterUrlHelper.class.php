@@ -9,20 +9,22 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class RouterUrlHelper extends StaticFactory
-{
-    /**
-     * @return string
-     **/
-    public static function url(
-        array $urlOptions = [],
-        $name,
-        $reset = false,
-        $encode = true
-    ) {
-        return
-            RouterRewrite::me()
-                ->assembly($urlOptions, $name, $reset, $encode);
+namespace OnPhp {
+    class RouterUrlHelper extends StaticFactory
+    {
+        /**
+         * @return string
+         **/
+        public static function url(
+            array $urlOptions = [],
+            $name,
+            $reset = false,
+            $encode = true
+        )
+        {
+            return
+                RouterRewrite::me()
+                    ->assembly($urlOptions, $name, $reset, $encode);
+        }
     }
 }
-

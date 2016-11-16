@@ -8,16 +8,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * @ingroup Mail
+     **/
+    interface MailBuilder
+    {
+        /// returns encoded body as string
+        public function getEncodedBody();
 
-/**
- * @ingroup Mail
- **/
-interface MailBuilder
-{
-    /// returns encoded body as string
-    public function getEncodedBody();
-
-    /// returns all related headers as string
-    public function getHeaders();
+        /// returns all related headers as string
+        public function getHeaders();
+    }
 }
-

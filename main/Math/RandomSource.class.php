@@ -8,12 +8,15 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Math
- **/
-interface RandomSource
-{
-    public function getBytes($numberOfBytes);
+namespace OnPhp {
+    /**
+     * Interface RandomSource
+     * @ingroup Math
+     * @package OnPhp
+     */
+    interface RandomSource
+    {
+        public function getBytes($numberOfBytes);
+    }
 }
 

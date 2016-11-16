@@ -1,89 +1,89 @@
 <?php
-
-/***************************************************************************
- *   Copyright (C) 2011 by Sergey S. Sergeev                               *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-abstract class AMQPBaseConfig
-{
-    protected $passive = false;
-    protected $durable = false;
-    protected $autodelete = false;
-    protected $nowait = false;
-    protected $arguments = [];
-
-    public function getPassive()
+namespace OnPhp {
+    /***************************************************************************
+     *   Copyright (C) 2011 by Sergey S. Sergeev                               *
+     *                                                                         *
+     *   This program is free software; you can redistribute it and/or modify  *
+     *   it under the terms of the GNU General Public License as published by  *
+     *   the Free Software Foundation; either version 2 of the License, or     *
+     *   (at your option) any later version.                                   *
+     *                                                                         *
+     ***************************************************************************/
+    abstract class AMQPBaseConfig
     {
-        return $this->passive;
-    }
+        protected $passive = false;
+        protected $durable = false;
+        protected $autodelete = false;
+        protected $nowait = false;
+        protected $arguments = [];
 
-    public function setPassive($passive)
-    {
-        $this->passive = $passive === true;
+        public function getPassive()
+        {
+            return $this->passive;
+        }
 
-        return $this;
-    }
+        public function setPassive($passive)
+        {
+            $this->passive = $passive === true;
 
-    public function getDurable()
-    {
-        return $this->durable;
-    }
+            return $this;
+        }
 
-    public function setDurable($durable)
-    {
-        $this->durable = $durable === true;
+        public function getDurable()
+        {
+            return $this->durable;
+        }
 
-        return $this;
-    }
+        public function setDurable($durable)
+        {
+            $this->durable = $durable === true;
 
-    public function getAutodelete()
-    {
-        return $this->autodelete;
-    }
+            return $this;
+        }
 
-    public function setAutodelete($autodelete)
-    {
-        $this->autodelete = $autodelete === true;
+        public function getAutodelete()
+        {
+            return $this->autodelete;
+        }
 
-        return $this;
-    }
+        public function setAutodelete($autodelete)
+        {
+            $this->autodelete = $autodelete === true;
 
-    public function getNowait()
-    {
-        return $this->nowait;
-    }
+            return $this;
+        }
 
-    public function setNowait($nowait)
-    {
-        $this->nowait = $nowait === true;
+        public function getNowait()
+        {
+            return $this->nowait;
+        }
 
-        return $this;
-    }
+        public function setNowait($nowait)
+        {
+            $this->nowait = $nowait === true;
 
-    /**
-     * @param AMQPBitmaskResolver $resolver
-     * @return integer - it's bitmask
-     **/
-    public function getBitmask(AMQPBitmaskResolver $resolver)
-    {
-        return $resolver->getBitmask($this);
-    }
+            return $this;
+        }
 
-    public function getArguments()
-    {
-        return $this->arguments;
-    }
+        /**
+         * @param AMQPBitmaskResolver $resolver
+         * @return integer - it's bitmask
+         **/
+        public function getBitmask(AMQPBitmaskResolver $resolver)
+        {
+            return $resolver->getBitmask($this);
+        }
 
-    public function setArguments(array $assoc)
-    {
-        $this->arguments = $assoc;
+        public function getArguments()
+        {
+            return $this->arguments;
+        }
 
-        return $this;
+        public function setArguments(array $assoc)
+        {
+            $this->arguments = $assoc;
+
+            return $this;
+        }
     }
 }
-

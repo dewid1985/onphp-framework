@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+namespace OnPhp;
 
 function help()
 {
@@ -48,32 +49,35 @@ function init()
     define('ONPHP_META_PATTERNS', ONPHP_META_PATH . 'patterns' . DIRECTORY_SEPARATOR);
     define('ONPHP_META_TYPES', ONPHP_META_PATH . 'types' . DIRECTORY_SEPARATOR);
 
-    AutoloaderPool::get('onPHP')->
-    addPaths([
-        ONPHP_META_BUILDERS,
-        ONPHP_META_PATTERNS,
-        ONPHP_META_TYPES,
-    ]);
+    AutoloaderPool::get('onPHP')
+        ->addPaths(
+            [
+                ONPHP_META_BUILDERS,
+                ONPHP_META_PATTERNS,
+                ONPHP_META_TYPES,
+            ],
+            'OnPhp'
+        );
 
     Assert::isTrue(defined('PATH_CLASSES'), 'constant PATH_CLASSES must be defined');
 
     if (!defined('ONPHP_META_DAO_DIR')) {
         define(
-        'ONPHP_META_DAO_DIR',
+            'ONPHP_META_DAO_DIR',
             PATH_CLASSES . 'DAOs' . DIRECTORY_SEPARATOR
         );
     }
 
     if (!defined('ONPHP_META_BUSINESS_DIR')) {
         define(
-        'ONPHP_META_BUSINESS_DIR',
+            'ONPHP_META_BUSINESS_DIR',
             PATH_CLASSES . 'Business' . DIRECTORY_SEPARATOR
         );
     }
 
     if (!defined('ONPHP_META_PROTO_DIR')) {
         define(
-        'ONPHP_META_PROTO_DIR',
+            'ONPHP_META_PROTO_DIR',
             PATH_CLASSES . 'Proto' . DIRECTORY_SEPARATOR
         );
     }
@@ -82,21 +86,21 @@ function init()
 
     if (!defined('ONPHP_META_AUTO_BUSINESS_DIR')) {
         define(
-        'ONPHP_META_AUTO_BUSINESS_DIR',
+            'ONPHP_META_AUTO_BUSINESS_DIR',
             ONPHP_META_AUTO_DIR
             . 'Business' . DIRECTORY_SEPARATOR
         );
     }
 
     define(
-    'ONPHP_META_AUTO_PROTO_DIR',
+        'ONPHP_META_AUTO_PROTO_DIR',
         ONPHP_META_AUTO_DIR
         . 'Proto' . DIRECTORY_SEPARATOR
     );
 
     if (!defined('ONPHP_META_AUTO_DAO_DIR')) {
         define(
-        'ONPHP_META_AUTO_DAO_DIR',
+            'ONPHP_META_AUTO_DAO_DIR',
             ONPHP_META_AUTO_DIR
             . 'DAOs' . DIRECTORY_SEPARATOR
         );

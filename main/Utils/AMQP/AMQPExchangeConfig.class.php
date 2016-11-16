@@ -12,51 +12,52 @@
 /**
  * @see http://www.rabbitmq.com/amqp-0-9-1-quickref.html#exchange.declare
  **/
-class AMQPExchangeConfig extends AMQPBaseConfig
-{
-    protected $internal = null;
-
-    /**
-     * @var AMQPExchangeType
-     **/
-    protected $type = null;
-
-    /**
-     * @return AMQPExchangeType
-     **/
-    public function getType()
+namespace OnPhp {
+    class AMQPExchangeConfig extends AMQPBaseConfig
     {
-        return $this->type;
-    }
+        protected $internal = null;
 
-    /**
-     * @param AMQPExchangeType $type
-     * @return AMQPExchangeConfig
-     **/
-    public function setType(AMQPExchangeType $type)
-    {
-        $this->type = $type;
+        /**
+         * @var AMQPExchangeType
+         **/
+        protected $type = null;
 
-        return $this;
-    }
+        /**
+         * @return AMQPExchangeType
+         **/
+        public function getType()
+        {
+            return $this->type;
+        }
 
-    /**
-     * @return null
-     */
-    public function getInternal()
-    {
-        return $this->internal;
-    }
+        /**
+         * @param AMQPExchangeType $type
+         * @return AMQPExchangeConfig
+         **/
+        public function setType(AMQPExchangeType $type)
+        {
+            $this->type = $type;
 
-    /**
-     * @param boolean $internal
-     * @return AMQPExchangeConfig
-     **/
-    public function setInternal($internal)
-    {
-        $this->internal = $internal;
+            return $this;
+        }
 
-        return $this;
+        /**
+         * @return null
+         */
+        public function getInternal()
+        {
+            return $this->internal;
+        }
+
+        /**
+         * @param boolean $internal
+         * @return AMQPExchangeConfig
+         **/
+        public function setInternal($internal)
+        {
+            $this->internal = $internal;
+
+            return $this;
+        }
     }
 }
-

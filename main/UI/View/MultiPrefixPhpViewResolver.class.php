@@ -8,198 +8,198 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * View resolver for php templates with multiple prefix support
- *
- * Will resolve view to first readable template from
- * supplied prefixes list
- *
- * @ingroup Flow
- **/
-class MultiPrefixPhpViewResolver implements ViewResolver
-{
-    private $prefixes = [];
-    private $lastAlias = null;
-
-    private $disabled = [];
-
-    private $postfix = EXT_TPL;
-    private $viewClassName = 'SimplePhpView';
-
-
+namespace OnPhp {
     /**
-     * @return MultiPrefixPhpViewResolver
+     * View resolver for php templates with multiple prefix support
+     *
+     * Will resolve view to first readable template from
+     * supplied prefixes list
+     *
+     * @ingroup Flow
      **/
-    public function addFirstPrefix($prefix)
+    class MultiPrefixPhpViewResolver implements ViewResolver
     {
-        array_unshift($this->prefixes, $prefix);
+        private $prefixes = [];
+        private $lastAlias = null;
 
-        return $this;
-    }
+        private $disabled = [];
 
-    /**
-     * @return MultiPrefixPhpViewResolver
-     **/
-    public function addPrefix($prefix, $alias = null)
-    {
-        if (!$alias) {
-            $alias = $this->getAutoAlias($prefix);
+        private $postfix = EXT_TPL;
+        private $viewClassName = 'SimplePhpView';
+
+
+        /**
+         * @return MultiPrefixPhpViewResolver
+         **/
+        public function addFirstPrefix($prefix)
+        {
+            array_unshift($this->prefixes, $prefix);
+
+            return $this;
         }
 
-        Assert::isFalse(
-            isset($this->prefixes[$alias]),
-            'alias already exists'
-        );
+        /**
+         * @return MultiPrefixPhpViewResolver
+         **/
+        public function addPrefix($prefix, $alias = null)
+        {
+            if (!$alias) {
+                $alias = $this->getAutoAlias($prefix);
+            }
 
-        $this->prefixes[$alias] = $prefix;
+            Assert::isFalse(
+                isset($this->prefixes[$alias]),
+                'alias already exists'
+            );
 
-        $this->lastAlias = $alias;
+            $this->prefixes[$alias] = $prefix;
 
-        return $this;
-    }
+            $this->lastAlias = $alias;
 
-    private function getAutoAlias($prefix)
-    {
-        return md5($prefix);
-    }
-
-    public function getPrefixes()
-    {
-        return $this->prefixes;
-    }
-
-    /**
-     * @return MultiPrefixPhpViewResolver
-     **/
-    public function dropPrefixes()
-    {
-        $this->prefixes = [];
-        return $this;
-    }
-
-    public function isPrefixDisabled($alias)
-    {
-        Assert::isIndexExists(
-            $this->prefixes,
-            $alias,
-            'no such alias: ' . $alias
-        );
-
-        return !empty($this->disabled[$alias]);
-    }
-
-    public function enablePrefix($alias)
-    {
-        return $this->disablePrefix($alias, false);
-    }
-
-    /**
-     * @return MultiPrefixPhpViewResolver
-     **/
-    public function disablePrefix($alias = null, $disabled = true)
-    {
-        if (!$alias) {
-            $alias = $this->lastAlias;
+            return $this;
         }
 
-        Assert::isNotNull($alias, 'nothing to disable');
-        Assert::isIndexExists(
-            $this->prefixes,
-            $alias,
-            'no such alias: ' . $alias
-        );
-
-        $this->disabled[$alias] = $disabled;
-
-        return $this;
-    }
-
-    public function getPostfix()
-    {
-        return $this->postfix;
-    }
-
-    /**
-     * @return MultiPrefixPhpViewResolver
-     **/
-    public function setPostfix($postfix)
-    {
-        $this->postfix = $postfix;
-        return $this;
-    }
-
-    /**
-     * @return SimplePhpView
-     **/
-    public function resolveViewName($viewName)
-    {
-        Assert::isFalse(
-            ($this->prefixes === []),
-            'specify at least one prefix'
-        );
-
-        if ($prefix = $this->findPrefix($viewName)) {
-            return $this->makeView($prefix, $viewName);
+        private function getAutoAlias($prefix)
+        {
+            return md5($prefix);
         }
 
-        if (!$this->findPrefix($viewName, false)) {
-            throw new WrongArgumentException(
-                'can not resolve view: ' . $viewName
+        public function getPrefixes()
+        {
+            return $this->prefixes;
+        }
+
+        /**
+         * @return MultiPrefixPhpViewResolver
+         **/
+        public function dropPrefixes()
+        {
+            $this->prefixes = [];
+            return $this;
+        }
+
+        public function isPrefixDisabled($alias)
+        {
+            Assert::isIndexExists(
+                $this->prefixes,
+                $alias,
+                'no such alias: ' . $alias
+            );
+
+            return !empty($this->disabled[$alias]);
+        }
+
+        public function enablePrefix($alias)
+        {
+            return $this->disablePrefix($alias, false);
+        }
+
+        /**
+         * @return MultiPrefixPhpViewResolver
+         **/
+        public function disablePrefix($alias = null, $disabled = true)
+        {
+            if (!$alias) {
+                $alias = $this->lastAlias;
+            }
+
+            Assert::isNotNull($alias, 'nothing to disable');
+            Assert::isIndexExists(
+                $this->prefixes,
+                $alias,
+                'no such alias: ' . $alias
+            );
+
+            $this->disabled[$alias] = $disabled;
+
+            return $this;
+        }
+
+        public function getPostfix()
+        {
+            return $this->postfix;
+        }
+
+        /**
+         * @return MultiPrefixPhpViewResolver
+         **/
+        public function setPostfix($postfix)
+        {
+            $this->postfix = $postfix;
+            return $this;
+        }
+
+        /**
+         * @return SimplePhpView
+         **/
+        public function resolveViewName($viewName)
+        {
+            Assert::isFalse(
+                ($this->prefixes === []),
+                'specify at least one prefix'
+            );
+
+            if ($prefix = $this->findPrefix($viewName)) {
+                return $this->makeView($prefix, $viewName);
+            }
+
+            if (!$this->findPrefix($viewName, false)) {
+                throw new WrongArgumentException(
+                    'can not resolve view: ' . $viewName
+                );
+            }
+
+            return new EmptyView();
+        }
+
+        protected function findPrefix($viewName, $checkDisabled = true)
+        {
+            foreach ($this->prefixes as $alias => $prefix) {
+                if (
+                    $checkDisabled
+                    && isset($this->disabled[$alias])
+                    && $this->disabled[$alias]
+                ) {
+                    continue;
+                }
+
+                if (file_exists($prefix . $viewName . $this->postfix)) {
+                    return $prefix;
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * @return View
+         **/
+        protected function makeView($prefix, $viewName)
+        {
+            return new $this->viewClassName(
+                $prefix . $viewName . $this->postfix,
+                $this
             );
         }
 
-        return new EmptyView();
-    }
-
-    protected function findPrefix($viewName, $checkDisabled = true)
-    {
-        foreach ($this->prefixes as $alias => $prefix) {
-            if (
-                $checkDisabled
-                && isset($this->disabled[$alias])
-                && $this->disabled[$alias]
-            ) {
-                continue;
-            }
-
-            if (file_exists($prefix . $viewName . $this->postfix)) {
-                return $prefix;
-            }
+        public function viewExists($viewName)
+        {
+            return ($this->findPrefix($viewName) !== null);
         }
 
-        return null;
-    }
+        public function getViewClassName()
+        {
+            return $this->viewClassName;
+        }
 
-    /**
-     * @return View
-     **/
-    protected function makeView($prefix, $viewName)
-    {
-        return new $this->viewClassName(
-            $prefix . $viewName . $this->postfix,
-            $this
-        );
-    }
+        /**
+         * @return MultiPrefixPhpViewResolver
+         **/
+        public function setViewClassName($viewClassName)
+        {
+            $this->viewClassName = $viewClassName;
 
-    public function viewExists($viewName)
-    {
-        return ($this->findPrefix($viewName) !== null);
-    }
-
-    public function getViewClassName()
-    {
-        return $this->viewClassName;
-    }
-
-    /**
-     * @return MultiPrefixPhpViewResolver
-     **/
-    public function setViewClassName($viewClassName)
-    {
-        $this->viewClassName = $viewClassName;
-
-        return $this;
+            return $this;
+        }
     }
 }
-

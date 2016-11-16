@@ -8,517 +8,519 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup MetaBase
- **/
-class MetaClassProperty
-{
-    private $class = null;
-
-    private $name = null;
-    private $columnName = null;
-
-    private $type = null;
-    private $size = null;
-
-    private $required = false;
-    private $identifier = false;
-
-    private $relation = null;
-
-    private $strategy = null;
-
-    public function __construct(
-        $name,
-        BasePropertyType $type,
-        MetaClass $class
-    ) {
-        $this->name = $name;
-
-        $this->type = $type;
-
-        $this->class = $class;
-    }
-
-    public function equals(MetaClassProperty $property)
-    {
-        return (
-            ($property->getName() == $this->getName())
-            && ($property->getColumnName() == $this->getColumnName())
-            && ($property->getType() == $this->getType())
-            && ($property->getSize() == $this->getSize())
-            && ($property->getRelation() == $this->getRelation())
-            && ($property->isRequired() == $this->isRequired())
-            && ($property->isIdentifier() == $this->isIdentifier())
-        );
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
+namespace OnPhp {
     /**
-     * @return MetaClassProperty
+     * @ingroup MetaBase
      **/
-    public function setName($name)
+    class MetaClassProperty
     {
-        $this->name = $name;
+        private $class = null;
 
-        return $this;
-    }
+        private $name = null;
+        private $columnName = null;
 
-    public function getColumnName()
-    {
-        return $this->columnName;
-    }
+        private $type = null;
+        private $size = null;
 
-    /**
-     * @return MetaClassProperty
-     **/
-    public function setColumnName($name)
-    {
-        $this->columnName = $name;
+        private $required = false;
+        private $identifier = false;
 
-        return $this;
-    }
+        private $relation = null;
 
-    /**
-     * @return BasePropertyType
-     **/
-    public function getType()
-    {
-        return $this->type;
-    }
+        private $strategy = null;
 
-    public function getSize()
-    {
-        return $this->size;
-    }
+        public function __construct(
+            $name,
+            BasePropertyType $type,
+            MetaClass $class
+        )
+        {
+            $this->name = $name;
 
-    /**
-     * @throws WrongArgumentException
-     * @return MetaClassProperty
-     **/
-    public function setSize($size)
-    {
-        if ($this->type instanceof NumericType) {
-            if (strpos($size, ',') !== false) {
-                list($size, $precision) = explode(',', $size, 2);
+            $this->type = $type;
 
-                $this->type->setPrecision($precision);
-            }
+            $this->class = $class;
         }
 
-        Assert::isInteger(
-            $size,
-            'only integers allowed in size parameter'
-        );
-
-        if ($this->type->isMeasurable()) {
-            $this->size = $size;
-        } else {
-            throw new WrongArgumentException(
-                "size not allowed for '"
-                . $this->getName() . '::' . get_class($this->type)
-                . "' type"
+        public function equals(MetaClassProperty $property)
+        {
+            return (
+                ($property->getName() == $this->getName())
+                && ($property->getColumnName() == $this->getColumnName())
+                && ($property->getType() == $this->getType())
+                && ($property->getSize() == $this->getSize())
+                && ($property->getRelation() == $this->getRelation())
+                && ($property->isRequired() == $this->isRequired())
+                && ($property->isIdentifier() == $this->isIdentifier())
             );
         }
 
-        return $this;
-    }
+        public function getName()
+        {
+            return $this->name;
+        }
 
-    /**
-     * @return MetaRelation
-     **/
-    public function getRelation()
-    {
-        return $this->relation;
-    }
+        /**
+         * @return MetaClassProperty
+         **/
+        public function setName($name)
+        {
+            $this->name = $name;
 
-    /**
-     * @return MetaClassProperty
-     **/
-    public function setRelation(MetaRelation $relation)
-    {
-        $this->relation = $relation;
+            return $this;
+        }
 
-        return $this;
-    }
+        public function getColumnName()
+        {
+            return $this->columnName;
+        }
 
-    public function isRequired()
-    {
-        return $this->required;
-    }
+        /**
+         * @return MetaClassProperty
+         **/
+        public function setColumnName($name)
+        {
+            $this->columnName = $name;
 
-    public function isIdentifier()
-    {
-        return $this->identifier;
-    }
+            return $this;
+        }
 
-    /**
-     * @return MetaClassProperty
-     **/
-    public function setIdentifier($really = false)
-    {
-        $this->identifier = ($really === true);
+        /**
+         * @return BasePropertyType
+         **/
+        public function getType()
+        {
+            return $this->type;
+        }
 
-        return $this;
-    }
+        public function getSize()
+        {
+            return $this->size;
+        }
 
-    /**
-     * @return MetaClassProperty
-     **/
-    public function getConvertedName()
-    {
-        return strtolower(
-            preg_replace(':([A-Z]):', '_\1', $this->name)
-        );
-    }
+        /**
+         * @throws WrongArgumentException
+         * @return MetaClassProperty
+         **/
+        public function setSize($size)
+        {
+            if ($this->type instanceof NumericType) {
+                if (strpos($size, ',') !== false) {
+                    list($size, $precision) = explode(',', $size, 2);
 
-    public function isOptional()
-    {
-        return !$this->required;
-    }
+                    $this->type->setPrecision($precision);
+                }
+            }
 
-    /**
-     * @return MetaClassProperty
-     **/
-    public function required()
-    {
-        $this->required = true;
+            Assert::isInteger(
+                $size,
+                'only integers allowed in size parameter'
+            );
 
-        return $this;
-    }
-
-    /**
-     * @return MetaClassProperty
-     **/
-    public function optional()
-    {
-        $this->required = false;
-
-        return $this;
-    }
-
-    /**
-     * @return MetaClassProperty
-     **/
-    public function setFetchStrategy(FetchStrategy $strategy)
-    {
-        $this->strategy = $strategy;
-
-        return $this;
-    }
-
-    /**
-     * @return FetchStrategy
-     **/
-    public function getFetchStrategy()
-    {
-        return $this->strategy;
-    }
-
-    public function toMethods(
-        MetaClass $class,
-        MetaClassProperty $holder = null
-    ) {
-        return $this->type->toMethods($class, $this, $holder);
-    }
-
-    public function toColumn()
-    {
-        if (
-            $this->getType() instanceof ObjectType
-            && (
-                ($this->getType() instanceof InternalType)
-                || (
-                    !$this->getType()->isGeneric()
-                    && (
-                        $this->getType()->getClass()->getPattern()
-                        instanceof ValueObjectPattern
-                    )
-                )
-            )
-        ) {
-            $columns = [];
-
-            $prefix =
-                $this->getType() instanceof InternalType
-                    ? $this->getColumnName() . '_'
-                    : null;
-
-            $remote = $this->getType()->getClass();
-
-            foreach ($remote->getAllProperties() as $property) {
-                $columns[] = $property->buildColumn(
-                    $prefix . $property->getRelationColumnName()
+            if ($this->type->isMeasurable()) {
+                $this->size = $size;
+            } else {
+                throw new WrongArgumentException(
+                    "size not allowed for '"
+                    . $this->getName() . '::' . get_class($this->type)
+                    . "' type"
                 );
             }
 
-            return $columns;
+            return $this;
         }
 
-        return $this->buildColumn($this->getRelationColumnName());
-    }
+        /**
+         * @return MetaRelation
+         **/
+        public function getRelation()
+        {
+            return $this->relation;
+        }
 
-    private function buildColumn($columnName)
-    {
-        if (is_array($columnName)) {
-            $out = [];
+        /**
+         * @return MetaClassProperty
+         **/
+        public function setRelation(MetaRelation $relation)
+        {
+            $this->relation = $relation;
 
-            foreach ($columnName as $name) {
-                $out[] = $this->buildColumn($name);
+            return $this;
+        }
+
+        public function isRequired()
+        {
+            return $this->required;
+        }
+
+        public function isIdentifier()
+        {
+            return $this->identifier;
+        }
+
+        /**
+         * @return MetaClassProperty
+         **/
+        public function setIdentifier($really = false)
+        {
+            $this->identifier = ($really === true);
+
+            return $this;
+        }
+
+        /**
+         * @return MetaClassProperty
+         **/
+        public function getConvertedName()
+        {
+            return strtolower(
+                preg_replace(':([A-Z]):', '_\1', $this->name)
+            );
+        }
+
+        public function isOptional()
+        {
+            return !$this->required;
+        }
+
+        /**
+         * @return MetaClassProperty
+         **/
+        public function required()
+        {
+            $this->required = true;
+
+            return $this;
+        }
+
+        /**
+         * @return MetaClassProperty
+         **/
+        public function optional()
+        {
+            $this->required = false;
+
+            return $this;
+        }
+
+        /**
+         * @return MetaClassProperty
+         **/
+        public function setFetchStrategy(FetchStrategy $strategy)
+        {
+            $this->strategy = $strategy;
+
+            return $this;
+        }
+
+        /**
+         * @return FetchStrategy
+         **/
+        public function getFetchStrategy()
+        {
+            return $this->strategy;
+        }
+
+        public function toMethods(
+            MetaClass $class,
+            MetaClassProperty $holder = null
+        )
+        {
+            return $this->type->toMethods($class, $this, $holder);
+        }
+
+        public function toColumn()
+        {
+            if (
+                $this->getType() instanceof ObjectType
+                && (
+                    ($this->getType() instanceof InternalType)
+                    || (
+                        !$this->getType()->isGeneric()
+                        && (
+                            $this->getType()->getClass()->getPattern()
+                            instanceof ValueObjectPattern
+                        )
+                    )
+                )
+            ) {
+                $columns = [];
+
+                $prefix =
+                    $this->getType() instanceof InternalType
+                        ? $this->getColumnName() . '_'
+                        : null;
+
+                $remote = $this->getType()->getClass();
+
+                foreach ($remote->getAllProperties() as $property) {
+                    $columns[] = $property->buildColumn(
+                        $prefix . $property->getRelationColumnName()
+                    );
+                }
+
+                return $columns;
             }
 
-            return $out;
+            return $this->buildColumn($this->getRelationColumnName());
         }
 
-        $column = <<<EOT
+        private function buildColumn($columnName)
+        {
+            if (is_array($columnName)) {
+                $out = [];
+
+                foreach ($columnName as $name) {
+                    $out[] = $this->buildColumn($name);
+                }
+
+                return $out;
+            }
+
+            $column = <<<EOT
 addColumn(
             (new DBColumn(
                 {$this->type->toColumnType($this->size)}
 EOT;
 
-        if ($this->required) {
-            $column .= <<<EOT
+            if ($this->required) {
+                $column .= <<<EOT
 \n                    ->setNull(false)
 EOT;
-        }
+            }
 
-        if ($this->size) {
-            $column .= <<<EOT
+            if ($this->size) {
+                $column .= <<<EOT
 \n                    ->setSize({$this->size})
 EOT;
-        }
+            }
 
-        if ($this->type instanceof NumericType) {
-            $column .= <<<EOT
+            if ($this->type instanceof NumericType) {
+                $column .= <<<EOT
 \n                    ->setPrecision({$this->type->getPrecision()})
 EOT;
-        }
+            }
 
-        $column .= <<<EOT
+            $column .= <<<EOT
 , '{$columnName}'
             ))
 EOT;
 
-        if ($this->identifier) {
-            $column .= <<<EOT
+            if ($this->identifier) {
+                $column .= <<<EOT
 \n                ->setPrimaryKey(true)
 EOT;
 
-            if ($this->getType() instanceof IntegerType) {
-                $column .= <<<EOT
+                if ($this->getType() instanceof IntegerType) {
+                    $column .= <<<EOT
 \n                ->setAutoincrement(true)\n
 EOT;
-            }
-        }
-
-        if ($this->type->hasDefault()) {
-            $default = $this->type->getDefault();
-
-            if ($this->type instanceof BooleanType) {
-                if ($default) {
-                    $default = 'true';
-                } else {
-                    $default = 'false';
                 }
-            } elseif ($this->type instanceof StringType) {
-                $default = "'{$default}'";
+            }
+
+            if ($this->type->hasDefault()) {
+                $default = $this->type->getDefault();
+
+                if ($this->type instanceof BooleanType) {
+                    if ($default) {
+                        $default = 'true';
+                    } else {
+                        $default = 'false';
+                    }
+                } elseif ($this->type instanceof StringType) {
+                    $default = "'{$default}'";
+                }
+
+                $column .= <<<EOT
+\n                ->setDefault({$default})\n
+EOT;
             }
 
             $column .= <<<EOT
-\n                ->setDefault({$default})\n
-EOT;
-        }
-
-        $column .= <<<EOT
 
         )
 EOT;
 
-        return $column;
-    }
+            return $column;
+        }
 
-    public function getRelationColumnName()
-    {
-        if ($this->type instanceof ObjectType && !$this->type->isGeneric()) {
-            if ($this->relation->getId() == MetaRelation::MANY_TO_MANY) {
-                $columnName = $this->type->getClass()->getTableName() . '_id';
+        public function getRelationColumnName()
+        {
+            if ($this->type instanceof ObjectType && !$this->type->isGeneric()) {
+                if ($this->relation->getId() == MetaRelation::MANY_TO_MANY) {
+                    $columnName = $this->type->getClass()->getTableName() . '_id';
+                } else {
+                    $columnName = $this->getColumnName();
+                }
+            } elseif ($this->type instanceof InternalType) {
+                $out = [];
+                foreach ($this->type->getSuffixList() as $suffix) {
+                    $out[] = $this->getColumnName() . '_' . $suffix;
+                }
+                return $out;
             } else {
                 $columnName = $this->getColumnName();
             }
-        } elseif ($this->type instanceof InternalType) {
-            $out = [];
-            foreach ($this->type->getSuffixList() as $suffix) {
-                $out[] = $this->getColumnName() . '_' . $suffix;
-            }
-            return $out;
-        } else {
-            $columnName = $this->getColumnName();
+
+            return $columnName;
         }
 
-        return $columnName;
-    }
+        public function toLightProperty(MetaClass $holder)
+        {
+            $className = null;
 
-    public function toLightProperty(MetaClass $holder)
-    {
-        $className = null;
-
-        if (
-            ($this->getRelationId() == MetaRelation::ONE_TO_MANY)
-            || ($this->getRelationId() == MetaRelation::MANY_TO_MANY)
-        ) {
-            // collections
-            $primitiveName = 'identifierList';
-        } elseif ($this->isIdentifier()) {
-            if ($this->getType() instanceof IntegerType) {
-                $primitiveName = 'integerIdentifier';
-                $className = $holder->getName();
-            } elseif ($this->getType() instanceof StringType) {
-                $primitiveName = 'scalarIdentifier';
-                $className = $holder->getName();
-            } else {
-                $primitiveName = $this->getType()->getPrimitiveName();
-            }
-        } elseif (
-            !$this->isIdentifier()
-            && !$this->getType()->isGeneric()
-            && ($this->getType() instanceof ObjectType)
-        ) {
-            $pattern = $this->getType()->getClass()->getPattern();
-
-            if ($pattern instanceof EnumerationClassPattern) {
-                $primitiveName = 'enumeration';
-            } elseif ($pattern instanceof EnumClassPattern) {
-                $primitiveName = 'enum';
-            } elseif (
-                $pattern instanceof DictionaryClassPattern
-                && ($identifier = $this->getType()->getClass()->getIdentifier())
+            if (
+                ($this->getRelationId() == MetaRelation::ONE_TO_MANY)
+                || ($this->getRelationId() == MetaRelation::MANY_TO_MANY)
             ) {
-                if ($identifier->getType() instanceof IntegerType) {
+                // collections
+                $primitiveName = 'identifierList';
+            } elseif ($this->isIdentifier()) {
+                if ($this->getType() instanceof IntegerType) {
                     $primitiveName = 'integerIdentifier';
-                } elseif ($identifier->getType() instanceof StringType) {
+                    $className = $holder->getName();
+                } elseif ($this->getType() instanceof StringType) {
                     $primitiveName = 'scalarIdentifier';
+                    $className = $holder->getName();
+                } else {
+                    $primitiveName = $this->getType()->getPrimitiveName();
+                }
+            } elseif (
+                !$this->isIdentifier()
+                && !$this->getType()->isGeneric()
+                && ($this->getType() instanceof ObjectType)
+            ) {
+                $pattern = $this->getType()->getClass()->getPattern();
+
+                if ($pattern instanceof EnumerationClassPattern) {
+                    $primitiveName = 'enumeration';
+                } elseif ($pattern instanceof EnumClassPattern) {
+                    $primitiveName = 'enum';
+                } elseif (
+                    $pattern instanceof DictionaryClassPattern
+                    && ($identifier = $this->getType()->getClass()->getIdentifier())
+                ) {
+                    if ($identifier->getType() instanceof IntegerType) {
+                        $primitiveName = 'integerIdentifier';
+                    } elseif ($identifier->getType() instanceof StringType) {
+                        $primitiveName = 'scalarIdentifier';
+                    } else {
+                        $primitiveName = $this->getType()->getPrimitiveName();
+                    }
                 } else {
                     $primitiveName = $this->getType()->getPrimitiveName();
                 }
             } else {
                 $primitiveName = $this->getType()->getPrimitiveName();
             }
-        } else {
-            $primitiveName = $this->getType()->getPrimitiveName();
-        }
 
-        $inner = false;
+            $inner = false;
 
-        if ($this->getType() instanceof ObjectType) {
-            $className = $this->getType()->getClassName();
+            if ($this->getType() instanceof ObjectType) {
+                $className = $this->getType()->getClassName();
 
-            if (!$this->getType()->isGeneric()) {
-                $class = $this->getType()->getClass();
-                $pattern = $class->getPattern();
+                if (!$this->getType()->isGeneric()) {
+                    $class = $this->getType()->getClass();
+                    $pattern = $class->getPattern();
 
-                if ($pattern instanceof InternalClassPattern) {
-                    $className = $holder->getName();
-                }
+                    if ($pattern instanceof InternalClassPattern) {
+                        $className = $holder->getName();
+                    }
 
-                if (
-                    (
-                        ($pattern instanceof InternalClassPattern)
-                        || ($pattern instanceof ValueObjectPattern)
-                    ) && (
-                        $className <> $holder->getName()
-                    )
-                ) {
-                    $inner = true;
+                    if (
+                        (
+                            ($pattern instanceof InternalClassPattern)
+                            || ($pattern instanceof ValueObjectPattern)
+                        ) && (
+                            $className <> $holder->getName()
+                        )
+                    ) {
+                        $inner = true;
+                    }
                 }
             }
-        }
 
-        $propertyClassName = (
-        $inner
-            ? 'InnerMetaProperty'
-            : 'LightMetaProperty'
-        );
-
-        if (
-        ($this->getType() instanceof IntegerType)
-        ) {
-            $size = $this->getType()->getSize();
-        } elseif (
-            ($this->getType() instanceof ObjectType)
-            && ($this->getRelationId() == MetaRelation::ONE_TO_ONE)
-            && ($identifier = $this->getType()->getClass()->getIdentifier())
-            && ($this->getType()->isMeasurable())
-        ) {
-            $size = $identifier->getType()->getSize();
-        } elseif ($this->getType()->isMeasurable()) {
-            $size = $this->size;
-        } else {
-            $size = null;
-        }
-
-        return
-            call_user_func_array(
-                [$propertyClassName, 'fill'],
-                [
-                    new $propertyClassName,
-                    $this->getName(),
-                    $this->getName() <> $this->getRelationColumnName()
-                        ? $this->getRelationColumnName()
-                        : null,
-                    $primitiveName,
-                    $className,
-                    $size,
-                    $this->isRequired(),
-                    $this->getType()->isGeneric(),
-                    $inner,
-                    $this->getRelationId(),
-                    $this->getFetchStrategyId()
-                ]
+            $propertyClassName = (
+            $inner
+                ? 'InnerMetaProperty'
+                : 'LightMetaProperty'
             );
-    }
 
-    public function getRelationId()
-    {
-        if ($this->relation) {
-            return $this->relation->getId();
+            if (
+            ($this->getType() instanceof IntegerType)
+            ) {
+                $size = $this->getType()->getSize();
+            } elseif (
+                ($this->getType() instanceof ObjectType)
+                && ($this->getRelationId() == MetaRelation::ONE_TO_ONE)
+                && ($identifier = $this->getType()->getClass()->getIdentifier())
+                && ($this->getType()->isMeasurable())
+            ) {
+                $size = $identifier->getType()->getSize();
+            } elseif ($this->getType()->isMeasurable()) {
+                $size = $this->size;
+            } else {
+                $size = null;
+            }
+
+            return
+                call_user_func_array(
+                    [$propertyClassName, 'fill'],
+                    [
+                        new $propertyClassName,
+                        $this->getName(),
+                        $this->getName() <> $this->getRelationColumnName()
+                            ? $this->getRelationColumnName()
+                            : null,
+                        $primitiveName,
+                        $className,
+                        $size,
+                        $this->isRequired(),
+                        $this->getType()->isGeneric(),
+                        $inner,
+                        $this->getRelationId(),
+                        $this->getFetchStrategyId()
+                    ]
+                );
         }
 
-        return null;
-    }
+        public function getRelationId()
+        {
+            if ($this->relation) {
+                return $this->relation->getId();
+            }
 
-    public function getFetchStrategyId()
-    {
-        if ($this->strategy) {
-            return $this->strategy->getId();
-        } elseif (
-            $this->getClass()->getFetchStrategyId()
-            && ($this->getRelationId() == MetaRelation::ONE_TO_ONE)
-            && ($this->getType() instanceof ObjectType)
-            && (!$this->getType()->isGeneric())
-        ) {
-            return $this->getClass()->getFetchStrategyId();
+            return null;
         }
 
-        return null;
-    }
+        public function getFetchStrategyId()
+        {
+            if ($this->strategy) {
+                return $this->strategy->getId();
+            } elseif (
+                $this->getClass()->getFetchStrategyId()
+                && ($this->getRelationId() == MetaRelation::ONE_TO_ONE)
+                && ($this->getType() instanceof ObjectType)
+                && (!$this->getType()->isGeneric())
+            ) {
+                return $this->getClass()->getFetchStrategyId();
+            }
 
-    /**
-     * @return MetaClass
-     **/
-    public function getClass()
-    {
-        return $this->class;
-    }
+            return null;
+        }
 
-    private function toVarName($name)
-    {
-        return strtolower($name[0]) . substr($name, 1);
+        /**
+         * @return MetaClass
+         **/
+        public function getClass()
+        {
+            return $this->class;
+        }
+
+        private function toVarName($name)
+        {
+            return strtolower($name[0]) . substr($name, 1);
+        }
     }
 }
-
 ?>

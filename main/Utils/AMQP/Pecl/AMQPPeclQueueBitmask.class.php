@@ -8,23 +8,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @see http://www.php.net/manual/en/amqp.constants.php
- **/
-class AMQPPeclQueueBitmask extends AMQPPeclBaseBitmask
-{
-    public function getBitmask($config)
+namespace OnPhp {
+    /**
+     * @see http://www.php.net/manual/en/amqp.constants.php
+     **/
+    class AMQPPeclQueueBitmask extends AMQPPeclBaseBitmask
     {
-        Assert::isInstance($config, 'AMQPQueueConfig');
+        public function getBitmask($config)
+        {
+            Assert::isInstance($config, 'AMQPQueueConfig');
 
-        $bitmask = parent::getBitmask($config);
+            $bitmask = parent::getBitmask($config);
 
-        if ($config->getExclusive()) {
-            $bitmask = $bitmask | AMQP_EXCLUSIVE;
+            if ($config->getExclusive()) {
+                $bitmask = $bitmask | AMQP_EXCLUSIVE;
+            }
+
+            return $bitmask;
         }
-
-        return $bitmask;
     }
 }
-

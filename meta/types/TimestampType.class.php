@@ -8,21 +8,21 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-final class TimestampType extends DateType
-{
-    public function getPrimitiveName()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    final class TimestampType extends DateType
     {
-        return 'timestamp';
-    }
+        public function getPrimitiveName()
+        {
+            return 'timestamp';
+        }
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::TIMESTAMP))';
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::TIMESTAMP))';
+        }
     }
 }
-
 ?>

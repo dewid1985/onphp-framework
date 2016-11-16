@@ -8,116 +8,116 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Http
- **/
-class CurlHttpResponse implements HttpResponse
-{
-    private $headerParser = null;
-    private $body = null;
-    private $status = null;
-    private $maxFileSize = null;
-    private $currentFileSize = null;
-
-    public function __construct()
-    {
-        $this->headerParser = new HeaderParser();
-        $this->currentFileSize = 0;
-    }
-
+namespace OnPhp {
     /**
-     * internal use only, callback for curl client
+     * @ingroup Http
      **/
-    public function writeHeader($resource, $line)
+    class CurlHttpResponse implements HttpResponse
     {
-        $this->headerParser->doLine($line);
+        private $headerParser = null;
+        private $body = null;
+        private $status = null;
+        private $maxFileSize = null;
+        private $currentFileSize = null;
 
-        if (
-            $this->maxFileSize !== null
-            && $this->headerParser->hasHeader('Content-Length')
-            && $this->headerParser->getHeader('Content-Length')
-            > $this->maxFileSize
-        ) {
-            return -1;
-        } // see http://curl.haxx.se/libcurl/c/curl_easy_setopt.html CURLOPT_HEADERFUNCTION
-        else {
-            return strlen($line);
+        public function __construct()
+        {
+            $this->headerParser = new HeaderParser();
+            $this->currentFileSize = 0;
         }
-    }
 
-    /**
-     * internal use only, callback for curl client
-     **/
-    public function writeBody($resource, $body)
-    {
-        $this->body .= $body;
-        $obtained = strlen($body);
+        /**
+         * internal use only, callback for curl client
+         **/
+        public function writeHeader($resource, $line)
+        {
+            $this->headerParser->doLine($line);
 
-        if (
-            $this->maxFileSize !== null
-            && $this->currentFileSize + $obtained > $this->maxFileSize
-        ) {
-            return -1;
-        } else {
-            $this->currentFileSize += $obtained;
-            return $obtained;
+            if (
+                $this->maxFileSize !== null
+                && $this->headerParser->hasHeader('Content-Length')
+                && $this->headerParser->getHeader('Content-Length')
+                > $this->maxFileSize
+            ) {
+                return -1;
+            } // see http://curl.haxx.se/libcurl/c/curl_easy_setopt.html CURLOPT_HEADERFUNCTION
+            else {
+                return strlen($line);
+            }
         }
-    }
 
-    /**
-     * internal use only for curl client
-     * @return CurlHttpResponse
-     **/
-    public function setMaxFileSize($maxFileSize)
-    {
-        $this->maxFileSize = $maxFileSize;
-        return $this;
-    }
+        /**
+         * internal use only, callback for curl client
+         **/
+        public function writeBody($resource, $body)
+        {
+            $this->body .= $body;
+            $obtained = strlen($body);
 
-    /**
-     * @return HttpStatus
-     **/
-    public function getStatus()
-    {
-        return $this->status;
-    }
+            if (
+                $this->maxFileSize !== null
+                && $this->currentFileSize + $obtained > $this->maxFileSize
+            ) {
+                return -1;
+            } else {
+                $this->currentFileSize += $obtained;
+                return $obtained;
+            }
+        }
 
-    /**
-     * @return CurlHttpResponse
-     **/
-    public function setStatus(HttpStatus $status)
-    {
-        $this->status = $status;
-        return $this;
-    }
+        /**
+         * internal use only for curl client
+         * @return CurlHttpResponse
+         **/
+        public function setMaxFileSize($maxFileSize)
+        {
+            $this->maxFileSize = $maxFileSize;
+            return $this;
+        }
 
-    public function getReasonPhrase()
-    {
-        throw new UnsupportedMethodException();
-    }
+        /**
+         * @return HttpStatus
+         **/
+        public function getStatus()
+        {
+            return $this->status;
+        }
 
-    /**
-     * @return array
-     **/
-    public function getHeaders()
-    {
-        return $this->headerParser->getHeaders();
-    }
+        /**
+         * @return CurlHttpResponse
+         **/
+        public function setStatus(HttpStatus $status)
+        {
+            $this->status = $status;
+            return $this;
+        }
 
-    public function hasHeader($name)
-    {
-        return $this->headerParser->hasHeader($name);
-    }
+        public function getReasonPhrase()
+        {
+            throw new UnsupportedMethodException();
+        }
 
-    public function getHeader($name)
-    {
-        return $this->headerParser->getHeader($name);
-    }
+        /**
+         * @return array
+         **/
+        public function getHeaders()
+        {
+            return $this->headerParser->getHeaders();
+        }
 
-    public function getBody()
-    {
-        return $this->body;
+        public function hasHeader($name)
+        {
+            return $this->headerParser->hasHeader($name);
+        }
+
+        public function getHeader($name)
+        {
+            return $this->headerParser->getHeader($name);
+        }
+
+        public function getBody()
+        {
+            return $this->body;
+        }
     }
 }
-

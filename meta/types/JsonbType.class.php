@@ -8,19 +8,22 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-/**
- * @ingroup Types
- * @see http://www.postgresql.org/docs/9.4/static/datatype-json.html
- **/
-class JsonbType extends JsonType
-{
-    public function getPrimitiveName()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     * @see http://www.postgresql.org/docs/9.4/static/datatype-json.html
+     **/
+    class JsonbType extends JsonType
     {
-        return 'jsonb';
-    }
-    public function toColumnType()
-    {
-        return 'DataType::create(DataType::JSONB)';
+        public function getPrimitiveName()
+        {
+            return 'jsonb';
+        }
+
+        public function toColumnType()
+        {
+            return 'DataType::create(DataType::JSONB)';
+        }
     }
 }
 ?>

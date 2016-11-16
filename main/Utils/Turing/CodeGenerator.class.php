@@ -8,142 +8,143 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-class CodeGenerator
-{
-    static private $similarSymbols = ['0', 'o', '1', 'l'];
-    private $length = 5;
-    private $lowerAllowed = true;
-    private $upperAllowed = true;
-    private $numbersAllowed = true;
-    private $similarAllowed = true;
-
+namespace OnPhp {
     /**
-     * @return null|string
-     */
-    public function generate()
+     * @ingroup Turing
+     **/
+    class CodeGenerator
     {
-        $code = null;
+        static private $similarSymbols = ['0', 'o', '1', 'l'];
+        private $length = 5;
+        private $lowerAllowed = true;
+        private $upperAllowed = true;
+        private $numbersAllowed = true;
+        private $similarAllowed = true;
 
-        for ($i = 0; $i < $this->length; ++$i) {
-            $code .= $this->generateOneSymbol();
+        /**
+         * @return null|string
+         */
+        public function generate()
+        {
+            $code = null;
+
+            for ($i = 0; $i < $this->length; ++$i) {
+                $code .= $this->generateOneSymbol();
+            }
+
+            return $code;
         }
 
-        return $code;
-    }
+        /**
+         * @return mixed
+         * @throws WrongArgumentException
+         */
+        private function generateOneSymbol()
+        {
+            $variants = [];
 
-    /**
-     * @return mixed
-     * @throws WrongArgumentException
-     */
-    private function generateOneSymbol()
-    {
-        $variants = [];
+            Assert::isTrue(
+                $this->lowerAllowed
+                || $this->upperAllowed
+                || $this->numbersAllowed,
 
-        Assert::isTrue(
-            $this->lowerAllowed
-            || $this->upperAllowed
-            || $this->numbersAllowed,
+                'what exactly should i generate?'
+            );
 
-            'what exactly should i generate?'
-        );
+            do {
+                if ($this->lowerAllowed) {
+                    $variants[] = $this->randomChar();
+                }
 
-        do {
-            if ($this->lowerAllowed) {
-                $variants[] = $this->randomChar();
-            }
+                if ($this->upperAllowed) {
+                    $variants[] = strtoupper($this->randomChar());
+                }
 
-            if ($this->upperAllowed) {
-                $variants[] = strtoupper($this->randomChar());
-            }
+                if ($this->numbersAllowed) {
+                    $variants[] = $this->randomNumber();
+                }
 
-            if ($this->numbersAllowed) {
-                $variants[] = $this->randomNumber();
-            }
+                shuffle($variants);
 
-            shuffle($variants);
+                $symbol = $variants[0];
 
-            $symbol = $variants[0];
+            } while (
+                (!$this->similarAllowed)
+                && (in_array($symbol, self::$similarSymbols))
+            );
 
-        } while (
-            (!$this->similarAllowed)
-            && (in_array($symbol, self::$similarSymbols))
-        );
+            return $symbol;
+        }
 
-        return $symbol;
-    }
+        private function randomChar()
+        {
+            return chr(mt_rand(ord('a'), ord('z')));
+        }
 
-    private function randomChar()
-    {
-        return chr(mt_rand(ord('a'), ord('z')));
-    }
+        private function randomNumber()
+        {
+            return mt_rand(0, 9);
+        }
 
-    private function randomNumber()
-    {
-        return mt_rand(0, 9);
-    }
+        /**
+         * @return CodeGenerator
+         **/
+        public function setLength($length)
+        {
+            $this->length = $length;
 
-    /**
-     * @return CodeGenerator
-     **/
-    public function setLength($length)
-    {
-        $this->length = $length;
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return CodeGenerator
+         **/
+        public function setSimilarAllowed($similarAllowed = true)
+        {
+            $this->similarAllowed = $similarAllowed;
 
-    /**
-     * @return CodeGenerator
-     **/
-    public function setSimilarAllowed($similarAllowed = true)
-    {
-        $this->similarAllowed = $similarAllowed;
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return CodeGenerator
+         **/
+        public function setNumbersAllowed($numbersAllowed = true)
+        {
+            $this->numbersAllowed = $numbersAllowed;
 
-    /**
-     * @return CodeGenerator
-     **/
-    public function setNumbersAllowed($numbersAllowed = true)
-    {
-        $this->numbersAllowed = $numbersAllowed;
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return CodeGenerator
+         **/
+        public function setCharactersAllowed($charactersAllowed = true)
+        {
+            $this->setLowerAllowed($charactersAllowed);
+            $this->setUpperAllowed($charactersAllowed);
 
-    /**
-     * @return CodeGenerator
-     **/
-    public function setCharactersAllowed($charactersAllowed = true)
-    {
-        $this->setLowerAllowed($charactersAllowed);
-        $this->setUpperAllowed($charactersAllowed);
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return CodeGenerator
+         **/
+        public function setLowerAllowed($lowerAllowed = true)
+        {
+            $this->lowerAllowed = $lowerAllowed;
 
-    /**
-     * @return CodeGenerator
-     **/
-    public function setLowerAllowed($lowerAllowed = true)
-    {
-        $this->lowerAllowed = $lowerAllowed;
+            return $this;
+        }
 
-        return $this;
-    }
+        /**
+         * @return CodeGenerator
+         **/
+        public function setUpperAllowed($upperAllowed = true)
+        {
+            $this->upperAllowed = $upperAllowed;
 
-    /**
-     * @return CodeGenerator
-     **/
-    public function setUpperAllowed($upperAllowed = true)
-    {
-        $this->upperAllowed = $upperAllowed;
-
-        return $this;
+            return $this;
+        }
     }
 }

@@ -8,23 +8,23 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Builders
- **/
-final class EnumerationClassBuilder extends OnceBuilder
-{
-    public static function build(MetaClass $class)
+namespace OnPhp {
+    /**
+     * @ingroup Builders
+     **/
+    final class EnumerationClassBuilder extends OnceBuilder
     {
-        $out = self::getHead();
+        public static function build(MetaClass $class)
+        {
+            $out = self::getHead();
 
-        if ($type = $class->getType()) {
-            $type = "{$type->getName()} ";
-        } else {
-            $type = null;
-        }
+            if ($type = $class->getType()) {
+                $type = "{$type->getName()} ";
+            } else {
+                $type = null;
+            }
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 {$type}class {$class->getName()} extends Enumeration
 {
     // implement me!
@@ -32,8 +32,8 @@ final class EnumerationClassBuilder extends OnceBuilder
 
 EOT;
 
-        return $out . self::getHeel();
+            return $out . self::getHeel();
+        }
     }
 }
-
 ?>

@@ -8,34 +8,35 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Turing
- **/
-class LinearStringDrawer extends TextDrawer
-{
+namespace OnPhp {
     /**
-     * @return LinearStringDrawer
+     * @ingroup Turing
      **/
-    public function draw($string)
+    class LinearStringDrawer extends TextDrawer
     {
-        $maxHeight = $this->getMaxCharacterHeight();
-        $y = round($this->getTuringImage()->getHeight() / 2 + $maxHeight / 2);
+        /**
+         * @return LinearStringDrawer
+         **/
+        public function draw($string)
+        {
+            $maxHeight = $this->getMaxCharacterHeight();
+            $y = round($this->getTuringImage()->getHeight() / 2 + $maxHeight / 2);
 
-        $textWidth = $this->getTextWidth($string);
+            $textWidth = $this->getTextWidth($string);
 
-        if ($this->getTuringImage()->getWidth() <= $textWidth)
-            return $this->showError();
+            if ($this->getTuringImage()->getWidth() <= $textWidth)
+                return $this->showError();
 
-        $x = round(($this->getTuringImage()->getWidth() - $textWidth) / 2);
-        $angle = 0;
+            $x = round(($this->getTuringImage()->getWidth() - $textWidth) / 2);
+            $angle = 0;
 
-        for ($i = 0, $length = strlen($string); $i < $length; ++$i) {
-            $character = $string[$i];
-            $this->drawCraracter($angle, $x, $y, $character);
-            $x += $this->getStringWidth($character) + $this->getSpace();
+            for ($i = 0, $length = strlen($string); $i < $length; ++$i) {
+                $character = $string[$i];
+                $this->drawCraracter($angle, $x, $y, $character);
+                $x += $this->getStringWidth($character) + $this->getSpace();
+            }
+
+            return $this;
         }
-
-        return $this;
     }
 }

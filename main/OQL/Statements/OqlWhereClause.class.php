@@ -8,18 +8,18 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-class OqlWhereClause extends OqlQueryExpressionClause
-{
-
-    protected static function checkExpression(OqlQueryExpression $expression)
+namespace OnPhp {
+    /**
+     * @ingroup OQL
+     **/
+    class OqlWhereClause extends OqlQueryExpressionClause
     {
-        if (!$expression instanceof OqlInExpression) {
-            Assert::isInstance($expression->getClassName(), 'LogicalObject');
+
+        protected static function checkExpression(OqlQueryExpression $expression)
+        {
+            if (!$expression instanceof OqlInExpression) {
+                Assert::isInstance($expression->getClassName(), 'LogicalObject');
+            }
         }
     }
 }
-

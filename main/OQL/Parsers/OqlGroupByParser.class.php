@@ -1,43 +1,43 @@
 <?php
-
-/****************************************************************************
- *   Copyright (C) 2009 by Vladlen Y. Koshelev                              *
- *                                                                          *
- *   This program is free software; you can redistribute it and/or modify   *
- *   it under the terms of the GNU Lesser General Public License as         *
- *   published by the Free Software Foundation; either version 3 of the     *
- *   License, or (at your option) any later version.                        *
- *                                                                          *
- ****************************************************************************/
-class OqlGroupByParser extends OqlParser
-{
-    const CLASS_NAME = 'GroupByPropertyProjection';
-
-
-    /**
-     * @return OqlProjectionClause
-     **/
-    protected function makeOqlObject()
+namespace OnPhp {
+    /****************************************************************************
+     *   Copyright (C) 2009 by Vladlen Y. Koshelev                              *
+     *                                                                          *
+     *   This program is free software; you can redistribute it and/or modify   *
+     *   it under the terms of the GNU Lesser General Public License as         *
+     *   published by the Free Software Foundation; either version 3 of the     *
+     *   License, or (at your option) any later version.                        *
+     *                                                                          *
+     ****************************************************************************/
+    class OqlGroupByParser extends OqlParser
     {
-        return new OqlProjectionClause();
-    }
+        const CLASS_NAME = 'GroupByPropertyProjection';
 
-    protected function handleState()
-    {
-        if ($this->state == self::INITIAL_STATE) {
-            $list = $this->getCommaSeparatedList(
-                [$this, 'getLogicExpression'],
-                "expecting expression in 'group by' clause"
-            );
 
-            foreach ($list as $argument) {
-                $this->oqlObject->add(
-                    $this->makeQueryExpression(self::CLASS_NAME, $argument)
-                );
-            }
+        /**
+         * @return OqlProjectionClause
+         **/
+        protected function makeOqlObject()
+        {
+            return new OqlProjectionClause();
         }
 
-        return self::FINAL_STATE;
+        protected function handleState()
+        {
+            if ($this->state == self::INITIAL_STATE) {
+                $list = $this->getCommaSeparatedList(
+                    [$this, 'getLogicExpression'],
+                    "expecting expression in 'group by' clause"
+                );
+
+                foreach ($list as $argument) {
+                    $this->oqlObject->add(
+                        $this->makeQueryExpression(self::CLASS_NAME, $argument)
+                    );
+                }
+            }
+
+            return self::FINAL_STATE;
+        }
     }
 }
-

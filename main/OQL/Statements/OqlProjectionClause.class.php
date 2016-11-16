@@ -8,26 +8,26 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-class OqlProjectionClause extends OqlQueryListedClause
-{
-
+namespace OnPhp {
     /**
-     * @return ProjectionChain
+     * @ingroup OQL
      **/
-    public function toProjection()
+    class OqlProjectionClause extends OqlQueryListedClause
     {
-        $projection = Projection::chain();
-        foreach ($this->list as $property) {
-            $projection->add(
-                $property->evaluate($this->parameters)
-            );
-        }
 
-        return $projection;
+        /**
+         * @return ProjectionChain
+         **/
+        public function toProjection()
+        {
+            $projection = Projection::chain();
+            foreach ($this->list as $property) {
+                $projection->add(
+                    $property->evaluate($this->parameters)
+                );
+            }
+
+            return $projection;
+        }
     }
 }
-

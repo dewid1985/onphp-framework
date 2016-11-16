@@ -8,24 +8,24 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
+    /**
+     * @ingroup onSPL
+     **/
+    interface SimplifiedArrayAccess
+    {
+        public function clean();
 
-/**
- * @ingroup onSPL
- **/
-interface SimplifiedArrayAccess
-{
-    public function clean();
+        public function isEmpty();
 
-    public function isEmpty();
+        public function getList();
 
-    public function getList();
+        public function set($name, $var);
 
-    public function set($name, $var);
+        public function get($name);
 
-    public function get($name);
+        public function has($name);
 
-    public function has($name);
-
-    public function drop($name);
+        public function drop($name);
+    }
 }
-

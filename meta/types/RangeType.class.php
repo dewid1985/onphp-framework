@@ -8,20 +8,21 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class RangeType extends InternalType
-{
-    public function getPrimitiveName()
+namespace OnPhp {
+    /**
+     * @ingroup Types
+     **/
+    class RangeType extends InternalType
     {
-        return 'range';
-    }
+        public function getPrimitiveName()
+        {
+            return 'range';
+        }
 
-    public function toColumnType()
-    {
-        return null;
+        public function toColumnType()
+        {
+            return null;
+        }
     }
 }
 

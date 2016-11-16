@@ -8,85 +8,84 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class FileOutputStream extends OutputStream
-{
-    private $fd = null;
-
-
-
-    public function __construct($nameOrFd, $append = false)
-    {
-        if (is_resource($nameOrFd)) {
-            if (get_resource_type($nameOrFd) !== 'stream') {
-                throw new IOException('not a file resource');
-            }
-
-            $this->fd = $nameOrFd;
-
-        } else {
-            try {
-                $this->fd = fopen($nameOrFd, ($append ? 'a' : 'w') . 'b');
-
-                Assert::isNotFalse(
-                    $this->fd,
-                    "File {$nameOrFd} must be exist"
-                );
-            } catch (BaseException $e) {
-                throw new IOException($e->getMessage());
-            }
-        }
-    }
-
+namespace OnPhp {
     /**
-     *
-     */
-    public function __destruct()
-    {
-        try {
-            $this->close();
-        } catch (BaseException $e) {
-            // boo.
-        }
-    }
-
-    /**
-     * @return FileOutputStream
+     * @ingroup Utils
      **/
-    public function close()
+    class FileOutputStream extends OutputStream
     {
-        fclose($this->fd);
+        private $fd = null;
 
-        $this->fd = null;
 
-        return $this;
-    }
+        public function __construct($nameOrFd, $append = false)
+        {
+            if (is_resource($nameOrFd)) {
+                if (get_resource_type($nameOrFd) !== 'stream') {
+                    throw new IOException('not a file resource');
+                }
 
-    /**
-     * @param $buffer
-     * @return $this
-     * @throws IOException
-     */
-    public function write($buffer)
-    {
-        if (!$this->fd || $buffer === null) {
+                $this->fd = $nameOrFd;
+
+            } else {
+                try {
+                    $this->fd = fopen($nameOrFd, ($append ? 'a' : 'w') . 'b');
+
+                    Assert::isNotFalse(
+                        $this->fd,
+                        "File {$nameOrFd} must be exist"
+                    );
+                } catch (BaseException $e) {
+                    throw new IOException($e->getMessage());
+                }
+            }
+        }
+
+        /**
+         *
+         */
+        public function __destruct()
+        {
+            try {
+                $this->close();
+            } catch (BaseException $e) {
+                // boo.
+            }
+        }
+
+        /**
+         * @return FileOutputStream
+         **/
+        public function close()
+        {
+            fclose($this->fd);
+
+            $this->fd = null;
+
             return $this;
         }
 
-        try {
-            $written = fwrite($this->fd, $buffer);
-        } catch (BaseException $e) {
-            throw new IOException($e->getMessage());
-        }
+        /**
+         * @param $buffer
+         * @return $this
+         * @throws IOException
+         */
+        public function write($buffer)
+        {
+            if (!$this->fd || $buffer === null) {
+                return $this;
+            }
 
-        if (!$written || $written < strlen($buffer)) {
-            throw new IOException('disk full and/or buffer too large?');
-        }
+            try {
+                $written = fwrite($this->fd, $buffer);
+            } catch (BaseException $e) {
+                throw new IOException($e->getMessage());
+            }
 
-        return $this;
+            if (!$written || $written < strlen($buffer)) {
+                throw new IOException('disk full and/or buffer too large?');
+            }
+
+            return $this;
+        }
     }
 }
-

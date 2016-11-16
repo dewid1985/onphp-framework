@@ -8,173 +8,173 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * AMQP stands for Advanced Message Queue Protocol, which is
- * an open standard middleware layer for message routing and queuing.
- **/
-abstract class AMQP implements AMQPInterface
-{
+namespace OnPhp {
     /**
-     * @var AMQPCredentials
+     * AMQP stands for Advanced Message Queue Protocol, which is
+     * an open standard middleware layer for message routing and queuing.
      **/
-    protected $credentials = null;
-    protected $link = null;
-    protected $alive = true;
-
-    /**
-     * @var array of AMQPChannelInterface instances
-     **/
-    protected $channels = [];
-
-    public function __construct(AMQPCredentials $credentials)
+    abstract class AMQP implements AMQPInterface
     {
-        $this->credentials = $credentials;
-    }
+        /**
+         * @var AMQPCredentials
+         **/
+        protected $credentials = null;
+        protected $link = null;
+        protected $alive = true;
 
-    /**
-     * @return AMQP
-     **/
-    public static function spawn($class, AMQPCredentials $credentials)
-    {
-        return new $class($credentials);
-    }
+        /**
+         * @var array of AMQPChannelInterface instances
+         **/
+        protected $channels = [];
 
-    /**
-     * @return AMQP
-     **/
-    abstract public function reconnect();
-
-    public function __destruct()
-    {
-        if ($this->isConnected()) {
-            $this->disconnect();
-        }
-    }
-
-    /**
-     * @return boolean
-     **/
-    abstract public function isConnected();
-
-    /**
-     * @return AMQP
-     **/
-    abstract public function disconnect();
-
-    /**
-     * @return AMQP
-     **/
-    public function getLink()
-    {
-        return $this->link;
-    }
-
-    /**
-     * @param integer $id
-     * @throws WrongArgumentException
-     * @return AMQPChannelInterface
-     **/
-    public function createChannel($id)
-    {
-        Assert::isInteger($id);
-
-        if (isset($this->channels[$id])) {
-            throw new WrongArgumentException(
-                "AMQP channel with id '{$id}' already registered"
-            );
+        public function __construct(AMQPCredentials $credentials)
+        {
+            $this->credentials = $credentials;
         }
 
-        if (!$this->isConnected()) {
-            $this->connect();
+        /**
+         * @return AMQP
+         **/
+        public static function spawn($class, AMQPCredentials $credentials)
+        {
+            return new $class($credentials);
         }
 
-        $this->channels[$id] =
-            $this->spawnChannel($id, $this)->open();
+        /**
+         * @return AMQP
+         **/
+        abstract public function reconnect();
 
-        return $this->channels[$id];
-    }
+        public function __destruct()
+        {
+            if ($this->isConnected()) {
+                $this->disconnect();
+            }
+        }
 
-    /**
-     * @return AMQP
-     **/
-    abstract public function connect();
+        /**
+         * @return boolean
+         **/
+        abstract public function isConnected();
 
-    /**
-     * @return AMQPChannelInterface
-     */
-    abstract public function spawnChannel($id, AMQPInterface $transport);
+        /**
+         * @return AMQP
+         **/
+        abstract public function disconnect();
 
-    /**
-     * @throws MissingElementException
-     * @return AMQPChannelInterface
-     **/
-    public function getChannel($id)
-    {
-        if (isset($this->channels[$id])) {
+        /**
+         * @return AMQP
+         **/
+        public function getLink()
+        {
+            return $this->link;
+        }
+
+        /**
+         * @param integer $id
+         * @throws WrongArgumentException
+         * @return AMQPChannelInterface
+         **/
+        public function createChannel($id)
+        {
+            Assert::isInteger($id);
+
+            if (isset($this->channels[$id])) {
+                throw new WrongArgumentException(
+                    "AMQP channel with id '{$id}' already registered"
+                );
+            }
+
+            if (!$this->isConnected()) {
+                $this->connect();
+            }
+
+            $this->channels[$id] =
+                $this->spawnChannel($id, $this)->open();
+
             return $this->channels[$id];
         }
 
-        throw new MissingElementException(
-            "Can't find AMQP channel with id '{$id}'"
-        );
-    }
+        /**
+         * @return AMQP
+         **/
+        abstract public function connect();
 
-    /**
-     * @return array
-     **/
-    public function getChannelList()
-    {
-        return $this->channels;
-    }
+        /**
+         * @return AMQPChannelInterface
+         */
+        abstract public function spawnChannel($id, AMQPInterface $transport);
 
-    /**
-     * @param integer $id
-     * @throws MissingElementException
-     * @return AMQPChannelInterface
-     **/
-    public function dropChannel($id)
-    {
-        if (!isset($this->channels[$id])) {
+        /**
+         * @throws MissingElementException
+         * @return AMQPChannelInterface
+         **/
+        public function getChannel($id)
+        {
+            if (isset($this->channels[$id])) {
+                return $this->channels[$id];
+            }
+
             throw new MissingElementException(
-                "AMQP channel with id '{$id}' not found"
+                "Can't find AMQP channel with id '{$id}'"
             );
         }
 
-        $this->channels[$id]->close();
+        /**
+         * @return array
+         **/
+        public function getChannelList()
+        {
+            return $this->channels;
+        }
 
-        unset($this->channels[$id]);
+        /**
+         * @param integer $id
+         * @throws MissingElementException
+         * @return AMQPChannelInterface
+         **/
+        public function dropChannel($id)
+        {
+            if (!isset($this->channels[$id])) {
+                throw new MissingElementException(
+                    "AMQP channel with id '{$id}' not found"
+                );
+            }
 
-        return $this;
+            $this->channels[$id]->close();
+
+            unset($this->channels[$id]);
+
+            return $this;
+        }
+
+        /**
+         * @return AMQPCredentials
+         */
+        public function getCredentials()
+        {
+            return $this->credentials;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isAlive()
+        {
+            return $this->alive;
+        }
+
+        /**
+         * @param bool $alive
+         * @return AMQP
+         */
+        public function setAlive($alive)
+        {
+            $this->alive = ($alive === true);
+
+            return $this;
+        }
+
+
     }
-
-    /**
-     * @return AMQPCredentials
-     */
-    public function getCredentials()
-    {
-        return $this->credentials;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAlive()
-    {
-        return $this->alive;
-    }
-
-    /**
-     * @param bool $alive
-     * @return AMQP
-     */
-    public function setAlive($alive)
-    {
-        $this->alive = ($alive === true);
-
-        return $this;
-    }
-
-
 }
-

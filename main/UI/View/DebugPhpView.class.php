@@ -8,37 +8,38 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class DebugPhpView extends SimplePhpView
-{
+namespace OnPhp {
     /**
-     * @return DebugPhpView
+     * @ingroup Flow
      **/
-    public function preRender()
+    class DebugPhpView extends SimplePhpView
     {
-        $trace = debug_backtrace();
+        /**
+         * @return DebugPhpView
+         **/
+        public function preRender()
+        {
+            $trace = debug_backtrace();
 
-        echo "<div style='margin:2px;padding:2px;border:1px solid #f00;'>";
+            echo "<div style='margin:2px;padding:2px;border:1px solid #f00;'>";
 
-        if (isset($trace[2])) {
-            echo $trace[2]['file'] . ' (' . $trace[2]['line'] . '): ';
+            if (isset($trace[2])) {
+                echo $trace[2]['file'] . ' (' . $trace[2]['line'] . '): ';
+            }
+
+            echo $this->templatePath;
+
+            return $this;
         }
 
-        echo $this->templatePath;
+        /**
+         * @return DebugPhpView
+         **/
+        protected function postRender()
+        {
+            echo "</div>";
 
-        return $this;
-    }
-
-    /**
-     * @return DebugPhpView
-     **/
-    protected function postRender()
-    {
-        echo "</div>";
-
-        return $this;
+            return $this;
+        }
     }
 }

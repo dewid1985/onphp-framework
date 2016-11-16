@@ -8,24 +8,24 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Patterns
- **/
-final class SpookedEnumPattern extends EnumClassPattern
-{
+namespace OnPhp {
     /**
-     * @return SpookedEnumPattern
+     * @ingroup Patterns
      **/
-    public function build(MetaClass $class)
+    final class SpookedEnumPattern extends EnumClassPattern
     {
-        return $this;
-    }
+        /**
+         * @return SpookedEnumPattern
+         **/
+        public function build(MetaClass $class)
+        {
+            return $this;
+        }
 
-    public function daoExists()
-    {
-        return false;
+        public function daoExists()
+        {
+            return false;
+        }
     }
 }
-
 ?>

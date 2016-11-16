@@ -8,85 +8,85 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Ip
- **/
-class IpAddress implements Stringable, DialectString
-{
-    protected $longIp = null;
-
+namespace OnPhp {
     /**
-     * IpAddress constructor.
-     * @param $ip
-     */
-    public function __construct($ip)
+     * @ingroup Ip
+     **/
+    class IpAddress implements Stringable, DialectString
     {
-        $this->setIp($ip);
-    }
+        protected $longIp = null;
 
-    /**
-     * @param $ip
-     * @return $this
-     * @throws WrongArgumentException
-     */
-    public function setIp($ip)
-    {
-        $long = ip2long($ip);
-
-        if ($long === false) {
-            throw new WrongArgumentException('wrong ip given');
+        /**
+         * IpAddress constructor.
+         * @param $ip
+         */
+        public function __construct($ip)
+        {
+            $this->setIp($ip);
         }
 
-        $this->longIp = $long;
+        /**
+         * @param $ip
+         * @return $this
+         * @throws WrongArgumentException
+         */
+        public function setIp($ip)
+        {
+            $long = ip2long($ip);
 
-        return $this;
-    }
+            if ($long === false) {
+                throw new WrongArgumentException('wrong ip given');
+            }
 
-    /**
-     * @param $ip
-     * @return IpAddress
-     */
-    public static function createFromCutted($ip)
-    {
-        if (substr_count($ip, '.') < 3) {
-            return self::createFromCutted($ip . '.0');
+            $this->longIp = $long;
+
+            return $this;
         }
 
-        return new self($ip);
-    }
+        /**
+         * @param $ip
+         * @return IpAddress
+         */
+        public static function createFromCutted($ip)
+        {
+            if (substr_count($ip, '.') < 3) {
+                return self::createFromCutted($ip . '.0');
+            }
 
-    /**
-     * @return null
-     */
-    public function getLongIp()
-    {
-        return $this->longIp;
-    }
+            return new self($ip);
+        }
 
-    /**
-     * @param Dialect $dialect
-     * @return mixed
-     */
-    public function toDialectString(Dialect $dialect)
-    {
-        return $dialect->quoteValue($this->toString());
-    }
+        /**
+         * @return null
+         */
+        public function getLongIp()
+        {
+            return $this->longIp;
+        }
 
-    /**
-     * @return string
-     */
-    public function toString() : string
-    {
-        return long2ip($this->longIp);
-    }
+        /**
+         * @param Dialect $dialect
+         * @return mixed
+         */
+        public function toDialectString(Dialect $dialect)
+        {
+            return $dialect->quoteValue($this->toString());
+        }
 
-    /**
-     * @return mixed
-     */
-    public function toSignedInt()
-    {
-        return TypesUtils::unsignedToSigned($this->longIp);
+        /**
+         * @return string
+         */
+        public function toString() : string
+        {
+            return long2ip($this->longIp);
+        }
+
+        /**
+         * @return mixed
+         */
+        public function toSignedInt()
+        {
+            return TypesUtils::unsignedToSigned($this->longIp);
+        }
     }
 }
-

@@ -9,290 +9,292 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-class RouterTransparentRule extends RouterBaseRule
-{
-    protected $urlVariable = ':';
-    protected $urlDelimiter = '/';
-    protected $regexDelimiter = '#';
-
-    protected $defaultRegex = null;
-    protected $route = null;
-    protected $routeProcessed = false;
-    protected $variables = [];
-    protected $parts = [];
-    protected $requirements = [];
-    protected $values = [];
-    protected $wildcardData = [];
-
-    protected $staticCount = 0;
-
-    /**
-     * RouterTransparentRule constructor.
-     * @param $route
-     */
-    public function __construct($route)
+namespace OnPhp {
+    class RouterTransparentRule extends RouterBaseRule
     {
-        $this->route = trim($route, $this->urlDelimiter);
-    }
+        protected $urlVariable = ':';
+        protected $urlDelimiter = '/';
+        protected $regexDelimiter = '#';
 
-    /**
-     * @return array
-     */
-    public function getRequirements()
-    {
-        return $this->requirements;
-    }
+        protected $defaultRegex = null;
+        protected $route = null;
+        protected $routeProcessed = false;
+        protected $variables = [];
+        protected $parts = [];
+        protected $requirements = [];
+        protected $values = [];
+        protected $wildcardData = [];
 
-    /**
-     * @return RouterTransparentRule
-     **/
-    public function setRequirements(array $reqirements)
-    {
-        $this->requirements = $reqirements;
+        protected $staticCount = 0;
 
-        return $this;
-    }
-
-    /**
-     * @param HttpRequest $request
-     * @return array
-     * @throws RouterException
-     */
-    public function match(HttpRequest $request)
-    {
-        $this->processRoute();
-
-        $path = $this->processPath($request)->toString();
-
-        $pathStaticCount = 0;
-        $values = [];
-
-        $path = trim($path, $this->urlDelimiter);
-
-        if ($path !== '') {
-            $path = explode($this->urlDelimiter, $path);
-
-            foreach ($path as $pos => $pathPart) {
-                if (!array_key_exists($pos, $this->parts)) {
-                    return [];
-                }
-
-                if ($this->parts[$pos] === '*') {
-                    $count = count($path);
-
-                    for ($i = $pos; $i < $count; $i += 2) {
-                        $var = urldecode($path[$i]);
-
-                        if (
-                            !isset($this->wildcardData[$var])
-                            && !isset($this->defaults[$var])
-                            && !isset($values[$var])
-                        ) {
-                            $this->wildcardData[$var] =
-                                (isset($path[$i + 1]))
-                                    ? urldecode($path[$i + 1])
-                                    : null;
-                        }
-                    }
-
-                    break;
-                }
-
-                $name =
-                    isset($this->variables[$pos])
-                        ? $this->variables[$pos]
-                        : null;
-
-                $pathPart = urldecode($pathPart);
-
-                if (
-                    ($name === null)
-                    && ($this->parts[$pos] != $pathPart)
-                ) {
-                    return [];
-                }
-
-                if (
-                    $this->parts[$pos] !== null
-                    && !preg_match(
-                        $this->regexDelimiter
-                        . '^' . $this->parts[$pos] . '$'
-                        . $this->regexDelimiter . 'iu',
-                        $pathPart
-                    )
-                ) {
-                    return [];
-                }
-
-                if ($name !== null) {
-                    $values[$name] = $pathPart;
-                } else {
-                    ++$pathStaticCount;
-                }
-            }
+        /**
+         * RouterTransparentRule constructor.
+         * @param $route
+         */
+        public function __construct($route)
+        {
+            $this->route = trim($route, $this->urlDelimiter);
         }
 
-        if ($this->staticCount != $pathStaticCount) {
-            return [];
+        /**
+         * @return array
+         */
+        public function getRequirements()
+        {
+            return $this->requirements;
         }
 
-        $return = $values + $this->wildcardData + $this->defaults;
+        /**
+         * @return RouterTransparentRule
+         **/
+        public function setRequirements(array $reqirements)
+        {
+            $this->requirements = $reqirements;
 
-        foreach ($this->variables as $var) {
-            if (!array_key_exists($var, $return)) {
-                return [];
-            }
-        }
-
-        $this->values = $values;
-
-        return $return;
-    }
-
-    /**
-     * @return RouterTransparentRule
-     **/
-    protected function processRoute()
-    {
-        if ($this->routeProcessed) {
             return $this;
         }
 
-        if ($this->route !== '') {
-            foreach (explode($this->urlDelimiter, $this->route) as $pos => $part) {
-                if (substr($part, 0, 1) == $this->urlVariable) {
-                    $name = substr($part, 1);
+        /**
+         * @param HttpRequest $request
+         * @return array
+         * @throws RouterException
+         */
+        public function match(HttpRequest $request)
+        {
+            $this->processRoute();
 
-                    $this->parts[$pos] = (
-                    isset($this->requirements[$name])
-                        ? $this->requirements[$name]
-                        : $this->defaultRegex
-                    );
+            $path = $this->processPath($request)->toString();
 
-                    $this->variables[$pos] = $name;
-                } else {
-                    $this->parts[$pos] = $part;
+            $pathStaticCount = 0;
+            $values = [];
 
-                    if ($part !== '*') {
-                        $this->staticCount++;
+            $path = trim($path, $this->urlDelimiter);
+
+            if ($path !== '') {
+                $path = explode($this->urlDelimiter, $path);
+
+                foreach ($path as $pos => $pathPart) {
+                    if (!array_key_exists($pos, $this->parts)) {
+                        return [];
                     }
-                }
-            }
-        }
 
-        $this->routeProcessed = true;
+                    if ($this->parts[$pos] === '*') {
+                        $count = count($path);
 
-        return $this;
-    }
+                        for ($i = $pos; $i < $count; $i += 2) {
+                            $var = urldecode($path[$i]);
 
-    /**
-     * Assembles user submitted parameters forming a URL path
-     * defined by this route.
-     *
-     * @param array $data
-     * @param bool|false $reset
-     * @param bool|false $encode
-     * @return string
-     * @throws RouterException
-     */
-    public function assembly(
-        array $data = [],
-        $reset = false,
-        $encode = false
-    ) {
-        $this->processRoute();
-
-        $url = [];
-        $flag = false;
-
-        foreach ($this->parts as $key => $part) {
-            $name =
-                isset($this->variables[$key])
-                    ? $this->variables[$key]
-                    : null;
-
-            $useDefault = false;
-
-            if (
-                $name
-                && array_key_exists($name, $data)
-                && ($data[$name] === null)
-            ) {
-                $useDefault = true;
-            }
-
-            if ($name) {
-                if (
-                    isset($data[$name])
-                    && !$useDefault
-                ) {
-                    $url[$key] = $data[$name];
-                    unset($data[$name]);
-                } elseif (
-                    !$reset
-                    && !$useDefault
-                    && isset($this->values[$name])
-                ) {
-                    $url[$key] = $this->values[$name];
-                } elseif (
-                    !$reset
-                    && !$useDefault
-                    && isset($this->wildcardData[$name])
-                ) {
-                    $url[$key] = $this->wildcardData[$name];
-                } elseif (isset($this->defaults[$name])) {
-                    $url[$key] = $this->defaults[$name];
-                } else {
-                    // FIXME: bogus message
-                    throw new RouterException("{$name} is not specified");
-                }
-            } elseif ($part !== '*') {
-                $url[$key] = $part;
-            } else {
-                if (!$reset) {
-                    $data += $this->wildcardData;
-                }
-
-                foreach ($data as $var => $value) {
-                    if ($value !== null) {
-                        if (
-                            isset($this->defaults[$var])
-                            && ($this->defaults[$var] === $value)
-                        ) {
-                            continue;
+                            if (
+                                !isset($this->wildcardData[$var])
+                                && !isset($this->defaults[$var])
+                                && !isset($values[$var])
+                            ) {
+                                $this->wildcardData[$var] =
+                                    (isset($path[$i + 1]))
+                                        ? urldecode($path[$i + 1])
+                                        : null;
+                            }
                         }
 
-                        $url[$key++] = $var;
-                        $url[$key++] = $value;
-                        $flag = true;
+                        break;
+                    }
+
+                    $name =
+                        isset($this->variables[$pos])
+                            ? $this->variables[$pos]
+                            : null;
+
+                    $pathPart = urldecode($pathPart);
+
+                    if (
+                        ($name === null)
+                        && ($this->parts[$pos] != $pathPart)
+                    ) {
+                        return [];
+                    }
+
+                    if (
+                        $this->parts[$pos] !== null
+                        && !preg_match(
+                            $this->regexDelimiter
+                            . '^' . $this->parts[$pos] . '$'
+                            . $this->regexDelimiter . 'iu',
+                            $pathPart
+                        )
+                    ) {
+                        return [];
+                    }
+
+                    if ($name !== null) {
+                        $values[$name] = $pathPart;
+                    } else {
+                        ++$pathStaticCount;
                     }
                 }
             }
+
+            if ($this->staticCount != $pathStaticCount) {
+                return [];
+            }
+
+            $return = $values + $this->wildcardData + $this->defaults;
+
+            foreach ($this->variables as $var) {
+                if (!array_key_exists($var, $return)) {
+                    return [];
+                }
+            }
+
+            $this->values = $values;
+
+            return $return;
         }
 
-        $return = null;
+        /**
+         * @return RouterTransparentRule
+         **/
+        protected function processRoute()
+        {
+            if ($this->routeProcessed) {
+                return $this;
+            }
 
-        foreach (array_reverse($url, true) as $key => $value) {
-            if (
-                $flag
-                || !isset($this->variables[$key])
-                || ($value !== $this->getDefault($this->variables[$key]))
-            ) {
-                if ($encode) {
-                    $value = urlencode($value);
+            if ($this->route !== '') {
+                foreach (explode($this->urlDelimiter, $this->route) as $pos => $part) {
+                    if (substr($part, 0, 1) == $this->urlVariable) {
+                        $name = substr($part, 1);
+
+                        $this->parts[$pos] = (
+                        isset($this->requirements[$name])
+                            ? $this->requirements[$name]
+                            : $this->defaultRegex
+                        );
+
+                        $this->variables[$pos] = $name;
+                    } else {
+                        $this->parts[$pos] = $part;
+
+                        if ($part !== '*') {
+                            $this->staticCount++;
+                        }
+                    }
+                }
+            }
+
+            $this->routeProcessed = true;
+
+            return $this;
+        }
+
+        /**
+         * Assembles user submitted parameters forming a URL path
+         * defined by this route.
+         *
+         * @param array $data
+         * @param bool|false $reset
+         * @param bool|false $encode
+         * @return string
+         * @throws RouterException
+         */
+        public function assembly(
+            array $data = [],
+            $reset = false,
+            $encode = false
+        )
+        {
+            $this->processRoute();
+
+            $url = [];
+            $flag = false;
+
+            foreach ($this->parts as $key => $part) {
+                $name =
+                    isset($this->variables[$key])
+                        ? $this->variables[$key]
+                        : null;
+
+                $useDefault = false;
+
+                if (
+                    $name
+                    && array_key_exists($name, $data)
+                    && ($data[$name] === null)
+                ) {
+                    $useDefault = true;
                 }
 
-                $return =
-                    $this->urlDelimiter
-                    . $value
-                    . $return;
+                if ($name) {
+                    if (
+                        isset($data[$name])
+                        && !$useDefault
+                    ) {
+                        $url[$key] = $data[$name];
+                        unset($data[$name]);
+                    } elseif (
+                        !$reset
+                        && !$useDefault
+                        && isset($this->values[$name])
+                    ) {
+                        $url[$key] = $this->values[$name];
+                    } elseif (
+                        !$reset
+                        && !$useDefault
+                        && isset($this->wildcardData[$name])
+                    ) {
+                        $url[$key] = $this->wildcardData[$name];
+                    } elseif (isset($this->defaults[$name])) {
+                        $url[$key] = $this->defaults[$name];
+                    } else {
+                        // FIXME: bogus message
+                        throw new RouterException("{$name} is not specified");
+                    }
+                } elseif ($part !== '*') {
+                    $url[$key] = $part;
+                } else {
+                    if (!$reset) {
+                        $data += $this->wildcardData;
+                    }
 
-                $flag = true;
+                    foreach ($data as $var => $value) {
+                        if ($value !== null) {
+                            if (
+                                isset($this->defaults[$var])
+                                && ($this->defaults[$var] === $value)
+                            ) {
+                                continue;
+                            }
+
+                            $url[$key++] = $var;
+                            $url[$key++] = $value;
+                            $flag = true;
+                        }
+                    }
+                }
             }
-        }
 
-        // FIXME: rtrim, probably?
-        return trim($return, $this->urlDelimiter);
+            $return = null;
+
+            foreach (array_reverse($url, true) as $key => $value) {
+                if (
+                    $flag
+                    || !isset($this->variables[$key])
+                    || ($value !== $this->getDefault($this->variables[$key]))
+                ) {
+                    if ($encode) {
+                        $value = urlencode($value);
+                    }
+
+                    $return =
+                        $this->urlDelimiter
+                        . $value
+                        . $return;
+
+                    $flag = true;
+                }
+            }
+
+            // FIXME: rtrim, probably?
+            return trim($return, $this->urlDelimiter);
+        }
     }
 }
-

@@ -9,20 +9,25 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class DTOClass implements PrototypedEntity
-{
-    final public function makeObject(Form $form)
-    {
-        return (new FormToObjectConverter($this->entityProto()))->make($form);
-    }
-
+namespace OnPhp {
     /**
-     * @return Form
-     **/
-    final public function toForm()
+     * Class DTOClass
+     * @package OnPhp
+     */
+    abstract class DTOClass implements PrototypedEntity
     {
-        return
-            (new ObjectToFormConverter($this->entityProto()))->make($this);
+        final public function makeObject(Form $form)
+        {
+            return (new FormToObjectConverter($this->entityProto()))->make($form);
+        }
+
+        /**
+         * @return Form
+         **/
+        final public function toForm()
+        {
+            return
+                (new ObjectToFormConverter($this->entityProto()))->make($this);
+        }
     }
 }
-

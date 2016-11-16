@@ -8,31 +8,33 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Math
- **/
-class FileRandomSource implements RandomSource
-{
-    private $handle = null;
-
-    public function __construct($filename)
+namespace OnPhp {
+    /**
+     * Class FileRandomSource
+     * @ingroup Math
+     * @package OnPhp
+     */
+    class FileRandomSource implements RandomSource
     {
-        Assert::isTrue(file_exists($filename) && is_readable($filename));
+        private $handle = null;
 
-        $this->handle = fopen($filename, 'rb');
-    }
+        public function __construct($filename)
+        {
+            Assert::isTrue(file_exists($filename) && is_readable($filename));
 
-    public function __destruct()
-    {
-        fclose($this->handle);
-    }
+            $this->handle = fopen($filename, 'rb');
+        }
 
-    public function getBytes($numberOfBytes)
-    {
-        Assert::isPositiveInteger($numberOfBytes);
+        public function __destruct()
+        {
+            fclose($this->handle);
+        }
 
-        return fread($this->handle, $numberOfBytes);
+        public function getBytes($numberOfBytes)
+        {
+            Assert::isPositiveInteger($numberOfBytes);
+
+            return fread($this->handle, $numberOfBytes);
+        }
     }
 }
-

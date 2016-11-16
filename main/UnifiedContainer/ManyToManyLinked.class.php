@@ -8,32 +8,33 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Containers
- **/
-abstract class ManyToManyLinked extends UnifiedContainer
-{
-    public function __construct(
-        Identifiable $parent,
-        GenericDAO $dao,
-        $lazy = true
-    ) {
-        parent::__construct($parent, $dao, $lazy);
-
-        $worker =
-            $lazy
-                ? 'ManyToManyLinkedLazy'
-                : 'ManyToManyLinkedFull';
-
-        $this->worker = new $worker($this);
-    }
-
-    abstract public function getHelperTable();
-
-    public function getParentTableIdField()
+namespace OnPhp {
+    /**
+     * @ingroup Containers
+     **/
+    abstract class ManyToManyLinked extends UnifiedContainer
     {
-        return 'id';
+        public function __construct(
+            Identifiable $parent,
+            GenericDAO $dao,
+            $lazy = true
+        )
+        {
+            parent::__construct($parent, $dao, $lazy);
+
+            $worker =
+                $lazy
+                    ? 'ManyToManyLinkedLazy'
+                    : 'ManyToManyLinkedFull';
+
+            $this->worker = new $worker($this);
+        }
+
+        abstract public function getHelperTable();
+
+        public function getParentTableIdField()
+        {
+            return 'id';
+        }
     }
 }
-

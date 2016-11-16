@@ -8,15 +8,18 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+namespace OnPhp {
 
-/**
- * @ingroup Types
- **/
-abstract class InternalType extends ObjectType
-{
-    public function isGeneric()
+    /**
+     * Class InternalType
+     * @package OnPhp
+     */
+    abstract class InternalType extends ObjectType
     {
-        return true;
+        public function isGeneric()
+        {
+            return true;
+        }
     }
 }
 

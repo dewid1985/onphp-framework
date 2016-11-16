@@ -12,150 +12,151 @@
 /**
  * @todo BasePool implementations
  **/
-class AMQPPool extends Singleton implements Instantiatable
-{
-    private $default = null;
-    private $pool = [];
-
-    /**
-     * @return AMQPPool
-     **/
-    public static function me()
+namespace OnPhp {
+    class AMQPPool extends Singleton implements Instantiatable
     {
-        return Singleton::getInstance(__CLASS__);
-    }
+        private $default = null;
+        private $pool = [];
 
-    /**
-     * @return AMQPPool
-     **/
-    public function setDefault(AMQP $amqp)
-    {
-        $this->default = $amqp;
-
-        return $this;
-    }
-
-    /**
-     * @return AMQPPool
-     **/
-    public function dropDefault()
-    {
-        $this->default = null;
-
-        return $this;
-    }
-
-    /**
-     * @throws WrongArgumentException
-     * @return AMQPPool
-     **/
-    public function addLink($name, AMQP $amqp)
-    {
-        if (isset($this->pool[$name])) {
-            throw new WrongArgumentException(
-                "amqp link with name '{$name}' already registered"
-            );
+        /**
+         * @return AMQPPool
+         **/
+        public static function me()
+        {
+            return Singleton::getInstance(__CLASS__);
         }
 
-        $this->pool[$name] = $amqp;
+        /**
+         * @return AMQPPool
+         **/
+        public function setDefault(AMQP $amqp)
+        {
+            $this->default = $amqp;
 
-        return $this;
-    }
-
-    /**
-     * @throws MissingElementException
-     * @return AMQPPool
-     **/
-    public function dropLink($name)
-    {
-        if (!isset($this->pool[$name])) {
-            throw new MissingElementException(
-                "amqp link with name '{$name}' not found"
-            );
+            return $this;
         }
 
-        unset($this->pool[$name]);
+        /**
+         * @return AMQPPool
+         **/
+        public function dropDefault()
+        {
+            $this->default = null;
 
-        return $this;
-    }
-
-    /**
-     * @return AMQPPool
-     **/
-    public function shutdown()
-    {
-        $this->disconnect();
-
-        $this->default = null;
-        $this->pool = [];
-
-        return $this;
-    }
-
-    /**
-     * @return AMQPPool
-     **/
-    public function disconnect()
-    {
-        if ($this->default) {
-            $this->default->disconnect();
+            return $this;
         }
 
-        foreach ($this->pool as $amqp) {
-            $amqp->disconnect();
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getList()
-    {
-        $list = $this->pool;
-
-        try {
-            $list['default'] = $this->getLink();
-        } catch (MissingElementException $e) {/**/
-        }
-
-        return $list;
-    }
-
-    /**
-     * @throws MissingElementException
-     * @return AMQP
-     **/
-    public function getLink($name = null)
-    {
-        $link = null;
-
-        // single-amqp project
-        if (!$name) {
-            if (!$this->default) {
-                throw new MissingElementException(
-                    'i have no default amqp link and '
-                    . 'requested link name is null'
+        /**
+         * @throws WrongArgumentException
+         * @return AMQPPool
+         **/
+        public function addLink($name, AMQP $amqp)
+        {
+            if (isset($this->pool[$name])) {
+                throw new WrongArgumentException(
+                    "amqp link with name '{$name}' already registered"
                 );
             }
 
-            $link = $this->default;
-        } elseif (isset($this->pool[$name])) {
-            $link = $this->pool[$name];
+            $this->pool[$name] = $amqp;
+
+            return $this;
         }
 
-        if ($link) {
-            if (!$link->isConnected()) {
-                $link->connect();
+        /**
+         * @throws MissingElementException
+         * @return AMQPPool
+         **/
+        public function dropLink($name)
+        {
+            if (!isset($this->pool[$name])) {
+                throw new MissingElementException(
+                    "amqp link with name '{$name}' not found"
+                );
             }
 
-            return $link;
+            unset($this->pool[$name]);
+
+            return $this;
         }
 
-        throw new MissingElementException(
-            "can't find amqp link with '{$name}' name"
-        );
+        /**
+         * @return AMQPPool
+         **/
+        public function shutdown()
+        {
+            $this->disconnect();
+
+            $this->default = null;
+            $this->pool = [];
+
+            return $this;
+        }
+
+        /**
+         * @return AMQPPool
+         **/
+        public function disconnect()
+        {
+            if ($this->default) {
+                $this->default->disconnect();
+            }
+
+            foreach ($this->pool as $amqp) {
+                $amqp->disconnect();
+            }
+
+            return $this;
+        }
+
+        /**
+         * @return array
+         */
+        public function getList()
+        {
+            $list = $this->pool;
+
+            try {
+                $list['default'] = $this->getLink();
+            } catch (MissingElementException $e) {/**/
+            }
+
+            return $list;
+        }
+
+        /**
+         * @throws MissingElementException
+         * @return AMQP
+         **/
+        public function getLink($name = null)
+        {
+            $link = null;
+
+            // single-amqp project
+            if (!$name) {
+                if (!$this->default) {
+                    throw new MissingElementException(
+                        'i have no default amqp link and '
+                        . 'requested link name is null'
+                    );
+                }
+
+                $link = $this->default;
+            } elseif (isset($this->pool[$name])) {
+                $link = $this->pool[$name];
+            }
+
+            if ($link) {
+                if (!$link->isConnected()) {
+                    $link->connect();
+                }
+
+                return $link;
+            }
+
+            throw new MissingElementException(
+                "can't find amqp link with '{$name}' name"
+            );
+        }
     }
 }
-

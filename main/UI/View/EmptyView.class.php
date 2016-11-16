@@ -8,27 +8,29 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- **/
-class EmptyView implements View, Stringable
-{
+namespace OnPhp {
     /**
-     * @param null $model
-     * @return $this
-     */
-    public function render(/* Model */
-        $model = null
-    ) {
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function toString() : string
+     * @ingroup Flow
+     **/
+    class EmptyView implements View, Stringable
     {
-        return '';
+        /**
+         * @param null $model
+         * @return $this
+         */
+        public function render(/* Model */
+            $model = null
+        )
+        {
+            return $this;
+        }
+
+        /**
+         * @return string
+         */
+        public function toString() : string
+        {
+            return '';
+        }
     }
 }

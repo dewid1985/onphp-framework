@@ -9,11 +9,13 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class DTOMessage implements PrototypedEntity
-{
-    final public function makeDto()
+namespace OnPhp {
+    abstract class DTOMessage implements PrototypedEntity
     {
-        return (new ObjectToDTOConverter($this->entityProto()))->make($this);
+        final public function makeDto()
+        {
+            return (new ObjectToDTOConverter($this->entityProto()))->make($this);
+        }
     }
 }
 

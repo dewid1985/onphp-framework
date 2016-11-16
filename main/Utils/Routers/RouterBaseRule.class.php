@@ -9,124 +9,125 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-abstract class RouterBaseRule implements RouterRule
-{
-    protected $defaults = [];
-
-    /**
-     * @return RouterChainRule
-     **/
-    public function chain(RouterRule $route, $separator = '/')
+namespace OnPhp {
+    abstract class RouterBaseRule implements RouterRule
     {
-        $chain = new RouterChainRule();
+        protected $defaults = [];
 
-        $chain
-            ->chain($this)
-            ->chain($route, $separator);
+        /**
+         * @return RouterChainRule
+         **/
+        public function chain(RouterRule $route, $separator = '/')
+        {
+            $chain = new RouterChainRule();
 
-        return $chain;
-    }
+            $chain
+                ->chain($this)
+                ->chain($route, $separator);
 
-    public function getDefault($name)
-    {
-        if (isset($this->defaults[$name])) {
-            return $this->defaults[$name];
+            return $chain;
         }
 
-        return null;
-    }
+        public function getDefault($name)
+        {
+            if (isset($this->defaults[$name])) {
+                return $this->defaults[$name];
+            }
 
-    /**
-     * @return array
-     **/
-    public function getDefaults()
-    {
-        return $this->defaults;
-    }
-
-    public function setDefaults(array $defaults)
-    {
-        $this->defaults = $defaults;
-
-        return $this;
-    }
-
-    /**
-     * @return HttpUrl
-     **/
-    protected function processPath(HttpRequest $request)
-    {
-        if ($request->hasServerVar('REQUEST_URI')) {
-            $path =
-                $this->getPath(
-                    (new HttpUrl())
-                        ->parse($request->getServerVar('REQUEST_URI'))
-                );
-        } else {
-            throw new RouterException('Cannot resolve path');
+            return null;
         }
 
-        return $path;
-    }
-
-    /**
-     * @return HttpUrl
-     **/
-    protected function getPath(HttpUrl $url)
-    {
-        $reducedUrl = clone $url;
-
-        $base = RouterRewrite::me()->getBaseUrl();
-
-        if (!$base instanceof HttpUrl) {
-            throw new RouterException('Setup base url');
+        /**
+         * @return array
+         **/
+        public function getDefaults()
+        {
+            return $this->defaults;
         }
 
-        if (!$base->getScheme()) {
-            $reducedUrl
-                ->setScheme(null)
-                ->setAuthority(null);
+        public function setDefaults(array $defaults)
+        {
+            $this->defaults = $defaults;
+
+            return $this;
         }
 
-        $reducedUrl->setQuery(null);
+        /**
+         * @return HttpUrl
+         **/
+        protected function processPath(HttpRequest $request)
+        {
+            if ($request->hasServerVar('REQUEST_URI')) {
+                $path =
+                    $this->getPath(
+                        (new HttpUrl())
+                            ->parse($request->getServerVar('REQUEST_URI'))
+                    );
+            } else {
+                throw new RouterException('Cannot resolve path');
+            }
 
-        if (
-            (
-                $reducedUrl->getScheme()
-                && ($base->getScheme() != $reducedUrl->getScheme())
-            ) || (
-                $reducedUrl->getAuthority()
-                && ($base->getAuthority() != $reducedUrl->getAuthority())
-            )
-        ) {
-            return $reducedUrl;
+            return $path;
         }
 
-        $result = new HttpUrl();
+        /**
+         * @return HttpUrl
+         **/
+        protected function getPath(HttpUrl $url)
+        {
+            $reducedUrl = clone $url;
 
-        $baseSegments = explode('/', $base->getPath());
-        $segments = explode('/', $reducedUrl->getPath());
+            $base = RouterRewrite::me()->getBaseUrl();
 
-        $originalSegments = $segments;
+            if (!$base instanceof HttpUrl) {
+                throw new RouterException('Setup base url');
+            }
 
-        array_pop($baseSegments);
+            if (!$base->getScheme()) {
+                $reducedUrl
+                    ->setScheme(null)
+                    ->setAuthority(null);
+            }
 
-        while (
-            $baseSegments
-            && $segments
-            && ($baseSegments[0] == $segments[0])
-        ) {
-            array_shift($baseSegments);
-            array_shift($segments);
+            $reducedUrl->setQuery(null);
+
+            if (
+                (
+                    $reducedUrl->getScheme()
+                    && ($base->getScheme() != $reducedUrl->getScheme())
+                ) || (
+                    $reducedUrl->getAuthority()
+                    && ($base->getAuthority() != $reducedUrl->getAuthority())
+                )
+            ) {
+                return $reducedUrl;
+            }
+
+            $result = new HttpUrl();
+
+            $baseSegments = explode('/', $base->getPath());
+            $segments = explode('/', $reducedUrl->getPath());
+
+            $originalSegments = $segments;
+
+            array_pop($baseSegments);
+
+            while (
+                $baseSegments
+                && $segments
+                && ($baseSegments[0] == $segments[0])
+            ) {
+                array_shift($baseSegments);
+                array_shift($segments);
+            }
+
+            if ($baseSegments && $baseSegments[0]) {
+                $segments = $originalSegments;
+            }
+
+            $result->setPath(implode('/', $segments));
+
+            return $result;
         }
-
-        if ($baseSegments && $baseSegments[0]) {
-            $segments = $originalSegments;
-        }
-
-        $result->setPath(implode('/', $segments));
-
-        return $result;
     }
 }
-

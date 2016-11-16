@@ -8,16 +8,17 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Flow
- * @ingroup Module
- **/
-interface ViewResolver
-{
+namespace OnPhp {
     /**
-     * @param    $viewName    string
-     * @return    View
+     * @ingroup Flow
+     * @ingroup Module
      **/
-    public function resolveViewName($viewName);
+    interface ViewResolver
+    {
+        /**
+         * @param    $viewName    string
+         * @return    View
+         **/
+        public function resolveViewName($viewName);
+    }
 }

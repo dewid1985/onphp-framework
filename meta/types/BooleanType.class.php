@@ -8,71 +8,72 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Types
- **/
-class BooleanType extends BasePropertyType
-{
-    public function getPrimitiveName()
-    {
-        return 'boolean';
-    }
-
+namespace OnPhp {
     /**
-     * @throws WrongArgumentException
-     * @return BooleanType
+     * @ingroup Types
      **/
-    public function setDefault($default)
+    class BooleanType extends BasePropertyType
     {
-        static $boolean = ['true' => true, 'false' => false];
-
-        if (!isset($boolean[$default])) {
-            throw new WrongArgumentException(
-                "strange default value given - '{$default}'"
-            );
+        public function getPrimitiveName()
+        {
+            return 'boolean';
         }
 
-        $this->default = $boolean[$default];
+        /**
+         * @throws WrongArgumentException
+         * @return BooleanType
+         **/
+        public function setDefault($default)
+        {
+            static $boolean = ['true' => true, 'false' => false];
 
-        return $this;
-    }
+            if (!isset($boolean[$default])) {
+                throw new WrongArgumentException(
+                    "strange default value given - '{$default}'"
+                );
+            }
 
-    public function getDeclaration()
-    {
-        if ($this->hasDefault()) {
-            return
-                $this->default
-                    ? 'true'
-                    : 'false';
+            $this->default = $boolean[$default];
+
+            return $this;
         }
 
-        return 'null';
-    }
+        public function getDeclaration()
+        {
+            if ($this->hasDefault()) {
+                return
+                    $this->default
+                        ? 'true'
+                        : 'false';
+            }
 
-    public function isMeasurable()
-    {
-        return false;
-    }
+            return 'null';
+        }
 
-    public function toColumnType()
-    {
-        return '(new DataType(DataType::BOOLEAN))';
-    }
+        public function isMeasurable()
+        {
+            return false;
+        }
 
-    public function toGetter(
-        MetaClass $class,
-        MetaClassProperty $property,
-        MetaClassProperty $holder = null
-    ) {
-        $name = $property->getName();
-        $camelName = ucfirst($name);
+        public function toColumnType()
+        {
+            return '(new DataType(DataType::BOOLEAN))';
+        }
 
-        $methodName = "is{$camelName}";
-        $compatName = "get{$camelName}";
+        public function toGetter(
+            MetaClass $class,
+            MetaClassProperty $property,
+            MetaClassProperty $holder = null
+        )
+        {
+            $name = $property->getName();
+            $camelName = ucfirst($name);
 
-        if ($holder) {
-            return <<<EOT
+            $methodName = "is{$camelName}";
+            $compatName = "get{$camelName}";
+
+            if ($holder) {
+                return <<<EOT
 
 public function {$compatName}()
 {
@@ -85,8 +86,8 @@ public function {$methodName}()
 }
 
 EOT;
-        } else {
-            return <<<EOT
+            } else {
+                return <<<EOT
 
 public function {$compatName}()
 {
@@ -99,21 +100,22 @@ public function {$methodName}()
 }
 
 EOT;
+            }
+
+            Assert::isUnreachable();
         }
 
-        Assert::isUnreachable();
-    }
+        public function toSetter(
+            MetaClass $class,
+            MetaClassProperty $property,
+            MetaClassProperty $holder = null
+        )
+        {
+            $name = $property->getName();
+            $methodName = 'set' . ucfirst($name);
 
-    public function toSetter(
-        MetaClass $class,
-        MetaClassProperty $property,
-        MetaClassProperty $holder = null
-    ) {
-        $name = $property->getName();
-        $methodName = 'set' . ucfirst($name);
-
-        if ($holder) {
-            return <<<EOT
+            if ($holder) {
+                return <<<EOT
 
 /**
  * @return {$holder->getClass()->getName()}
@@ -126,9 +128,9 @@ public function {$methodName}(\${$name})
 }
 
 EOT;
-        } else {
-            if ($property->isRequired()) {
-                $method = <<<EOT
+            } else {
+                if ($property->isRequired()) {
+                    $method = <<<EOT
 
 /**
  * @return {$class->getName()}
@@ -141,8 +143,8 @@ public function {$methodName}(\${$name} = false)
 }
 
 EOT;
-            } else {
-                $method = <<<EOT
+                } else {
+                    $method = <<<EOT
 
 /**
  * @return {$class->getName()}
@@ -157,11 +159,11 @@ public function {$methodName}(\${$name} = null)
 }
 
 EOT;
+                }
             }
-        }
 
-        return $method;
+            return $method;
+        }
     }
 }
-
 ?>

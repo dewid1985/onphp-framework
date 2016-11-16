@@ -8,31 +8,31 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class TypesUtils extends StaticFactory
-{
-    const SIGNED_MAX = 2147483647;
-    const UNSIGNED_MAX = 4294967295;
-
-    public static function signedToUnsigned($signedInt)
+namespace OnPhp {
+    /**
+     * @ingroup Utils
+     **/
+    class TypesUtils extends StaticFactory
     {
-        if ($signedInt < 0) {
-            return $signedInt + self::UNSIGNED_MAX + 1;
-        } else {
-            return $signedInt;
+        const SIGNED_MAX = 2147483647;
+        const UNSIGNED_MAX = 4294967295;
+
+        public static function signedToUnsigned($signedInt)
+        {
+            if ($signedInt < 0) {
+                return $signedInt + self::UNSIGNED_MAX + 1;
+            } else {
+                return $signedInt;
+            }
         }
-    }
 
-    public static function unsignedToSigned($unsignedInt)
-    {
-        if ($unsignedInt > self::SIGNED_MAX) {
-            return $unsignedInt - self::UNSIGNED_MAX - 1;
-        } else {
-            return $unsignedInt;
+        public static function unsignedToSigned($unsignedInt)
+        {
+            if ($unsignedInt > self::SIGNED_MAX) {
+                return $unsignedInt - self::UNSIGNED_MAX - 1;
+            } else {
+                return $unsignedInt;
+            }
         }
     }
 }
-

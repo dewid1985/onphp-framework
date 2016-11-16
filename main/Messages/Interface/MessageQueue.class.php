@@ -9,8 +9,16 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-interface MessageQueue
-{ /* nop */
+namespace OnPhp {
+    /**
+     * Interface MessageQueue
+     * @ingroup Messages
+     * @package OnPhp
+     */
+    interface MessageQueue
+    {
+        /* nop */
+    }
 }
 
 

@@ -8,30 +8,30 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-abstract class OqlQuery extends OqlQueryClause
-{
-    protected $dao = null;
-
+namespace OnPhp {
     /**
-     * @return ProtoDAO
+     * @ingroup OQL
      **/
-    public function getDao()
+    abstract class OqlQuery extends OqlQueryClause
     {
-        return $this->dao;
-    }
+        protected $dao = null;
 
-    /**
-     * @return OqlQuery
-     **/
-    public function setDao(ProtoDAO $dao)
-    {
-        $this->dao = $dao;
+        /**
+         * @return ProtoDAO
+         **/
+        public function getDao()
+        {
+            return $this->dao;
+        }
 
-        return $this;
+        /**
+         * @return OqlQuery
+         **/
+        public function setDao(ProtoDAO $dao)
+        {
+            $this->dao = $dao;
+
+            return $this;
+        }
     }
 }
-

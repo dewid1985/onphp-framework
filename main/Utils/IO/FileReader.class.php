@@ -8,112 +8,112 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class FileReader extends Reader
-{
-    private $fd = null;
-
-    public function __construct($fileName)
-    {
-        if (!is_readable($fileName)) {
-            throw new WrongStateException("Can not read {$fileName}");
-        }
-
-        try {
-            $this->fd = fopen($fileName, 'rt');
-        } catch (BaseException $e) {
-            throw new IOException($e->getMessage());
-        }
-    }
-
+namespace OnPhp {
     /**
-     *
-     */
-    public function __destruct()
-    {
-        try {
-            $this->close();
-        } catch (BaseException $e) {
-            // boo.
-        }
-    }
-
-    /**
-     * @return $this
-     * @throws IOException
-     */
-    public function close()
-    {
-        if (!fclose($this->fd)) {
-            throw new IOException('failed to close the file');
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEof()
-    {
-        return feof($this->fd);
-    }
-
-    /**
-     * @return bool
-     */
-    public function markSupported() : bool
-    {
-        return true;
-    }
-
-    /**
-     * @return FileReader
+     * @ingroup Utils
      **/
-    public function mark()
+    class FileReader extends Reader
     {
-        $this->mark = ftell($this->fd);
+        private $fd = null;
 
-        return $this;
-    }
-
-    /**
-     * @return $this
-     * @throws IOException
-     */
-    public function reset()
-    {
-        if (fseek($this->fd, $this->mark) < 0) {
-            throw new IOException(
-                'mark has been invalidated'
-            );
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param $length
-     * @return null|string
-     */
-    public function read($length)
-    {
-        $result = null;
-
-        for ($i = 0; $i < $length; $i++) {
-            if (
-                ($char = fgetc($this->fd)) === false
-            ) {
-                break;
+        public function __construct($fileName)
+        {
+            if (!is_readable($fileName)) {
+                throw new WrongStateException("Can not read {$fileName}");
             }
 
-            $result .= $char;
+            try {
+                $this->fd = fopen($fileName, 'rt');
+            } catch (BaseException $e) {
+                throw new IOException($e->getMessage());
+            }
         }
 
-        return $result;
+        /**
+         *
+         */
+        public function __destruct()
+        {
+            try {
+                $this->close();
+            } catch (BaseException $e) {
+                // boo.
+            }
+        }
+
+        /**
+         * @return $this
+         * @throws IOException
+         */
+        public function close()
+        {
+            if (!fclose($this->fd)) {
+                throw new IOException('failed to close the file');
+            }
+
+            return $this;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isEof()
+        {
+            return feof($this->fd);
+        }
+
+        /**
+         * @return bool
+         */
+        public function markSupported() : bool
+        {
+            return true;
+        }
+
+        /**
+         * @return FileReader
+         **/
+        public function mark()
+        {
+            $this->mark = ftell($this->fd);
+
+            return $this;
+        }
+
+        /**
+         * @return $this
+         * @throws IOException
+         */
+        public function reset()
+        {
+            if (fseek($this->fd, $this->mark) < 0) {
+                throw new IOException(
+                    'mark has been invalidated'
+                );
+            }
+
+            return $this;
+        }
+
+        /**
+         * @param $length
+         * @return null|string
+         */
+        public function read($length)
+        {
+            $result = null;
+
+            for ($i = 0; $i < $length; $i++) {
+                if (
+                    ($char = fgetc($this->fd)) === false
+                ) {
+                    break;
+                }
+
+                $result .= $char;
+            }
+
+            return $result;
+        }
     }
 }
-

@@ -8,150 +8,150 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class BufferedInputStream extends InputStream
-{
-    private $runAheadBytes = 0;
-
-    private $in = null;
-    private $closed = false;
-
-    private $buffer = null;
-    private $bufferLength = 0;
-
-    private $position = 0;
-    private $markPosition = null;
-
-    public function __construct(InputStream $in)
-    {
-        $this->in = $in;
-    }
-
+namespace OnPhp {
     /**
-     * @return BufferedInputStream
+     * @ingroup Utils
      **/
-    public function close()
+    class BufferedInputStream extends InputStream
     {
-        $this->closed = true;
+        private $runAheadBytes = 0;
 
-        return $this;
-    }
+        private $in = null;
+        private $closed = false;
 
-    /**
-     * @return mixed
-     */
-    public function isEof()
-    {
-        return $this->in->isEof();
-    }
+        private $buffer = null;
+        private $bufferLength = 0;
 
-    /**
-     * @return bool
-     */
-    public function markSupported()
-    {
-        return true;
-    }
+        private $position = 0;
+        private $markPosition = null;
 
-    /**
-     * @return BufferedInputStream
-     **/
-    public function mark()
-    {
-        $this->markPosition = $this->position;
-
-        return $this;
-    }
-
-    /**
-     * @return BufferedInputStream
-     **/
-    public function reset()
-    {
-        $this->position = $this->markPosition;
-
-        return $this;
-    }
-
-    /**
-     * @return BufferedInputStream
-     **/
-    public function setRunAheadBytes($runAheadBytes)
-    {
-        $this->runAheadBytes = $runAheadBytes;
-
-        return $this;
-    }
-
-    /**
-     * @param $count
-     * @return null|string
-     */
-    public function read($count)
-    {
-        if ($this->closed) {
-            return null;
+        public function __construct(InputStream $in)
+        {
+            $this->in = $in;
         }
 
-        $remainingCount = $count;
-        $availableCount = $this->available();
+        /**
+         * @return BufferedInputStream
+         **/
+        public function close()
+        {
+            $this->closed = true;
 
-        if ($remainingCount <= $availableCount) {
-            $readFromBuffer = $count;
-        } else {
-            $readFromBuffer = $availableCount;
+            return $this;
         }
 
-        $result = null;
-
-        if ($readFromBuffer > 0) {
-            $result = substr(
-                $this->buffer, $this->position, $readFromBuffer
-            );
-
-            $this->position += $readFromBuffer;
-            $remainingCount -= $readFromBuffer;
+        /**
+         * @return mixed
+         */
+        public function isEof()
+        {
+            return $this->in->isEof();
         }
 
-        if ($remainingCount > 0) {
+        /**
+         * @return bool
+         */
+        public function markSupported()
+        {
+            return true;
+        }
 
-            $readAtOnce = ($remainingCount < $this->runAheadBytes)
-                ? $this->runAheadBytes
-                : $remainingCount;
+        /**
+         * @return BufferedInputStream
+         **/
+        public function mark()
+        {
+            $this->markPosition = $this->position;
 
-            $readBytes = $this->in->read($readAtOnce);
-            $readBytesLength = strlen($readBytes);
+            return $this;
+        }
 
-            if ($readBytesLength > 0) {
-                $this->buffer .= $readBytes;
-                $this->bufferLength += $readBytesLength;
+        /**
+         * @return BufferedInputStream
+         **/
+        public function reset()
+        {
+            $this->position = $this->markPosition;
 
-                if ($readBytesLength <= $remainingCount) {
-                    $this->position += $readBytesLength;
-                    $result .= $readBytes;
-                } else {
-                    $this->position += $remainingCount;
-                    $result .= substr($readBytes, 0, $remainingCount);
+            return $this;
+        }
+
+        /**
+         * @return BufferedInputStream
+         **/
+        public function setRunAheadBytes($runAheadBytes)
+        {
+            $this->runAheadBytes = $runAheadBytes;
+
+            return $this;
+        }
+
+        /**
+         * @param $count
+         * @return null|string
+         */
+        public function read($count)
+        {
+            if ($this->closed) {
+                return null;
+            }
+
+            $remainingCount = $count;
+            $availableCount = $this->available();
+
+            if ($remainingCount <= $availableCount) {
+                $readFromBuffer = $count;
+            } else {
+                $readFromBuffer = $availableCount;
+            }
+
+            $result = null;
+
+            if ($readFromBuffer > 0) {
+                $result = substr(
+                    $this->buffer, $this->position, $readFromBuffer
+                );
+
+                $this->position += $readFromBuffer;
+                $remainingCount -= $readFromBuffer;
+            }
+
+            if ($remainingCount > 0) {
+
+                $readAtOnce = ($remainingCount < $this->runAheadBytes)
+                    ? $this->runAheadBytes
+                    : $remainingCount;
+
+                $readBytes = $this->in->read($readAtOnce);
+                $readBytesLength = strlen($readBytes);
+
+                if ($readBytesLength > 0) {
+                    $this->buffer .= $readBytes;
+                    $this->bufferLength += $readBytesLength;
+
+                    if ($readBytesLength <= $remainingCount) {
+                        $this->position += $readBytesLength;
+                        $result .= $readBytes;
+                    } else {
+                        $this->position += $remainingCount;
+                        $result .= substr($readBytes, 0, $remainingCount);
+                    }
                 }
             }
+
+            return $result;
         }
 
-        return $result;
-    }
+        /**
+         * @return int
+         */
+        public function available()
+        {
+            if ($this->closed) {
+                return 0;
+            }
 
-    /**
-     * @return int
-     */
-    public function available()
-    {
-        if ($this->closed) {
-            return 0;
+            return ($this->bufferLength - $this->position);
         }
-
-        return ($this->bufferLength - $this->position);
     }
 }
-

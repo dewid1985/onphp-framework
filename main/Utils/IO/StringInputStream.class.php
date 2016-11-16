@@ -8,91 +8,91 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Utils
- **/
-class StringInputStream extends InputStream
-{
-    private $string = null;
-    private $length = null;
-
-    private $position = 0;
-    private $mark = 0;
-
-    public function __construct($string)
-    {
-        Assert::isString($string);
-
-        $this->string = $string;
-        $this->length = strlen($string);
-    }
-
+namespace OnPhp {
     /**
-     * @return StringInputStream
+     * @ingroup Utils
      **/
-    public function mark()
+    class StringInputStream extends InputStream
     {
-        $this->mark = $this->position;
+        private $string = null;
+        private $length = null;
 
-        return $this;
-    }
+        private $position = 0;
+        private $mark = 0;
 
-    /**
-     * @return bool
-     */
-    public function markSupported()
-    {
-        return true;
-    }
+        public function __construct($string)
+        {
+            Assert::isString($string);
 
-    /**
-     * @return StringInputStream
-     **/
-    public function reset()
-    {
-        $this->position = $this->mark;
-
-        return $this;
-    }
-
-    /**
-     * @return StringInputStream
-     **/
-    public function close()
-    {
-        $this->string = null;
-
-        return $this;
-    }
-
-    /**
-     * @param $count
-     * @return null|string
-     */
-    public function read($count)
-    {
-        if (!$this->string || $this->isEof()) {
-            return null;
+            $this->string = $string;
+            $this->length = strlen($string);
         }
 
-        if ($count == 1) {
-            $result = $this->string[(int) $this->position];
-        } else {
-            $result = substr($this->string, $this->position, $count);
+        /**
+         * @return StringInputStream
+         **/
+        public function mark()
+        {
+            $this->mark = $this->position;
+
+            return $this;
         }
 
-        $this->position += $count;
+        /**
+         * @return bool
+         */
+        public function markSupported()
+        {
+            return true;
+        }
 
-        return $result;
-    }
+        /**
+         * @return StringInputStream
+         **/
+        public function reset()
+        {
+            $this->position = $this->mark;
 
-    /**
-     * @return bool
-     */
-    public function isEof()
-    {
-        return ($this->position >= $this->length);
+            return $this;
+        }
+
+        /**
+         * @return StringInputStream
+         **/
+        public function close()
+        {
+            $this->string = null;
+
+            return $this;
+        }
+
+        /**
+         * @param $count
+         * @return null|string
+         */
+        public function read($count)
+        {
+            if (!$this->string || $this->isEof()) {
+                return null;
+            }
+
+            if ($count == 1) {
+                $result = $this->string[(int)$this->position];
+            } else {
+                $result = substr($this->string, $this->position, $count);
+            }
+
+            $this->position += $count;
+
+            return $result;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isEof()
+        {
+            return ($this->position >= $this->length);
+        }
     }
 }
-

@@ -8,32 +8,32 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Builders
- **/
-final class BusinessClassBuilder extends OnceBuilder
-{
-    public static function build(MetaClass $class)
+namespace OnPhp {
+    /**
+     * @ingroup Builders
+     **/
+    final class BusinessClassBuilder extends OnceBuilder
     {
-        $out = self::getHead();
+        public static function build(MetaClass $class)
+        {
+            $out = self::getHead();
 
-        if ($type = $class->getType()) {
-            $typeName = $type->toString() . ' ';
-        } else {
-            $typeName = null;
-        }
+            if ($type = $class->getType()) {
+                $typeName = $type->toString() . ' ';
+            } else {
+                $typeName = null;
+            }
 
-        $interfaces = ' implements Prototyped';
+            $interfaces = ' implements Prototyped';
 
-        if (
-            $class->getPattern()->daoExists()
-            && (!$class->getPattern() instanceof AbstractClassPattern)
-        ) {
-            $interfaces .= ', DAOConnected';
+            if (
+                $class->getPattern()->daoExists()
+                && (!$class->getPattern() instanceof AbstractClassPattern)
+            ) {
+                $interfaces .= ', DAOConnected';
 
-            $daoName = $class->getName() . 'DAO';
-            $dao = <<<EOT
+                $daoName = $class->getName() . 'DAO';
+                $dao = <<<EOT
 /**
 * @return {$daoName}
 **/
@@ -43,57 +43,57 @@ public static function dao()
 }
 
 EOT;
-        } else {
-            $dao = null;
-        }
+            } else {
+                $dao = null;
+            }
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 {$typeName}class {$class->getName()} extends Auto{$class->getName()}{$interfaces}
 {
 EOT;
 
-        if (!$type || $type->getId() !== MetaClassType::CLASS_ABSTRACT) {
-            $customCreate = null;
+            if (!$type || $type->getId() !== MetaClassType::CLASS_ABSTRACT) {
+                $customCreate = null;
 
-            if (
-                $class->getFinalParent()->getPattern()
-                instanceof InternalClassPattern
-            ) {
-                $parent = $class;
+                if (
+                    $class->getFinalParent()->getPattern()
+                    instanceof InternalClassPattern
+                ) {
+                    $parent = $class;
 
-                while ($parent = $parent->getParent()) {
-                    $info = new ReflectionClass($parent->getName());
+                    while ($parent = $parent->getParent()) {
+                        $info = new ReflectionClass($parent->getName());
 
-                    if (
-                        $info->hasMethod('create')
-                        && ($info->getMethod('create')->getParameters() > 0)
-                    ) {
-                        $customCreate = true;
-                        break;
+                        if (
+                            $info->hasMethod('create')
+                            && ($info->getMethod('create')->getParameters() > 0)
+                        ) {
+                            $customCreate = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if ($customCreate) {
-                $creator = $info->getMethod('create');
+                if ($customCreate) {
+                    $creator = $info->getMethod('create');
 
-                $declaration = [];
+                    $declaration = [];
 
-                foreach ($creator->getParameters() as $parameter) {
-                    $declaration[] =
-                        '$' . $parameter->getName()
-                        // no one can live without default value @ ::create
-                        . ' = '
-                        . (
-                        $parameter->getDefaultValue()
-                            ? $parameter->getDefaultValue()
-                            : 'null'
-                        );
-                }
+                    foreach ($creator->getParameters() as $parameter) {
+                        $declaration[] =
+                            '$' . $parameter->getName()
+                            // no one can live without default value @ ::create
+                            . ' = '
+                            . (
+                            $parameter->getDefaultValue()
+                                ? $parameter->getDefaultValue()
+                                : 'null'
+                            );
+                    }
 
-                $declaration = implode(', ', $declaration);
+                    $declaration = implode(', ', $declaration);
 
-                $out .= <<<EOT
+                    $out .= <<<EOT
 
 /**
 * @return {$class->getName()}
@@ -104,8 +104,8 @@ public static function create({$declaration})
 }
 
 EOT;
-            } else {
-                $out .= <<<EOT
+                } else {
+                    $out .= <<<EOT
 
 /**
 * @return {$class->getName()}
@@ -116,11 +116,11 @@ public static function create()
 }
 
 EOT;
-            }
+                }
 
-            $protoName = 'Proto' . $class->getName();
+                $protoName = 'Proto' . $class->getName();
 
-            $out .= <<<EOT
+                $out .= <<<EOT
 
 {$dao}
 /**
@@ -133,16 +133,16 @@ public static function proto()
 
 EOT;
 
-        }
+            }
 
-        $out .= <<<EOT
+            $out .= <<<EOT
 
     // your brilliant stuff goes here
 }
 
 EOT;
-        return $out . self::getHeel();
+            return $out . self::getHeel();
+        }
     }
 }
-
 ?>

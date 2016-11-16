@@ -8,26 +8,26 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-class OqlOrderByClause extends OqlQueryListedClause
-{
-
+namespace OnPhp {
     /**
-     * @return OrderChain
+     * @ingroup OQL
      **/
-    public function toOrder()
+    class OqlOrderByClause extends OqlQueryListedClause
     {
-        $order = new OrderChain();
-        foreach ($this->list as $property) {
-            $order->add(
-                $property->evaluate($this->parameters)
-            );
-        }
 
-        return $order;
+        /**
+         * @return OrderChain
+         **/
+        public function toOrder()
+        {
+            $order = new OrderChain();
+            foreach ($this->list as $property) {
+                $order->add(
+                    $property->evaluate($this->parameters)
+                );
+            }
+
+            return $order;
+        }
     }
 }
-

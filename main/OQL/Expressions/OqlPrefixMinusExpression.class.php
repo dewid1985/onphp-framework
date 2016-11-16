@@ -8,33 +8,34 @@
  *   License, or (at your option) any later version.                        *
  *                                                                          *
  ****************************************************************************/
-
-/**
- * @ingroup OQL
- **/
-class OqlPrefixMinusExpression extends OqlQueryExpression
-{
-    const CLASS_NAME = 'PrefixUnaryExpression';
-
-    public function __construct(OqlQueryParameter $subject)
+namespace OnPhp {
+    /**
+     * @ingroup OQL
+     **/
+    class OqlPrefixMinusExpression extends OqlQueryExpression
     {
-        $this
-            ->setClassName(self::CLASS_NAME)
-            ->addParameter(
-                (new OqlQueryParameter())
-                    ->setValue(PrefixUnaryExpression::MINUS)
-            )
-            ->addParameter($subject);
-    }
+        const CLASS_NAME = 'PrefixUnaryExpression';
 
-    public function evaluate($values)
-    {
-        $value = $this->getParameter(1)->evaluate($values);
+        public function __construct(OqlQueryParameter $subject)
+        {
+            $this
+                ->setClassName(self::CLASS_NAME)
+                ->addParameter(
+                    (new OqlQueryParameter())
+                        ->setValue(PrefixUnaryExpression::MINUS)
+                )
+                ->addParameter($subject);
+        }
 
-        if (is_numeric($value)) {
-            return -$value;
-        } else {
-            return parent::evaluate($values);
+        public function evaluate($values)
+        {
+            $value = $this->getParameter(1)->evaluate($values);
+
+            if (is_numeric($value)) {
+                return -$value;
+            } else {
+                return parent::evaluate($values);
+            }
         }
     }
 }

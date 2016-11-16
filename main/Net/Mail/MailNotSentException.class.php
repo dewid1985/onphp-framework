@@ -8,12 +8,12 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
-
-/**
- * @ingroup Exceptions
- **/
-class MailNotSentException extends MailException
-{/*_*/
+namespace OnPhp {
+    /**
+     * @ingroup Exceptions
+     **/
+    class MailNotSentException extends MailException
+    {
+        /*_*/
+    }
 }
-
-;
