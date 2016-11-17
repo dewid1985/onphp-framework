@@ -44,8 +44,7 @@ namespace OnPhp {
             $className = $this->guessClassName($class);
 
             Assert::classExists($className);
-
-            Assert::isInstance($className, 'Enum');
+//            Assert::isInstance($className, 'OnPhp\\Enum');
 
             $this->className = $className;
 

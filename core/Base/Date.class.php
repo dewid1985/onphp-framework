@@ -52,7 +52,7 @@ namespace OnPhp {
         {
             try {
                 if (is_int($date) || is_numeric($date)) { // unix timestamp
-                    $this->dateTime = new DateTime(date(static::getFormat(), $date));
+                    $this->dateTime = new \DateTime(date(static::getFormat(), $date));
 
                 } elseif ($date && is_string($date)) {
 
@@ -70,11 +70,11 @@ namespace OnPhp {
                         );
                     }
 
-                    $this->dateTime = new DateTime($date);
+                    $this->dateTime = new \DateTime($date);
                 }
 
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new WrongArgumentException(
                     "strange input given - '{$date}'"
                 );
@@ -176,7 +176,7 @@ namespace OnPhp {
         {
             try {
                 $this->dateTime->modify($string);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new WrongArgumentException(
                     "wrong time string '{$string}'"
                 );

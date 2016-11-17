@@ -20,7 +20,7 @@ namespace OnPhp {
      **/
     abstract class Enum extends NamedObject
         implements
-        Serializable
+        \Serializable
     {
         /** @var array */
         protected static $names = [/* override me */];

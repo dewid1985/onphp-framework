@@ -97,7 +97,7 @@ namespace OnPhp {
          */
         protected function getObjectName()
         {
-            return 'TimestampTZ';
+            return 'OnPhp\\TimestampTZ';
         }
     }
 }

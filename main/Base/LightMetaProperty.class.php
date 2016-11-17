@@ -463,6 +463,21 @@ namespace OnPhp {
         {
             return $this->identifier;
         }
+        private function getNamespaces(string $className) : string
+        {
+            $out = '';
+
+            switch ($className)
+            {
+                case "TimestampTZ":
+                    $out = "OnPhp\\".$className;
+                    break;
+                default :
+                    $out = "Business\\".$className;
+            }
+
+            return $out;
+        }
 
         final public function toString() : string
         {
@@ -479,7 +494,7 @@ namespace OnPhp {
                 . "'{$this->type}', "
                 . (
                 $this->className
-                    ? "'\\Business\\{$this->className}'"
+                    ? "'{$this->getNamespaces($this->className)}'"
                     : 'null'
                 )
                 . ', '
