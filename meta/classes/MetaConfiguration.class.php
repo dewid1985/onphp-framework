@@ -338,10 +338,10 @@ namespace OnPhp {
                     $type = (string)$xmlClass['type'];
 
                     if ($type == 'spooked') {
-                        $this->getOutput()->
-                        warning($class->getName(), true)->
-                        warningLine(': uses obsoleted "spooked" type.')->
-                        newLine();
+                        $this->getOutput()
+                            ->warning($class->getName(), true)
+                            ->warningLine(': uses obsoleted "spooked" type.')
+                            ->newLine();
                     }
 
                     $class->setType(
