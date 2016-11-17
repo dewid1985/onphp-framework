@@ -17,6 +17,9 @@ namespace OnPhp {
         /** @var null */
         private $name = null;
 
+        /**@var  null */
+        private $schema = null;
+
         /** @var array */
         private $columns = [];
         /** @var array */
@@ -34,6 +37,23 @@ namespace OnPhp {
             $this->name = $name;
         }
 
+        /**
+         * @return mixed
+         */
+        public function getSchema()
+        {
+            return $this->schema;
+        }
+
+        /**
+         * @param $schema
+         * @return $this
+         */
+        public function setSchema($schema)
+        {
+            $this->schema = $schema;
+            return $this;
+        }
 
         /**
          * @param Dialect $dialect

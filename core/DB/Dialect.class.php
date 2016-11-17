@@ -71,6 +71,15 @@ namespace OnPhp {
         }
 
         /**
+         * @param $schema
+         * @return string
+         */
+        public function quoteSchema($schema)
+        {
+            return '"' . $schema . '""';
+        }
+
+        /**
          * @param DBColumn $column
          * @return mixed
          */

@@ -25,8 +25,9 @@ namespace OnPhp {
         public function toDialectString(Dialect $dialect)
         {
             $name = $this->table->getName();
+            $middle = (new CreateSchemaQuery($this->table->getSchema()))->toDialectString($dialect);
 
-            $middle = "CREATE TABLE {$dialect->quoteTable($name)} (\n    ";
+            $middle .= "CREATE TABLE {$dialect->quoteTable($name)} (\n    ";
 
             $prepend = [];
             $columns = [];

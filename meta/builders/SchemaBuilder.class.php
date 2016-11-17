@@ -23,23 +23,31 @@ namespace OnPhp {
         ->
 EOT;
             $columns = [];
+            $schema = null;
 
             foreach ($propertyList as $property) {
+
+                print_r($property);
+                if ($property instanceof MetaClassSchema) {
+                    $schema = $property->buildSchema();
+                    continue;
+                }
                 if (
                     $property->getRelation()
                     && ($property->getRelationId() != MetaRelation::ONE_TO_ONE)
                 ) {
                     continue;
                 }
-
                 $column = $property->toColumn();
-
                 if (is_array($column)) {
                     $columns = array_merge($columns, $column);
                 } else {
                     $columns[] = $property->toColumn();
                 }
             }
+
+            if ($schema)
+                $columns[] = $schema;
 
             $out .= implode("\n        ->", $columns);
 
@@ -135,8 +143,8 @@ EOT;
         \$schema
             ->getTableByName('{$targetTable}')
             ->getColumnByName('{$targetColumn}'),
-        ForeignChangeAction::restrict(),
-        ForeignChangeAction::cascade()
+        OnPhp\\ForeignChangeAction::restrict(),
+        OnPhp\\ForeignChangeAction::cascade()
 );
 
 
