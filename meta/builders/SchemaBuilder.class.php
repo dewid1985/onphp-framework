@@ -27,7 +27,6 @@ EOT;
 
             foreach ($propertyList as $property) {
 
-                print_r($property);
                 if ($property instanceof MetaClassSchema) {
                     $schema = $property->buildSchema();
                     continue;

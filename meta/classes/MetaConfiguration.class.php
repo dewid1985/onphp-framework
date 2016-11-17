@@ -824,6 +824,7 @@ namespace OnPhp {
                 foreach ($class->getAllProperties() as $property) {
                     $tables[$class->getTableName()][// just to sort out dupes, if any
                     $property->getColumnName()] = $property;
+                    $tables[$class->getTableName()]['schema'] = new MetaClassSchema($class->getSchema());
                 }
             }
 
