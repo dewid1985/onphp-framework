@@ -24,9 +24,13 @@ namespace OnPhp {
                 $type = null;
             }
 
+            $use = "use OnPhp\\Enumeration;";
             $out .= <<<EOT
-namespace B
-{$type}class {$class->getName()} extends \\OnPhp\\Enumeration
+namespace Business;
+
+{$use}
+
+{$type}class {$class->getName()} extends Enumeration
 {
     // implement me!
 }

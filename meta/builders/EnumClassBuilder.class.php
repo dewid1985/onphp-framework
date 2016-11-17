@@ -24,7 +24,13 @@ namespace OnPhp {
                 $type = null;
             }
 
+            $use = "use OnPhp\\Enum;";
             $out .= <<<EOT
+            
+namespace Business;
+
+{$use}
+
 {$type}class {$class->getName()} extends Enum
 {
     // implement me!

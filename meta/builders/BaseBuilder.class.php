@@ -47,12 +47,12 @@ EOT;
                 $out .= <<<EOT
 public function getTable()
 {
-    return '{$class->getTableName()}';
+    return '{$class->getSchemaAndTableName()}';
 }
 
 public function getObjectName()
 {
-    return '{$class->getName()}';
+    return '\\\\Business\\\\{$class->getName()}';
 }
 
 public function getSequence()

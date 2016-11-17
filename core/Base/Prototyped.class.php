@@ -19,6 +19,6 @@ namespace OnPhp {
         /**
          * @return AbstractProtoClass
          **/
-        public function proto();
+        public static function proto();
     }
 }
