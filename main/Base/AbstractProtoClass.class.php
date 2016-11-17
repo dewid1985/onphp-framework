@@ -264,7 +264,6 @@ namespace OnPhp {
         public function makeForm($prefix = null)
         {
             $form = new Form();
-
             foreach ($this->getPropertyList() as $property) {
                 $property->fillForm($form, $prefix);
             }

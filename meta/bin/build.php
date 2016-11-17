@@ -361,17 +361,19 @@ if ($pathMeta && $pathConfig) {
             $meta->setWithEnumerationRefIntegrityCheck(true);
         }
 
+
         if (!$metaNoIntegrityCheck) {
             $meta->checkIntegrity();
         }
+
     } catch (BaseException $e) {
-        $out->
-        newLine()->
-        errorLine($e->getMessage(), true)->
-        newLine()->
-        logLine(
-            $e->getTraceAsString()
-        );
+        $out
+            ->newLine()
+            ->errorLine($e->getMessage(), true)
+            ->newLine()
+            ->logLine(
+                $e->getTraceAsString()
+            );
     }
 } else {
     $out->getOutput()->resetAll()->newLine();

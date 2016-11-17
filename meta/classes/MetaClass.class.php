@@ -15,6 +15,7 @@ namespace OnPhp {
     class MetaClass
     {
         private $name = null;
+        private $namespaces = "Business";
         private $schema = "public";
         private $tableName = null;
         private $type = null;

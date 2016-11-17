@@ -22,17 +22,21 @@ namespace OnPhp {
          * @return PrimitiveIdentifier
          * @throws WrongArgumentException
          */
-        public function of($class) : PrimitiveIdentifier
+        public function of($class)
         {
             $className = $this->guessClassName($class);
 
             Assert::classExists($className);
 
-            Assert::isInstance(
-                $className,
-                'DAOConnected',
-                "class '{$className}' must implement DAOConnected interface"
-            );
+            if (!new $className instanceof DAOConnected)
+            {
+                throw new WrongArgumentException(
+                    $className .
+                    '  OnPhp\\DAOConnected'.
+                    "class '{$className}' must implement DAOConnected interface"
+                );
+            }
+
 
             $this->className = $className;
 

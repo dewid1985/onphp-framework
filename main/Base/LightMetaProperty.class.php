@@ -479,7 +479,7 @@ namespace OnPhp {
                 . "'{$this->type}', "
                 . (
                 $this->className
-                    ? "'{$this->className}'"
+                    ? "'\\Business\\{$this->className}'"
                     : 'null'
                 )
                 . ', '
