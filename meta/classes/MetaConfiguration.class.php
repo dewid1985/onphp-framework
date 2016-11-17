@@ -326,6 +326,10 @@ namespace OnPhp {
                     $class->setSourceLink((string)$xmlClass['source']);
                 }
 
+                if (isset($xmlClass['schema'])) {
+                    $class->setSchema((string)$xmlClass['schema']);
+                }
+
                 if (isset($xmlClass['table'])) {
                     $class->setTableName((string)$xmlClass['table']);
                 }
@@ -615,7 +619,7 @@ namespace OnPhp {
             $class = $name . 'Pattern';
 
             if (is_readable(ONPHP_META_PATTERNS . $class . EXT_CLASS)) {
-                return Singleton::getInstance("OnPhp\\".$class);
+                return Singleton::getInstance("OnPhp\\" . $class);
             }
 
             throw new MissingElementException(
