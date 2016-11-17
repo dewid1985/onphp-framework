@@ -32,14 +32,15 @@ namespace OnPhp {
             ) {
                 $interfaces .= ', DAOConnected';
 
-                $daoName = $class->getName() . 'DAO';
+                $daoName = $class->getName() . "DAO";
+                $daoInstance = "\\\\DAOs\\\\" . $class->getName() . "DAO";
                 $dao = <<<EOT
 /**
 * @return {$daoName}
 **/
 public static function dao()
 {
-    return Singleton::getInstance('{$daoName}');
+    return Singleton::getInstance('{$daoInstance}');
 }
 
 EOT;
@@ -48,6 +49,16 @@ EOT;
             }
 
             $out .= <<<EOT
+namespace Business;
+
+use Auto\\Business\\Auto{$class->getName()};
+use DAOs\\{$class->getName()}DAO;
+use Proto\\Proto{$class->getName()};
+
+use OnPhp\\Prototyped;
+use OnPhp\\DAOConnected;
+use OnPhp\\Singleton;
+
 {$typeName}class {$class->getName()} extends Auto{$class->getName()}{$interfaces}
 {
 EOT;
@@ -62,7 +73,7 @@ EOT;
                     $parent = $class;
 
                     while ($parent = $parent->getParent()) {
-                        $info = new ReflectionClass($parent->getName());
+                        $info = new \ReflectionClass($parent->getName());
 
                         if (
                             $info->hasMethod('create')
@@ -119,7 +130,7 @@ EOT;
                 }
 
                 $protoName = 'Proto' . $class->getName();
-
+                $protoInstance = '\\\\Proto\\\\Proto' . $class->getName();
                 $out .= <<<EOT
 
 {$dao}
@@ -128,7 +139,7 @@ EOT;
 **/
 public static function proto()
 {
-    return Singleton::getInstance('{$protoName}');
+    return Singleton::getInstance('{$protoInstance}');
 }
 
 EOT;

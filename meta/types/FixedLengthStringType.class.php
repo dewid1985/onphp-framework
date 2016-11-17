@@ -16,7 +16,7 @@ namespace OnPhp {
     {
         public function toColumnType($length = null)
         {
-            return '(new DataType(DataType::CHAR))';
+            return '(new \\OnPhp\\DataType(\\OnPhp\\DataType::CHAR))';
         }
     }
 }

@@ -114,10 +114,10 @@ namespace OnPhp {
                 $code = substr($error, 8, 5);
 
                 if ($code == PostgresError::UNIQUE_VIOLATION) {
-                    $e = 'DuplicateObjectException';
+                    $e = 'OnPhp\\DuplicateObjectException';
                     $code = null;
                 } else {
-                    $e = 'PostgresDatabaseException';
+                    $e = 'OnPhp\\PostgresDatabaseException';
                 }
 
                 throw new $e($error . ' - ' . $queryString, $code);

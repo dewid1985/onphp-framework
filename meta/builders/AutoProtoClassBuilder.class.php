@@ -25,12 +25,18 @@ namespace OnPhp {
             $parent = $class->getParent();
 
             if ($class->hasBuildableParent()) {
-                $parentName = 'Proto' . $parent->getName();
+                $parentName = '\\OnPhp\\Proto' . $parent->getName();
             } else {
                 $parentName = 'AbstractProtoClass';
             }
 
             $out .= <<<EOT
+namespace Auto\\Proto;
+
+use OnPhp\\InnerMetaProperty;
+use OnPhp\\LightMetaProperty;
+use OnPhp\\AbstractProtoClass;
+
 abstract class AutoProto{$class->getName()} extends {$parentName}
 {
 EOT;

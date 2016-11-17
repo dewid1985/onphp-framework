@@ -23,9 +23,17 @@ namespace OnPhp {
             } else {
                 $typeName = null;
             }
+            $use = "use Auto\\Proto\\AutoProto{$class->getName()};";
 
             $out .= <<<EOT
-{$typeName}class Proto{$class->getName()} extends AutoProto{$class->getName()} {/*_*/}
+namespace Proto;
+
+{$use}
+
+{$typeName}class Proto{$class->getName()} extends AutoProto{$class->getName()} 
+{
+    /*_*/
+}
 
 EOT;
 

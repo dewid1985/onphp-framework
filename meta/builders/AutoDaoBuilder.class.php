@@ -33,7 +33,13 @@ namespace OnPhp {
 
             $out = self::getHead();
 
+            $use = "use ".ONPHP_NAMESPACE."\\".$parentName;
+
             $out .= <<<EOT
+namespace Auto\\DAOs;
+
+{$use}
+
 abstract class Auto{$class->getName()}DAO extends {$parentName}
 {
 

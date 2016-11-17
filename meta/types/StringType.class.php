@@ -53,8 +53,8 @@ namespace OnPhp {
         {
             return
                 $length
-                    ? '(new DataType(DataType::VARCHAR))'
-                    : '(new DataType(DataType::TEXT))';
+                    ? '(new \\OnPhp\\DataType(\\OnPhp\\DataType::VARCHAR))'
+                    : '(new \\OnPhp\\DataType(\\OnPhp\\DataType::TEXT))';
         }
     }
 }

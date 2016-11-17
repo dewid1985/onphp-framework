@@ -57,7 +57,7 @@ namespace OnPhp {
 
         public function toColumnType()
         {
-            return '(new DataType(DataType::BOOLEAN))';
+            return '(new \\OnPhp\\DataType(\\OnPhp\\DataType::BOOLEAN))';
         }
 
         public function toGetter(
@@ -151,7 +151,7 @@ EOT;
 **/
 public function {$methodName}(\${$name} = null)
 {
-    Assert::isTernaryBase(\${$name});
+    \\OnPhp\\Assert::isTernaryBase(\${$name});
 
     \$this->{$name} = \${$name};
 

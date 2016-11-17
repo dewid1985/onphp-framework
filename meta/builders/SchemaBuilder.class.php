@@ -19,7 +19,7 @@ namespace OnPhp {
             $out = <<<EOT
 \$schema
     ->addTable(
-    (new DBTable('{$tableName}'))
+    (new \\OnPhp\\DBTable('{$tableName}'))
         ->
 EOT;
             $columns = [];
@@ -111,7 +111,7 @@ EOT;
                         $out .= <<<EOT
 \$schema
 ->addTable(
-    (new DBTable('{$tableName}'))
+    (new \\OnPhp\\DBTable('{$tableName}'))
         ->{$property->toColumn()}
         ->{$foreignPropery->toColumn()}
         ->addUniques('{$property->getRelationColumnName()}', '{$foreignPropery->getColumnName()}')
@@ -153,7 +153,7 @@ EOT;
         {
             $out = parent::getHead();
 
-            $out .= "\$schema = new DBSchema();\n\n";
+            $out .= "\$schema = new OnPhp\\DBSchema();\n\n";
 
             return $out;
         }

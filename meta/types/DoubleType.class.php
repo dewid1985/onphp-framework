@@ -16,7 +16,7 @@ namespace OnPhp {
     {
         public function toColumnType()
         {
-            return '(new DataType(DataType::DOUBLE))';
+            return '(new \\OnPhp\\DataType(\\OnPhp\\DataType::DOUBLE))';
         }
     }
 }

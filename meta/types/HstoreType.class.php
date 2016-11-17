@@ -41,7 +41,7 @@ namespace OnPhp {
 
         public function toColumnType()
         {
-            return '(new DataType(DataType::TEXT))';
+            return '(new \\OnPhp\\DataType(\\OnOhp\\DataType::TEXT))';
         }
     }
 }

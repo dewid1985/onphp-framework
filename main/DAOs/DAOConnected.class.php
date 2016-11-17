@@ -17,7 +17,7 @@ namespace OnPhp {
      **/
     interface DAOConnected extends Identifiable
     {
-        public static function dao();
+        public function dao();
     }
 }
 

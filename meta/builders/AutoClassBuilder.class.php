@@ -16,23 +16,30 @@ namespace OnPhp {
     {
         public static function build(MetaClass $class)
         {
-            $out = self::getHead();
+            $head  = self::getHead();
 
-            $out .= "abstract class Auto{$class->getName()}";
+            $head .= "namespace Auto\\Business;\n\n";
+
+            $out = "abstract class Auto{$class->getName()}";
 
             $isNamed = false;
 
             if ($parent = $class->getParent()) {
+                $head .= "use {$parent->getName()};\n";
                 $out .= " extends {$parent->getName()}";
             } elseif (
                 $class->getPattern() instanceof DictionaryClassPattern
                 && $class->hasProperty('name')
             ) {
+                $head .= "use OnPhp\\NamedObject;\n\n";
                 $out .= " extends NamedObject";
                 $isNamed = true;
             } elseif (!$class->getPattern() instanceof ValueObjectPattern) {
+                $head .="use OnPhp\\IdentifiableObject;\n\n";
                 $out .= " extends IdentifiableObject";
             }
+
+            $out = $head.$out;
 
             if ($interfaces = $class->getInterfaces()) {
                 $out .= ' implements ' . implode(', ', $interfaces);

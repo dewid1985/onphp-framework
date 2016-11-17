@@ -17,8 +17,13 @@ namespace OnPhp {
         public static function build(MetaClass $class)
         {
             $out = self::getHead();
-
+            $use = "use ".ONPHP_NAMESPACE."\\StorableDAO;";
+            
             $out .= <<<EOT
+namespace Auto\\DAOs;
+
+{$use}
+
 abstract class Auto{$class->getName()}DAO extends StorableDAO
 {
 

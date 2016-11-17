@@ -47,6 +47,10 @@ namespace OnPhp {
             }
 
             $out .= <<<EOT
+namespace DAOs;
+
+use Auto\\DAOs\\Auto{$class->getName()}DAO;
+
 {$abstract}class {$class->getName()}DAO extends Auto{$class->getName()}DAO
 {
 // {$notes}

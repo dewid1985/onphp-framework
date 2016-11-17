@@ -26,7 +26,7 @@ namespace OnPhp {
 
         public function toColumnType($length = null)
         {
-            return '(new DataType(DataType::BINARY))';
+            return '(new \\OnPhp\\DataType(\\OnPhp\\DataType::BINARY))';
         }
 
         public function isMeasurable()

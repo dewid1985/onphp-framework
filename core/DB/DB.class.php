@@ -335,7 +335,14 @@ namespace OnPhp {
         //@{
         public function query(Query $query)
         {
-            return $this->queryRaw($query->toDialectString($this->getDialect()));
+            return
+                $this
+                    ->queryRaw(
+                        $query
+                            ->toDialectString(
+                                $this->getDialect()
+                            )
+                    );
         }
 
         public function queryNull(Query $query)

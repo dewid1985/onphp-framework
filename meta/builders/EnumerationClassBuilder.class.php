@@ -25,7 +25,8 @@ namespace OnPhp {
             }
 
             $out .= <<<EOT
-{$type}class {$class->getName()} extends Enumeration
+namespace B
+{$type}class {$class->getName()} extends \\OnPhp\\Enumeration
 {
     // implement me!
 }

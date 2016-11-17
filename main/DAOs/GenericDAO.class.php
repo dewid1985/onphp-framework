@@ -52,7 +52,7 @@ namespace OnPhp {
             static $protos = [];
 
             if (!isset($protos[$className = $this->getObjectName()])) {
-                $protos[$className] = call_user_func([$className, 'proto']);
+                $protos[$className] = (new $className())->proto();
             }
 
             return $protos[$className];

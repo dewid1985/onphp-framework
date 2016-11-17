@@ -26,7 +26,7 @@ namespace OnPhp {
 
         public function toColumnType()
         {
-            return '(new DataType(DataType::DATE))';
+            return '(new \\OnPhp\\DataType(\\OnPhp\\DataType::DATE))';
         }
     }
 }

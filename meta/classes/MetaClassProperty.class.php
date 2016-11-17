@@ -279,7 +279,7 @@ namespace OnPhp {
 
             $column = <<<EOT
 addColumn(
-            (new DBColumn(
+            (new \\OnPhp\\DBColumn(
                 {$this->type->toColumnType($this->size)}
 EOT;
 
@@ -442,8 +442,8 @@ EOT;
 
             $propertyClassName = (
             $inner
-                ? 'InnerMetaProperty'
-                : 'LightMetaProperty'
+                ? '\\OnPhp\\InnerMetaProperty'
+                : '\\OnPhp\\LightMetaProperty'
             );
 
             if (

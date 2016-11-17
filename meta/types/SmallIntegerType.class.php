@@ -21,7 +21,7 @@ namespace OnPhp {
 
         public function toColumnType()
         {
-            return '(new DataType(DataType::SMALLINT))';
+            return '(new \\OnPhp\\DataType(\\OnPhp\\DataType::SMALLINT))';
         }
     }
 }

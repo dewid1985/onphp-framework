@@ -50,7 +50,7 @@ namespace OnPhp {
          **/
         public static function me()
         {
-            return Singleton::getInstance('MetaConfiguration');
+            return Singleton::getInstance('OnPhp\MetaConfiguration');
         }
 
         public function isDryRun()
@@ -218,7 +218,7 @@ namespace OnPhp {
                 $contents
             );
 
-            $doc = new DOMDocument('1.0');
+            $doc = new \DOMDocument('1.0');
             $doc->loadXML($contents);
 
             try {
@@ -286,7 +286,7 @@ namespace OnPhp {
         /**
          * @return MetaConfiguration
          **/
-        private function processIncludes(SimpleXMLElement $xml, $metafile)
+        private function processIncludes(\SimpleXMLElement $xml, $metafile)
         {
             foreach ($xml->include as $include) {
                 $file = (string)$include['file'];
@@ -310,7 +310,7 @@ namespace OnPhp {
         /**
          * @return MetaConfiguration
          **/
-        private function processClasses(SimpleXMLElement $xml, $metafile, $generate)
+        private function processClasses(\SimpleXMLElement $xml, $metafile, $generate)
         {
             foreach ($xml->classes[0] as $xmlClass) {
                 $name = (string)$xmlClass['name'];
@@ -580,6 +580,8 @@ namespace OnPhp {
                 $typeClass = 'ObjectType';
             }
 
+            $typeClass = "\\OnPhp\\" . $typeClass;
+
             $property = new MetaClassProperty($name, new $typeClass($type), $class);
 
             if ($size) {
@@ -613,7 +615,7 @@ namespace OnPhp {
             $class = $name . 'Pattern';
 
             if (is_readable(ONPHP_META_PATTERNS . $class . EXT_CLASS)) {
-                return Singleton::getInstance($class);
+                return Singleton::getInstance("OnPhp\\".$class);
             }
 
             throw new MissingElementException(

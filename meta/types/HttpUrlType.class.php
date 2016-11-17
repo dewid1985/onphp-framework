@@ -31,7 +31,7 @@ namespace OnPhp {
 
         public function toColumnType()
         {
-            return '(new DataType(DataType::VARCHAR))';
+            return '(new \\OnPhp\\DataType(\\OnPhp\\DataType::VARCHAR))';
         }
     }
 }

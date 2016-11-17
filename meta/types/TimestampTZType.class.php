@@ -21,7 +21,7 @@ namespace OnPhp {
 
         public function toColumnType()
         {
-            return '(new DataType(DataType::TIMESTAMPTZ))->setTimezoned(true)';
+            return '(new \\OnPhp\\DataType(\\OnPhp\\DataType::TIMESTAMPTZ))->setTimezoned(true)';
         }
     }
 }

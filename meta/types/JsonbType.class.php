@@ -22,7 +22,7 @@ namespace OnPhp {
 
         public function toColumnType()
         {
-            return 'DataType::create(DataType::JSONB)';
+            return 'new \\OnPhp\\DataType(\\OnPhp\\DataType::JSONB)';
         }
     }
 }

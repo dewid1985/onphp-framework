@@ -467,8 +467,8 @@ namespace OnPhp {
         final public function toString() : string
         {
             return
-                get_class($this) . '::fill('
-                . 'new ' . get_class($this) . '(), '
+                str_replace(ONPHP_NAMESPACE . "\\", "", get_class($this)) . '::fill('
+                . 'new ' . str_replace(ONPHP_NAMESPACE . "\\", "", get_class($this)) . '(), '
                 . "'{$this->name}', "
                 . (
                 ($this->columnName <> $this->name)
