@@ -91,7 +91,19 @@ namespace OnPhp {
          */
         public function obtainSequence($sequence)
         {
-            $res = $this->queryRaw("select nextval('{$sequence}') as seq");
+            $sequence = implode(
+                '.',
+                array_map(
+                    function ($part) {
+                        return '"' . $part . '"';
+                    },
+                    explode('.', $sequence)
+                )
+            );
+
+            $query ="SELECT nextval('".$sequence."') as seq;";
+
+            $res = $this->queryRaw($query);
             $row = pg_fetch_assoc($res);
             pg_free_result($res);
             return $row['seq'];
