@@ -16,30 +16,32 @@ namespace OnPhp {
     {
         public static function build(MetaClass $class)
         {
-            $head  = self::getHead();
+            $head = self::getHead();
 
             $head .= "namespace Auto\\Business;\n\n";
+            $use = "";
+
+            $classes = [];
 
             $out = "abstract class Auto{$class->getName()}";
 
+            $classes[]= "Business\\". $class->getName();
             $isNamed = false;
 
             if ($parent = $class->getParent()) {
-                $head .= "use {$parent->getName()};\n";
+                $classes[] = "{$parent->getName()}";
                 $out .= " extends {$parent->getName()}";
             } elseif (
                 $class->getPattern() instanceof DictionaryClassPattern
                 && $class->hasProperty('name')
             ) {
-                $head .= "use OnPhp\\NamedObject;\n\n";
+                $classes[] = "OnPhp\\NamedObject";
                 $out .= " extends NamedObject";
                 $isNamed = true;
             } elseif (!$class->getPattern() instanceof ValueObjectPattern) {
-                $head .="use OnPhp\\IdentifiableObject;\n\n";
+                $classes[] = "OnPhp\\IdentifiableObject";
                 $out .= " extends IdentifiableObject";
             }
-
-            $out = $head.$out;
 
             if ($interfaces = $class->getInterfaces()) {
                 $out .= ' implements ' . implode(', ', $interfaces);
@@ -91,14 +93,34 @@ EOT;
             }
 
             foreach ($class->getProperties() as $property) {
+
                 if (!self::doPropertyBuild($class, $property, $isNamed)) {
                     continue;
                 }
 
+                if ($property->getType() instanceof ObjectType) {
+
+                    $classType = $property->getType()->getClassName();
+
+                    switch ($classType)
+                    {
+                        case "TimestampTZ" :
+                            $classes[] = "OnPhp\\".$classType;
+                            break;
+                        default:
+                            $classes[] = "Business\\".$classType;
+                    }
+                };
+
                 $out .= $property->toMethods($class);
             }
 
+            foreach ($classes as $names) {
+                $use .= "use " . $names . ";\n";
+            }
+
             $out .= "}\n";
+            $out = $head . $use ."\n". $out;
             $out .= self::getHeel();
 
             return $out;

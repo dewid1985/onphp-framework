@@ -35,6 +35,24 @@ namespace OnPhp {
 
         private $build = true;
 
+        /**
+         * @return string
+         */
+        public function getNamespaces(): string
+        {
+            return $this->namespaces;
+        }
+
+        /**
+         * @param string $namespaces
+         * @return $this
+         */
+        public function setNamespaces(string $namespaces)
+        {
+            $this->namespaces = $namespaces;
+            return $this;
+        }
+
         public function __construct($name)
         {
             $this->name = $name;
