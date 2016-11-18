@@ -14,7 +14,7 @@ namespace OnPhp {
     {
 
         const CONTROLLER_POSTFIX = 'Controller',
-            CONTROLLER_NAMESPACE = 'Controllers';
+            CONTROLLER_NAMESPACE = "Controllers" . '\\';
 
         protected $defaultController = 'MainController';
 
@@ -59,7 +59,7 @@ namespace OnPhp {
                 $area
                 && $this->checkControllerName($area . self::CONTROLLER_POSTFIX, $chain->getPathController())
             ) {
-                return self::CONTROLLER_NAMESPACE . "\\" . $area . self::CONTROLLER_POSTFIX;
+                return $area . self::CONTROLLER_POSTFIX;
             } elseif ($area) {
 
                 HeaderUtils::sendHttpStatus(new HttpStatus(HttpStatus::CODE_404));
@@ -71,10 +71,8 @@ namespace OnPhp {
         protected function checkControllerName($controllerName, $path)
         {
             try {
-                $controller = self::CONTROLLER_NAMESPACE . "\\" . $controllerName;
-                new $controller();
-
-                return $path && is_readable($path . $controllerName . EXT_CLASS);
+                new  $controllerName;
+                return true;
             } catch (\Exception $e) {
                 return false;
             }

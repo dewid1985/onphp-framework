@@ -477,6 +477,11 @@ namespace OnPhp {
                         continue;
                     }
 
+
+                    if (!in_array('dao', get_class_methods($property->getClassName()))) {
+                        continue;
+                    };
+
                     $propertyDao = call_user_func(
                         [$property->getClassName(), 'dao']
                     );

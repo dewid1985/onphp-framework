@@ -56,7 +56,7 @@ function init()
                 ONPHP_META_PATTERNS,
                 ONPHP_META_TYPES,
             ],
-            'OnPhp'
+            ONPHP_NAMESPACE
         );
 
     Assert::isTrue(defined('PATH_CLASSES'), 'constant PATH_CLASSES must be defined');

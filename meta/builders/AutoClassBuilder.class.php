@@ -25,7 +25,7 @@ namespace OnPhp {
 
             $out = "abstract class Auto{$class->getName()}";
 
-            $classes[]= "Business\\". $class->getName();
+            $classes[] = "Business\\" . $class->getName();
             $isNamed = false;
 
             if ($parent = $class->getParent()) {
@@ -102,13 +102,14 @@ EOT;
 
                     $classType = $property->getType()->getClassName();
 
-                    switch ($classType)
-                    {
+                    switch ($classType) {
                         case "TimestampTZ" :
-                            $classes[] = "OnPhp\\".$classType;
+                            if (!in_array("OnPhp\\" . $classType, $classes))
+                                $classes[] = "OnPhp\\" . $classType;
                             break;
                         default:
-                            $classes[] = "Business\\".$classType;
+                            if (!in_array("Business\\" . $classType, $classes))
+                                $classes[] = "Business\\" . $classType;
                     }
                 };
 
@@ -120,7 +121,7 @@ EOT;
             }
 
             $out .= "}\n";
-            $out = $head . $use ."\n". $out;
+            $out = $head . $use . "\n" . $out;
             $out .= self::getHeel();
 
             return $out;
