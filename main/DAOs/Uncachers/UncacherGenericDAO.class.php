@@ -33,7 +33,7 @@ namespace OnPhp {
          */
         public function merge(UncacherBase $uncacher)
         {
-            Assert::isInstance($uncacher, 'UncacherGenericDAO');
+            Assert::isInstance($uncacher, 'OnPhp\\UncacherGenericDAO');
             return $this->mergeSelf($uncacher);
         }
 
