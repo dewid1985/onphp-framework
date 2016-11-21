@@ -52,7 +52,7 @@ public function getTable()
 
 public function getObjectName()
 {
-    return '\\\\Business\\\\{$class->getName()}';
+    return 'Business\\\\{$class->getName()}';
 }
 
 public function getSequence()
