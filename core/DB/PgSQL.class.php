@@ -285,13 +285,12 @@ namespace OnPhp {
 
             foreach ($res as $name => $info) {
 
-                Assert::isTrue(
-                    array_key_exists($info['type'], $types),
-
-                    'unknown type "'
-                    . $types[$info['type']]
-                    . '" found in column "' . $name . '"'
-                );
+//                Assert::isTrue(
+//                    array_key_exists($info['type'], $types),
+//                    'unknown type "'
+//                    . $types[$info['type']]
+//                    . '" found in column "' . $name . '"'
+//                );
 
                 if (empty($types[$info['type']])) {
                     continue;
