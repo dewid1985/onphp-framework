@@ -36,7 +36,7 @@ namespace OnPhp {
                 } else {
                     $this->link = pg_connect($conn);
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new DatabaseException(
                     'can not connect to PostgreSQL server: ' . $e->getMessage(),
                     $e->getCode(),

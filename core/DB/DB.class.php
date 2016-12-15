@@ -175,7 +175,7 @@ namespace OnPhp {
             $this->transaction = false;
             $this->savepointList = array();
 
-            Cache::setPeer($this->outOfTransactionCachePeer);
+            Cache::setPeer(Cache::me()->getRuntimeCopy());
             $this->triggerUncacher();
 
             return $this;
@@ -194,7 +194,7 @@ namespace OnPhp {
             $this->transaction = false;
             $this->savepointList = array();
 
-            Cache::setPeer($this->outOfTransactionCachePeer);
+            Cache::setPeer(Cache::me()->getRuntimeCopy());
             $this->triggerUncacher();
 
             return $this;

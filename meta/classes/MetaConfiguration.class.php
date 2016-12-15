@@ -894,7 +894,9 @@ namespace OnPhp {
                 }
 
                 try {
-                    $source = $db->getTableInfo($class->getTableName());
+                    $source = $db->getTableInfo(
+                        $class->getSchema().".".$class->getTableName()
+                    );
                 } catch (UnsupportedMethodException $e) {
                     $out->
                     errorLine(

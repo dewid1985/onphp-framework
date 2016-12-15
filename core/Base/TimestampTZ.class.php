@@ -23,6 +23,14 @@ namespace OnPhp {
         }
 
         /**
+         * @return TimestampTZ
+         */
+        public static function makeNow()
+        {
+            return new static(time());
+        }
+
+        /**
          * @param null $zone
          * @return Timestamp|static
          */
