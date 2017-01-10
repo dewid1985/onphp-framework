@@ -38,15 +38,18 @@ namespace OnPhp {
          */
         public function send()
         {
+
             if ($this->to == null) {
                 throw new WrongArgumentException("mail to: is not specified");
             }
 
             $siteEncoding = mb_get_info('internal_encoding');
 
+
             if (!$this->encoding
                 || $this->encoding == $siteEncoding
             ) {
+
                 $encoding = $siteEncoding;
                 $to = $this->to;
                 $from = $this->from;

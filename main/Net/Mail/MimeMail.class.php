@@ -21,8 +21,37 @@ namespace OnPhp {
         // should be built by build()
         private $body = null;
         private $headers = null;
-
+        private $contentType = null;
         private $boundary = null;
+
+
+        /**
+         * MimeMail constructor.
+         */
+        function __construct()
+        {
+            $this->contentType = 'multipart/mixed';
+        }
+
+        /**
+         * @return null|string
+         */
+        public function getContentType()
+        {
+            return $this->contentType;
+        }
+
+        /**
+         * @param $contentType
+         * @return $this
+         */
+        public function setContentType($contentType)
+        {
+            $this->contentType = $contentType;
+
+            return $this;
+        }
+
 
         /**
          * @return MimeMail
@@ -34,6 +63,9 @@ namespace OnPhp {
             return $this;
         }
 
+        /**
+         * @throws UnimplementedFeatureException
+         */
         public function build()
         {
             if (!$this->parts) {
@@ -46,7 +78,7 @@ namespace OnPhp {
 
             $mail =
                 (new MimePart())
-                    ->setContentType('multipart/mixed')
+                    ->setContentType($this->getContentType())
                     ->setBoundary($this->boundary);
 
             $this->headers =

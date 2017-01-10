@@ -18,7 +18,7 @@ namespace OnPhp {
      *
      * @ingroup DAOs
      **/
-    class CacheDaoWorker extends TransparentDaoWorker
+    class CacheDaoWorker extends CommonDaoWorker
     {
         const MAX_RANDOM_ID = 134217728;
 
