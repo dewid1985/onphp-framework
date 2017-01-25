@@ -18,7 +18,7 @@ namespace OnPhp {
      *
      * @ingroup DAOs
      **/
-    class CacheDaoWorker extends CommonDaoWorker
+    class CacheDaoWorker extends TransparentDaoWorker
     {
         const MAX_RANDOM_ID = 134217728;
 
@@ -57,6 +57,7 @@ namespace OnPhp {
         {
             return parent::makeQueryKey($query, $suffix) . $this->getLayerId();
         }
+
         //@}
 
         /// internal helpers

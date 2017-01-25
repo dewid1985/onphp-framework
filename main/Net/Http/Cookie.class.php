@@ -100,7 +100,7 @@ namespace OnPhp {
         /**
          * @return int
          */
-        public function getMaxAge() : integer
+        public function getMaxAge()
         {
             return $this->expire;
         }

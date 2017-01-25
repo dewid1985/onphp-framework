@@ -56,18 +56,18 @@ namespace OnPhp {
         {
             if (!self::$defaultHandler) {
                 if (extension_loaded('sysvshm')) {
-                    $handlerName = 'SharedMemorySegmentHandler';
+                    $handlerName = 'OnPhp\\SharedMemorySegmentHandler';
                 } elseif (extension_loaded('sysvmsg')) {
-                    $handlerName = 'MessageSegmentHandler';
+                    $handlerName = 'OnPhp\\MessageSegmentHandler';
                 } else {
                     if (extension_loaded('eaccelerator')) {
-                        $handlerName = 'eAcceleratorSegmentHandler';
+                        $handlerName = 'OnPhp\\eAcceleratorSegmentHandler';
                     } elseif (extension_loaded('apc')) {
-                        $handlerName = 'ApcSegmentHandler';
+                        $handlerName = 'OnPhp\\ApcSegmentHandler';
                     } elseif (extension_loaded('xcache')) {
-                        $handlerName = 'XCacheSegmentHandler';
+                        $handlerName = 'OnPhp\\XCacheSegmentHandler';
                     } else {
-                        $handlerName = 'CacheSegmentHandler';
+                        $handlerName = 'OnPhp\\CacheSegmentHandler';
                     }
                 }
             } else {
