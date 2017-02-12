@@ -141,5 +141,17 @@ namespace OnPhp {
 
             return $flippedExensions[$this->id];
         }
+
+        public function getByMime($mime)
+        {
+            $flippedMimeTypes = array_flip($this->mimeTypes);
+
+            if (!array_key_exists($mime, $flippedMimeTypes))
+                throw new WrongArgumentException(
+                    "unknown images mime type ".$mime.""
+                );
+
+            return new self($flippedMimeTypes[$mime]);
+        }
     }
 }
