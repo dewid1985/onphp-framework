@@ -149,7 +149,7 @@ namespace OnPhp {
 
         public static function getByMime($mime)
         {
-            $flippedMimeTypes = array_flip(self::getMimeTypes());
+            $flippedMimeTypes = array_flip((new self(self::getAnyId()))->getMimeTypes());
 
             if (!array_key_exists($mime, $flippedMimeTypes))
                 throw new WrongArgumentException(
