@@ -130,6 +130,11 @@ namespace OnPhp {
             return $this->extensions;
         }
 
+        public function getMimeTypes()
+        {
+            return $this->mimeTypes;
+        }
+
         public function getMimeType()
         {
             return $this->mimeTypes[$this->id];
@@ -137,14 +142,14 @@ namespace OnPhp {
 
         public function getExtension()
         {
-            $flippedExensions = array_flip($this->extensions);
+            $flippedExtensions = array_flip($this->extensions);
 
-            return $flippedExensions[$this->id];
+            return $flippedExtensions[$this->id];
         }
 
-        public function getByMime($mime)
+        public static function getByMime($mime)
         {
-            $flippedMimeTypes = array_flip($this->mimeTypes);
+            $flippedMimeTypes = array_flip(self::getMimeTypes());
 
             if (!array_key_exists($mime, $flippedMimeTypes))
                 throw new WrongArgumentException(
