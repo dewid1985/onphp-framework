@@ -286,7 +286,7 @@ namespace OnPhp {
         }
 
         /**
-         * @return null
+         * @return StorableDAO
          * @throws WrongStateException
          */
         public function checkAndGetDao()
