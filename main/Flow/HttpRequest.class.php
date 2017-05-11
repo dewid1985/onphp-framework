@@ -333,7 +333,7 @@ namespace OnPhp {
 
         public function hasHeaderVar($name)
         {
-            return isset($this->headers[$name]);
+            return isset($this->headers->getAll()[$name]);
         }
 
         public function getHeaderVar($name)
