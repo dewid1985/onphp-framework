@@ -104,20 +104,6 @@ namespace OnPhp {
             return $this->default;
         }
 
-        /**
-         * @deprecated since version 1.0
-         * @see getSafeValue, getValueOrDefault
-         */
-        public function getActualValue()
-        {
-            if ($this->value !== null) {
-                return $this->value;
-            } elseif ($this->imported) {
-                return $this->raw;
-            }
-
-            return $this->default;
-        }
 
         /**
          * @return null

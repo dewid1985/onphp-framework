@@ -147,15 +147,6 @@ namespace OnPhp {
         }
 
         /**
-         * @deprecated since version 1.0
-         * @see getValueOrDefault
-         */
-        public function getActualValue($name)
-        {
-            return $this->get($name)->getActualValue();
-        }
-
-        /**
          * @param $name
          * @return null
          * @throws MissingElementException

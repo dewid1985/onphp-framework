@@ -13,7 +13,8 @@ namespace OnPhp {
     class WebAppControllerResolverHandler implements InterceptingChainHandler
     {
 
-        const CONTROLLER_POSTFIX = 'Controller',
+        const
+            CONTROLLER_POSTFIX = 'Controller',
             CONTROLLER_NAMESPACE = "Controllers" . '\\';
 
         protected $defaultController = 'MainController';
@@ -25,9 +26,6 @@ namespace OnPhp {
          */
         public function run(InterceptingChain $chain)
         {
-            /* @var $chain WebApplication */
-            $request = $chain->getRequest();
-
             if ($controllerName = $this->getControllerNameByArea($chain)) {
                 $chain->setControllerName($controllerName);
             } elseif ($controllerName = $this->getControllerNameByOtherData($chain)) {
@@ -35,7 +33,6 @@ namespace OnPhp {
             } else {
                 $chain->setControllerName($this->defaultController);
             }
-
             $chain->next();
 
             return $this;
@@ -47,13 +44,18 @@ namespace OnPhp {
             $request = $chain->getRequest();
 
             $area = null;
+            $namespace = null;
+
             if ($request->hasAttachedVar('area')) {
                 $area = $request->getAttachedVar('area');
             } elseif ($request->hasGetVar('area')) {
-                $area = $chain->getRequest()->getGetVar('area');
+                $area = $request->getGetVar('area');
             } elseif ($request->hasPostVar('area')) {
-                $area = $chain->getRequest()->getPostVar('area');
+                $area = $request->getPostVar('area');
             }
+
+            if($request->hasAttachedVar('namespaces'))
+                $area = $request->getAttachedVar('namespaces'). ucfirst($area);
 
             if (
                 $area
@@ -61,10 +63,10 @@ namespace OnPhp {
             ) {
                 return $area . self::CONTROLLER_POSTFIX;
             } elseif ($area) {
-
                 HeaderUtils::sendHttpStatus(new HttpStatus(HttpStatus::CODE_404));
                 return $this->notfoundController;
             }
+
             return null;
         }
 
