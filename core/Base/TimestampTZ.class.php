@@ -39,10 +39,10 @@ namespace OnPhp {
             if ($zone) {
 
                 if (
-                    !($zone instanceof DateTimeZone)
+                    !($zone instanceof \DateTimeZone)
                     && is_scalar($zone)
                 ) {
-                    $zone = new DateTimeZone($zone);
+                    $zone = new \DateTimeZone($zone);
                 }
 
                 return new static($this->toStamp(), $zone);

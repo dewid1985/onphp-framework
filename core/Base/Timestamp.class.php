@@ -25,9 +25,9 @@ namespace OnPhp {
          * Timestamp constructor.
          *
          * @param $dateTime
-         * @param DateTimeZone|null $zone
+         * @param \DateTimeZone|null $zone
          */
-        public function __construct($dateTime, DateTimeZone $zone = null)
+        public function __construct($dateTime, \DateTimeZone $zone = null)
         {
             parent::__construct($dateTime);
 
