@@ -19,7 +19,7 @@ define('ENCODING', 'UTF-8');
 mb_internal_encoding(ENCODING);
 mb_regex_encoding(ENCODING);
 
-AutoloaderPool::get('onPHP')->addPath(ONPHP_TEST_PATH . 'misc');
+\OnPhp\AutoloaderPool::get('onPHP')->addPath(ONPHP_TEST_PATH . 'misc');
 
 $testPathes = [
     ONPHP_TEST_PATH . 'core' . DIRECTORY_SEPARATOR,
@@ -59,10 +59,10 @@ final class AllTests
                 /**
                  * @todo fail - constructor with argument, but static method 'me' - without
                  */
-                Singleton::getInstance('DBTestPool', self::$dbs)->connect();
+                \OnPhp\Singleton::getInstance('DBTestPool', self::$dbs)->connect();
             } catch (Exception $e) {
-                Singleton::dropInstance('DBTestPool');
-                Singleton::getInstance('DBTestPool');
+                \OnPhp\Singleton::dropInstance('DBTestPool');
+                \OnPhp\Singleton::getInstance('DBTestPool');
             }
 
             // build stuff from meta
@@ -85,7 +85,7 @@ final class AllTests
 
             include $path;
 
-            AutoloaderPool::get('onPHP')->addPaths([
+            \OnPhp\AutoloaderPool::get('onPHP')->addPaths([
                 ONPHP_META_AUTO_BUSINESS_DIR,
                 ONPHP_META_AUTO_DAO_DIR,
                 ONPHP_META_AUTO_PROTO_DIR,
@@ -95,14 +95,14 @@ final class AllTests
                 ONPHP_META_PROTO_DIR
             ]);
 
-            $dBCreator = DBTestCreator::create()->
+            $dBCreator = (new DBTestCreator())->
             setSchemaPath(ONPHP_META_AUTO_DIR . 'schema.php')->
             setTestPool(DBTestPool::me());
 
-            $out = MetaConfiguration::me()->getOutput();
+            $out = \OnPhp\MetaConfiguration::me()->getOutput();
 
             foreach (DBTestPool::me()->getPool() as $connector => $db) {
-                DBPool::me()->setDefault($db);
+                \OnPhp\DBPool::me()->setDefault($db);
 
                 $out
                     ->info('Using ')
@@ -113,14 +113,14 @@ final class AllTests
 
                 $dBCreator->createDB()->fillDB();
 
-                MetaConfiguration::me()->checkIntegrity();
+                \OnPhp\MetaConfiguration::me()->checkIntegrity();
 
                 $out->newLine();
 
                 $dBCreator->dropDB();
             }
 
-            DBPool::me()->dropDefault();
+            \OnPhp\DBPool::me()->dropDefault();
         }
 
         foreach (self::$paths as $testPath) {
