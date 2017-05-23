@@ -280,7 +280,7 @@ namespace OnPhp {
          */
         public static function isBoolean($variable, $message = null)
         {
-            if (!($variable === true || $variable === false)) {
+            if (!is_bool($variable)) {
                 throw new WrongArgumentException(
                     $message . ', ' . self::dumpArgument($variable)
                 );
