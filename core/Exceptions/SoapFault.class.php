@@ -14,7 +14,7 @@ namespace OnPhp {
      *
      * @ingroup Exceptions
      **/
-    class SoapFault extends Exception
+    class SoapFault extends \Exception
     {
         /*_*/
     }

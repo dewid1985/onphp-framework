@@ -13,7 +13,7 @@ namespace OnPhp {
      * @ingroup Exceptions
      * @ingroup Module
      **/
-    class BusinessLogicException extends Exception
+    class BusinessLogicException extends \Exception
     {
         /*_*/
     }
