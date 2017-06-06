@@ -102,7 +102,7 @@ namespace OnPhp {
 
         /**
          * @throws MissingElementException
-         * @return BasePrimitive
+         * @return RangedPrimitive|BasePrimitive|PrimitiveString
          **/
         public function get($name)
         {

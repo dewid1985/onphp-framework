@@ -54,7 +54,6 @@ namespace OnPhp {
             self::IMAGETYPE_SWC => 'swc',
             IMAGETYPE_IFF => 'iff',
             IMAGETYPE_WBMP => 'bmp',
-            IMAGETYPE_JPEG2000 => 'jpc',
             IMAGETYPE_XBM => 'xbm',
             self::IMAGETYPE_PJPEG => 'jpeg'
         ];
@@ -77,7 +76,6 @@ namespace OnPhp {
             'swc' => self::IMAGETYPE_SWC,
             'iff' => IMAGETYPE_IFF,
             'wbmp' => IMAGETYPE_WBMP,
-            'jpc' => IMAGETYPE_JPEG2000,
             'xbm' => IMAGETYPE_XBM
         ];
 
@@ -97,7 +95,6 @@ namespace OnPhp {
             self::IMAGETYPE_SWC => 'application/x-shockwave-flash',
             IMAGETYPE_IFF => 'image/iff',
             IMAGETYPE_WBMP => 'image/vnd.wap.wbmp',
-            IMAGETYPE_JPEG2000 => 'image/jpeg',
             IMAGETYPE_XBM => 'image/xbm',
             self::IMAGETYPE_PJPEG => 'image/pjpeg'
         ];
