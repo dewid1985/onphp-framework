@@ -57,7 +57,7 @@ namespace OnPhp {
         /**
          * @return HttpRequest
          **/
-        public static function createFromGlobals()
+        public static function createFromGlobals() : HttpRequest
         {
             $request =
                 (new HttpRequest())
@@ -67,16 +67,10 @@ namespace OnPhp {
                     ->setCookie($_COOKIE)
                     ->setFiles($_FILES);
 
-            if (isset($_SESSION)) {
-                $request->setSession($_SESSION);
-            }
-
-            foreach ($_SERVER as $name => $value) {
-                if (strpos($name, 'HTTP_') === 0) {
-                    $name = str_replace('_', '-', substr($name, 5));
-                    $request->setHeaderVar($name, $value);
-                }
-            }
+            if (!function_exists('getallheaders'))
+                $request->setHeaders($request->getallheaders());
+            else
+                $request->setHeaders(getallheaders());
 
             if (
                 $request->hasServerVar('CONTENT_TYPE')
@@ -91,6 +85,18 @@ namespace OnPhp {
 
             return $request;
         }
+
+        public function getallheaders()
+        {
+            $headers = [];
+            foreach ($_SERVER as $name => $value) {
+                if (substr($name, 0, 5) == 'HTTP_') {
+                    $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+                }
+            }
+            return $headers;
+        }
+
 
         /**
          * @return HttpRequest
