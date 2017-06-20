@@ -8,6 +8,7 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+
 namespace OnPhp {
     /**
      * @ingroup Flow
@@ -57,7 +58,7 @@ namespace OnPhp {
         /**
          * @return HttpRequest
          **/
-        public static function createFromGlobals() : HttpRequest
+        public static function createFromGlobals(): HttpRequest
         {
             $request =
                 (new HttpRequest())
