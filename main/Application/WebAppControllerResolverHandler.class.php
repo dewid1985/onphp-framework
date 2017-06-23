@@ -9,6 +9,7 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+
 namespace OnPhp {
     class WebAppControllerResolverHandler implements InterceptingChainHandler
     {
@@ -17,7 +18,7 @@ namespace OnPhp {
             CONTROLLER_POSTFIX = 'Controller',
             CONTROLLER_NAMESPACE = "Controllers" . '\\';
 
-        protected $defaultController = 'MainController';
+        protected $defaultController = 'HomeController';
 
         protected $notfoundController = 'NotFoundController';
 
@@ -38,24 +39,29 @@ namespace OnPhp {
             return $this;
         }
 
+        /**
+         * @param InterceptingChain $chain
+         * @return null|string
+         */
         protected function getControllerNameByArea(InterceptingChain $chain)
         {
             /** @var HttpRequest $request */
             $request = $chain->getRequest();
 
             $area = null;
-            $namespace = null;
 
-            if ($request->hasAttachedVar('area')) {
+            if ($request->hasAttachedVar('area'))
                 $area = $request->getAttachedVar('area');
-            } elseif ($request->hasGetVar('area')) {
+            elseif ($request->hasGetVar('area'))
                 $area = $request->getGetVar('area');
-            } elseif ($request->hasPostVar('area')) {
+            elseif ($request->hasPostVar('area'))
                 $area = $request->getPostVar('area');
-            }
 
-            if($request->hasAttachedVar('namespaces'))
-                $area = $request->getAttachedVar('namespaces'). ucfirst($area);
+
+            if ($request->hasAttachedVar('namespaces'))
+                $area = $request->getAttachedVar('namespaces') . ucfirst($area);
+            else
+                $area = self::CONTROLLER_NAMESPACE . ucfirst($area);
 
             if (
                 $area
