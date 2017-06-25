@@ -33,9 +33,12 @@ namespace OnPhp {
         }
 
         /**
+         * @param $buffer
          * @return SocketOutputStream
-         **/
-        public function write($buffer)
+         * @throws IOException
+         * @throws IOTimedOutException
+         */
+        public function write($buffer):SocketOutputStream
         {
             if ($buffer === null) {
                 return $this;
