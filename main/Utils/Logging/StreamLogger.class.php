@@ -67,7 +67,7 @@ namespace OnPhp {
         /**
          * @return StreamLogger
          **/
-        public function setOutputStream(OutputStream $stream)
+        public function setOutputStream(OutputStream $stream) : StreamLogger
         {
             $this->stream = $stream;
 
@@ -77,7 +77,7 @@ namespace OnPhp {
         /**
          * @return StreamLogger
          **/
-        protected function publish(LogRecord $record)
+        protected function publish(LogRecord $record): StreamLogger
         {
             if (!$this->stream) {
                 return $this;

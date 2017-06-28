@@ -25,7 +25,7 @@ namespace OnPhp {
         }
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
         public function setLevel(LogLevel $level)
         {
@@ -35,7 +35,7 @@ namespace OnPhp {
         }
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
         final public function severe($message)
         {
@@ -45,7 +45,7 @@ namespace OnPhp {
         }
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
         final public function log(LogLevel $level, $message)
         {
@@ -59,7 +59,7 @@ namespace OnPhp {
         }
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
         final public function logRecord(LogRecord $record)
         {
@@ -76,21 +76,25 @@ namespace OnPhp {
 
         /**
          * you may override me
-         **/
+         *
+         * @param LogRecord $record
+         * @return bool
+         */
         protected function isLoggable(LogRecord $record)
         {
             return true;
         }
 
         /**
-         * @return Logger
-         **/
+         * @param LogRecord $record
+         * @return BaseLogger
+         */
         abstract protected function publish(LogRecord $record);
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
-        final public function warning($message)
+        final public function warning($message): BaseLogger
         {
             $this->log(LogLevel::warning(), $message);
 
@@ -98,9 +102,9 @@ namespace OnPhp {
         }
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
-        final public function info($message)
+        final public function info($message) : BaseLogger
         {
             $this->log(LogLevel::info(), $message);
 
@@ -108,9 +112,9 @@ namespace OnPhp {
         }
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
-        final public function config($message)
+        final public function config($message): BaseLogger
         {
             $this->log(LogLevel::config(), $message);
 
@@ -118,9 +122,9 @@ namespace OnPhp {
         }
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
-        final public function fine($message)
+        final public function fine($message): BaseLogger
         {
             $this->log(LogLevel::fine(), $message);
 
@@ -128,9 +132,9 @@ namespace OnPhp {
         }
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
-        final public function finer($message)
+        final public function finer($message): BaseLogger
         {
             $this->log(LogLevel::finer(), $message);
 
@@ -138,9 +142,9 @@ namespace OnPhp {
         }
 
         /**
-         * @return Logger
+         * @return BaseLogger
          **/
-        final public function finest($message)
+        final public function finest($message): BaseLogger
         {
             $this->log(LogLevel::finest(), $message);
 
