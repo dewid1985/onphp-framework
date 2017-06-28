@@ -70,7 +70,7 @@ namespace OnPhp {
                 return $area . self::CONTROLLER_POSTFIX;
             } elseif ($area) {
                 HeaderUtils::sendHttpStatus(new HttpStatus(HttpStatus::CODE_404));
-                return $this->notfoundController;
+                return self::CONTROLLER_NAMESPACE.$this->notfoundController;
             }
 
             return null;
