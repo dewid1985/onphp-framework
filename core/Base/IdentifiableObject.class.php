@@ -21,7 +21,7 @@ namespace OnPhp {
     class IdentifiableObject implements Identifiable, DialectString
     {
         /**
-         * @var null
+         * @var integer|null
          */
         protected $id = null;
 
@@ -46,7 +46,7 @@ namespace OnPhp {
         }
 
         /**
-         * @return Identifier|null
+         * @return integer|null
          */
         public function getId()
         {
