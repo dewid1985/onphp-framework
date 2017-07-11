@@ -378,9 +378,9 @@ namespace OnPhp {
 
         /**
          * @param array ...$args
-         * @return BinaryExpression
+         * @return LogicalChain
          */
-        public static function orBlock(...$args) : BinaryExpression
+        public static function orBlock(...$args)
         {
             return self::block(
                 $args,
