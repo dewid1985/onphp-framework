@@ -18,7 +18,11 @@ namespace OnPhp {
     {
         public function makeItems(\SimpleXMLElement $xmlFeed);
 
-        public function toXml(FeedItem $item);
+        /**
+         * @param FeedItem|YandexRssFeedItem $item
+         * @return mixed
+         */
+        public function toXml($item);
     }
 }
 

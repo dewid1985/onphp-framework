@@ -8,6 +8,7 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+
 namespace OnPhp {
     /**
      * @ingroup Feed
@@ -68,7 +69,7 @@ namespace OnPhp {
             return $result;
         }
 
-        public function toXml(FeedItem $item)
+        public function toXml($item)
         {
             return
                 '<item>'
@@ -104,8 +105,17 @@ namespace OnPhp {
                 )
                 . (
                 $item->getEnclosure()
-                    ? '<enclosure url="' . $item->getEnclosure()->getUrl() . '" length="'
-                    . $item->getEnclosure()->getLength() . '" type="' . $item->getEnclosure()->getType() . '"/>'
+                    ? ('<enclosure url="' . $item->getEnclosure()->getUrl() . '" length="'
+                    . $item->getEnclosure()->getLength() . '" type="' . $item->getEnclosure()->getType() . '"/>')
+                    : null
+                )
+                . (
+                $item->getGenre()
+                    ? (
+                    '<yandex:genre>'
+                    . $item->getGenre()
+                    . '</yandex:genre>'
+                )
                     : null
                 )
                 . (

@@ -15,6 +15,7 @@ namespace OnPhp {
     class YandexRssFeedItem extends FeedItem
     {
         private $fullText = null;
+        private $genre = null;
 
         public function getFullText()
         {
@@ -31,5 +32,23 @@ namespace OnPhp {
             return $this;
         }
 
+        /**
+         * @return null
+         */
+        public function getGenre()
+        {
+            return $this->genre;
+        }
+
+        /**
+         * @param $genre
+         * @return $this
+         */
+        public function setGenre($genre)
+        {
+            $this->genre = $genre;
+
+            return $this;
+        }
     }
 }
