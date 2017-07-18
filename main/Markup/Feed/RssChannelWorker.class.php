@@ -64,6 +64,20 @@ namespace OnPhp {
                     . $channel->getDescription()
                     . '</description>'
                     : null
+                ). (
+                $channel->getLanguage()
+                    ?
+                    '<language>'
+                    . $channel->getLanguage()
+                    . '</language>'
+                    : null
+                ). (
+                $channel->getLastBuildDate()
+                    ?
+                    '<lastBuildDate>'
+                    . date('r', $channel->getLastBuildDate()->toStamp())
+                    . '</lastBuildDate>'
+                    : null
                 )
                 . $itemsXml
                 . '</channel>'
