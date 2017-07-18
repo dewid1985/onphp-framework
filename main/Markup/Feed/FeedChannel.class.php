@@ -20,6 +20,8 @@ namespace OnPhp {
         private $link = null;
         private $description = null;
         private $feedItems = [];
+        private $lastBuildDate = null;
+        private $language = null;
 
         public function __construct($title)
         {
@@ -78,11 +80,48 @@ namespace OnPhp {
         }
 
         /**
+         * @return Timestamp
+         */
+        public function getLastBuildDate()
+        {
+            return $this->lastBuildDate;
+        }
+
+        /**
+         * @param Timestamp $lastBuildDate
+         * @return $this
+         */
+        public function setLastBuildDate(Timestamp $lastBuildDate)
+        {
+            $this->lastBuildDate = $lastBuildDate;
+            return $this;
+        }
+
+
+        /**
          * @return FeedChannel
          **/
         public function setFeedItems($feedItems)
         {
             $this->feedItems = $feedItems;
+
+            return $this;
+        }
+
+        /**
+         * @return null
+         */
+        public function getLanguage()
+        {
+            return $this->language;
+        }
+
+        /**
+         * @return $this
+         */
+        public function setLanguage($language)
+        {
+            $this->language = $language;
 
             return $this;
         }

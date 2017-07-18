@@ -23,6 +23,7 @@ namespace OnPhp {
         private $published = null;
         private $link = null;
         private $category = null;
+        private $enclosure = null;
 
         public function __construct($title)
         {
@@ -127,6 +128,7 @@ namespace OnPhp {
             return $this->category;
         }
 
+
         /**
          * @return FeedItem
          **/
@@ -136,5 +138,25 @@ namespace OnPhp {
 
             return $this;
         }
+
+        /**
+         * @return FeedItemEnclosure
+         */
+        public function getEnclosure()
+        {
+            return $this->enclosure;
+        }
+
+        /**
+         * @param FeedItemEnclosure $enclosure
+         * @return $this
+         */
+        public function setEnclosure(FeedItemEnclosure $enclosure)
+        {
+            $this->enclosure = $enclosure;
+
+            return $this;
+        }
+
     }
 }

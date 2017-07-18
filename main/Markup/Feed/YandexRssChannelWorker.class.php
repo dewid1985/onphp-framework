@@ -8,11 +8,12 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+
 namespace OnPhp {
     /**
      * @ingroup Feed
      **/
-    class RssChannelWorker extends Singleton implements FeedChannelWorker
+    class YandexRssChannelWorker extends Singleton implements FeedChannelWorker
     {
         /**
          * @return RssChannelWorker
@@ -49,7 +50,7 @@ namespace OnPhp {
         public function toXml($channel, $itemsXml)
         {
             return
-                '<rss version="' . RssFeedFormat::VERSION . '">'
+                '<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yandex="http://news.yandex.ru" version="' . RssFeedFormat::VERSION . '">'
                 . '<channel>'
                 . '<title>' . $channel->getTitle() . '</title>'
                 . (
@@ -58,20 +59,33 @@ namespace OnPhp {
                     : null
                 )
                 . (
+                $channel->getLogo()
+                    ? '<yandex:logo>'.$channel->getLogo().'</yandex:logo>'
+                    : null
+                ) . (
+                $channel->getLogoSquare()
+                    ? '<yandex:logo type="square">'.$channel->getLogoSquare().'</yandex:logo>'
+                    : null
+                ) . (
                 $channel->getDescription()
                     ?
                     '<description>'
                     . $channel->getDescription()
                     . '</description>'
                     : null
-                ). (
+                ) . (
                 $channel->getLanguage()
                     ?
                     '<language>'
                     . $channel->getLanguage()
                     . '</language>'
                     : null
-                ). (
+                ) . (
+                $channel->getAnalytics()
+                    ?
+                    '<yandex:analytics type="' . $channel->getAnalytics() . '"/>'
+                    : null
+                ) . (
                 $channel->getLastBuildDate()
                     ?
                     '<lastBuildDate>'

@@ -8,6 +8,7 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+
 namespace OnPhp {
     /**
      * @ingroup Feed
@@ -86,6 +87,12 @@ namespace OnPhp {
                 . (
                 $item->getSummary()
                     ? '<description>' . $item->getSummary() . '</description>'
+                    : null
+                )
+                . (
+                $item->getEnclosure()
+                    ? '<enclosure url="' . $item->getEnclosure()->getUrl() . '" length="'
+                    . $item->getEnclosure()->getLength() . '" type="' . $item->getEnclosure()->getType() . '"/>'
                     : null
                 )
                 . (

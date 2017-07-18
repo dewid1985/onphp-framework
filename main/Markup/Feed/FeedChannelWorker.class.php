@@ -18,7 +18,12 @@ namespace OnPhp {
     {
         public function makeChannel(\SimpleXMLElement $xmlFeed);
 
-        public function toXml(FeedChannel $channel, $itemsXml);
+        /**
+         * @param YandexRssFeedChannel|FeedChannel$channel
+         * @param $itemsXml
+         * @return mixed
+         */
+        public function toXml($channel, $itemsXml);
     }
 }
 
