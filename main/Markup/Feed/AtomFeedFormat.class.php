@@ -40,7 +40,7 @@ namespace OnPhp {
             return AtomItemWorker::me();
         }
 
-        public function isAcceptable(SimpleXMLElement $xmlFeed)
+        public function isAcceptable(\SimpleXMLElement $xmlFeed)
         {
             return ($xmlFeed->getName() == 'feed');
         }

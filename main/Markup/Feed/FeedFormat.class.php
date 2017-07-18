@@ -16,9 +16,9 @@ namespace OnPhp {
      */
     abstract class FeedFormat extends Singleton
     {
-        abstract public function isAcceptable(SimpleXMLElement $xmlFeed);
+        abstract public function isAcceptable(\SimpleXMLElement $xmlFeed);
 
-        public function parse(SimpleXMLElement $xmlFeed)
+        public function parse(\SimpleXMLElement $xmlFeed)
         {
             $this->checkWorkers();
 

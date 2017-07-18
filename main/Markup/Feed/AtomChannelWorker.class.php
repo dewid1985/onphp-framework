@@ -29,7 +29,7 @@ namespace OnPhp {
         /**
          * @return FeedChannel
          **/
-        public function makeChannel(SimpleXMLElement $xmlFeed)
+        public function makeChannel(\SimpleXMLElement $xmlFeed)
         {
             $feedChannel = new FeedChannel((string)$xmlFeed->title);
 

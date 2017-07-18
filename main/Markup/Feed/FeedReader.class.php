@@ -26,7 +26,7 @@ namespace OnPhp {
 
 
         /**
-         * @return SimpleXMLElement
+         * @return \SimpleXMLElement
          **/
         public function getXml()
         {
@@ -78,7 +78,7 @@ namespace OnPhp {
          **/
         public function parseXml($xml)
         {
-            $this->xml = new SimpleXMLElement($xml);
+            $this->xml = new \SimpleXMLElement($xml);
 
             return $this->parse();
         }

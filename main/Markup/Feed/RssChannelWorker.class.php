@@ -25,7 +25,7 @@ namespace OnPhp {
         /**
          * @return FeedChannel
          **/
-        public function makeChannel(SimpleXMLElement $xmlFeed)
+        public function makeChannel(\SimpleXMLElement $xmlFeed)
         {
             if (
                 (!isset($xmlFeed->channel))

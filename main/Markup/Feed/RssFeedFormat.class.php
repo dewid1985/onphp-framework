@@ -42,7 +42,7 @@ namespace OnPhp {
             return RssItemWorker::me();
         }
 
-        public function isAcceptable(SimpleXMLElement $xmlFeed)
+        public function isAcceptable(\SimpleXMLElement $xmlFeed)
         {
             return (
                 ($xmlFeed->getName() == 'rss')
