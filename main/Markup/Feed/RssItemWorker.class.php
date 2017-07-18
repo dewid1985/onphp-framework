@@ -55,7 +55,7 @@ namespace OnPhp {
             return $result;
         }
 
-        public function toXml(FeedItem $item)
+        public function toXml($item)
         {
             return
                 '<item>'
