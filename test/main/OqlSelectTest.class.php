@@ -93,7 +93,7 @@
 									Projection::count(
 										Expression::expAnd(
 											Expression::in('id', array(1, -2, -3)),
-											Expression::like('Name', 'test')
+											\OnPhp\Expression::like('Name', 'test')
 										)
 									)
 								)

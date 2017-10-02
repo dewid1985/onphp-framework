@@ -18,7 +18,7 @@ namespace OnPhp {
 
         public function toDialectString(Dialect $dialect)
         {
-            $out = 'CREATE SCHEMA IF NOT EXISTS ' . $dialect->quoteSchema($this->schema) . ';';
+            $out = "CREATE SCHEMA IF NOT EXISTS " . $dialect->quoteSchema($this->schema) . ";\n";
 
             return $out;
         }

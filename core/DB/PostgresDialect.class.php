@@ -203,8 +203,9 @@ namespace OnPhp {
             self::checkColumn($column);
 
             return
-                'CREATE SEQUENCE "'
-                . $this->makeSequenceName($column) . '";';
+                "\nCREATE SEQUENCE \""
+                . $this->makeSequenceName($column) . "\";";
+
         }
 
         /**

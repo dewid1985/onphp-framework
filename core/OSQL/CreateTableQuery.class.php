@@ -22,12 +22,20 @@ namespace OnPhp {
             $this->table = $table;
         }
 
+        private function getTableName(Dialect $dialect){
+            $string = "";
+
+            if ($this->table->getSchema())
+                $string.= "\"{$this->table->getSchema()}\".";
+
+            return $string.$dialect->quoteTable($this->table->getName());
+        }
+
         public function toDialectString(Dialect $dialect)
         {
-            $name = $this->table->getName();
             $middle = (new CreateSchemaQuery($this->table->getSchema()))->toDialectString($dialect);
 
-            $middle .= "CREATE TABLE {$dialect->quoteTable($name)} (\n    ";
+            $middle .= "CREATE TABLE {$this->getTableName($dialect)} (\n    ";
 
             $prepend = [];
             $columns = [];

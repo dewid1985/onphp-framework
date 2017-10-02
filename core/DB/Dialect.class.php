@@ -76,7 +76,7 @@ namespace OnPhp {
          */
         public function quoteSchema($schema)
         {
-            return '"' . $schema . '""';
+            return '"' . $schema . '"';
         }
 
         /**
