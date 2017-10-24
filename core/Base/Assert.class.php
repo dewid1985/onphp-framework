@@ -234,6 +234,17 @@ namespace OnPhp {
         }
 
         /**
+         * @param $value
+         * @return bool
+         */
+        public static function checkJson($value) : bool
+        {
+            return (
+                null !== @json_encode($value)
+            );
+        }
+
+        /**
          * @param $variable
          * @param null $message
          * @throws WrongArgumentException
