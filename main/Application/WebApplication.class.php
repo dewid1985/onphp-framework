@@ -23,6 +23,20 @@ namespace OnPhp {
 
         protected $vars = array();
 
+        /** @var null|WebApplication */
+        static $instance = null;
+
+        /**
+         * @return WebApplication
+         */
+        static public function me()
+        {
+            if (is_null(static::$instance))
+                static::$instance = new static();
+            return static::$instance;
+        }
+
+
         public function __construct()
         {
             $request = (new HttpRequest())
@@ -80,13 +94,14 @@ namespace OnPhp {
             if (!$this->hasVar($name)) {
                 throw new MissingElementException("not found var '$name'");
             }
+
             unset($this->vars[$name]);
 
             return $this;
         }
 
         /**
-         * @return mixed
+         * @return HttpRequest
          * @throws MissingElementException
          */
         public function getRequest()

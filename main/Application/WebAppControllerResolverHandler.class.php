@@ -18,7 +18,7 @@ namespace OnPhp {
             CONTROLLER_POSTFIX = 'Controller',
             CONTROLLER_NAMESPACE = "Controllers" . '\\';
 
-        protected $defaultController = 'HomeController';
+        protected $defaultController = 'Controller';
 
         protected $notfoundController = 'NotFoundController';
 
@@ -45,9 +45,10 @@ namespace OnPhp {
          */
         protected function getControllerNameByArea(InterceptingChain $chain)
         {
+            /**@var WebApplication $chain */
+
             /** @var HttpRequest $request */
             $request = $chain->getRequest();
-
             $area = null;
 
             if ($request->hasAttachedVar('area'))
@@ -57,16 +58,12 @@ namespace OnPhp {
             elseif ($request->hasPostVar('area'))
                 $area = $request->getPostVar('area');
 
-
             if ($request->hasAttachedVar('namespaces'))
                 $area = $request->getAttachedVar('namespaces') . ucfirst($area);
             else
                 $area = self::CONTROLLER_NAMESPACE . ucfirst($area);
 
-            if (
-                $area
-                && $this->checkControllerName($area . self::CONTROLLER_POSTFIX, $chain->getPathController())
-            ) {
+            if ($area && $this->checkControllerName($area . self::CONTROLLER_POSTFIX)) {
                 return $area . self::CONTROLLER_POSTFIX;
             } elseif ($area) {
                 HeaderUtils::sendHttpStatus(new HttpStatus(HttpStatus::CODE_404));
@@ -76,7 +73,7 @@ namespace OnPhp {
             return null;
         }
 
-        protected function checkControllerName($controllerName, $path)
+        protected function checkControllerName($controllerName)
         {
             try {
                 new  $controllerName;
