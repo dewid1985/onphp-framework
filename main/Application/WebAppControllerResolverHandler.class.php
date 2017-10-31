@@ -79,6 +79,9 @@ namespace OnPhp {
                 new  $controllerName;
                 return true;
             } catch (\Exception $e) {
+                if (defined('__LOCAL_DEBUG__')) {
+                    throw $e;
+                }
                 return false;
             }
         }
