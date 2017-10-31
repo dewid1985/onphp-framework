@@ -1,3 +1,8 @@
+2017-10-31 Trofimov Vitaliy
+    * core/Base/Date.class.php
+    main/Application/WebAppControllerResolverHandler.class.php:
+    Fix Date::import, ,throw exception if class not found
+
 2017-05-19 Shein
     * core/Form/Primitives/BasePrimitiveClass.class.php
     core/Form/PlainForm.class.php: drop method getActualValue
