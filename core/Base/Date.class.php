@@ -57,16 +57,16 @@ namespace OnPhp {
                 } elseif ($date && is_string($date)) {
 
                     if (
-                    preg_match('/^(\d{1,4})[-\.](\d{1,2})[-\.](\d{1,2})/', $date, $matches)
+                        preg_match('/^(\d{1,4})[-\.](\d{1,2})[-\.](\d{1,2})/', $date, $matches)
                     ) {
                         Assert::isTrue(
                             checkdate($matches[2], $matches[3], $matches[1])
                         );
                     } elseif (
-                    preg_match('/^(\d{1,2})[-\.](\d{1,2})[-\.](\d{1,4})/', $date, $matches)
+                        preg_match('/^(\d{1,2})[-\.](\d{1,2})[-\.](\d{1,4})/', $date, $matches)
                     ) {
                         Assert::isTrue(
-                            checkdate($matches[2], $matches[2], $matches[3])
+                            checkdate($matches[2], $matches[1], $matches[3])
                         );
                     }
 
