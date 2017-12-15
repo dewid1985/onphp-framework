@@ -8,6 +8,7 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+
 namespace OnPhp {
     /**
      * @ingroup Http
@@ -436,6 +437,15 @@ namespace OnPhp {
             curl_multi_close($mh);
 
             return true;
+        }
+
+        public function close()
+        {
+            if ($this->handler) {
+                curl_close($this->handler);
+                $this->handler = null;
+            }
+            return $this;
         }
 
         /**

@@ -12,7 +12,7 @@ namespace OnPhp {
     /**
      * @ingroup Types
      **/
-    final class BinaryType extends BasePropertyType
+    class BinaryType extends BasePropertyType
     {
         public function getPrimitiveName()
         {

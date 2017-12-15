@@ -39,7 +39,9 @@ namespace OnPhp {
             HAVE_PRECISION = 0x000200,
             HAVE_SCALE = 0x000400,
             HAVE_TIMEZONE = 0x000800,
-            CAN_BE_UNSIGNED = 0x001000;
+            CAN_BE_UNSIGNED = 0x001000,
+            JSON = 0x001200,
+            JSONB = 0x001400;
 
         /** @var array */
         protected $names = [
@@ -60,7 +62,9 @@ namespace OnPhp {
             self::INTERVAL => 'INTERVAL',
             self::BINARY => 'BINARY',
             self::IP => 'IP',
-            self::IP_RANGE => 'IP_RANGE'
+            self::IP_RANGE => 'IP_RANGE',
+            self::JSON => 'JSON',
+            self::JSONB => 'JSONB'
         ];
 
         /** @var null */

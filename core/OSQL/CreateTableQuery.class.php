@@ -33,13 +33,12 @@ namespace OnPhp {
 
         public function toDialectString(Dialect $dialect)
         {
-            $middle = (new CreateSchemaQuery($this->table->getSchema()))->toDialectString($dialect);
-
-            $middle .= "CREATE TABLE {$this->getTableName($dialect)} (\n    ";
-
+            $middle = "CREATE TABLE {$this->getTableName($dialect)} (\n    ";
             $prepend = [];
             $columns = [];
             $primary = [];
+
+            $prepend[] = (new CreateSchemaQuery($this->table->getSchema()))->toDialectString($dialect);
 
             $order = $this->table->getOrder();
 

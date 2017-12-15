@@ -8,6 +8,7 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+
 namespace OnPhp {
     /**
      * PostgreSQL dialect.
@@ -24,7 +25,7 @@ namespace OnPhp {
         /**
          * @return string
          */
-        public static function getTsConfiguration() : string
+        public static function getTsConfiguration(): string
         {
             return self::$tsConfiguration;
         }
@@ -203,7 +204,8 @@ namespace OnPhp {
             self::checkColumn($column);
 
             return
-                "\nCREATE SEQUENCE \""
+                "CREATE SEQUENCE \"" .
+                (!is_null($column->getTable()->getSchema()) ? $column->getTable()->getSchema() . "\".\"" : null)
                 . $this->makeSequenceName($column) . "\";";
 
         }
@@ -238,8 +240,9 @@ namespace OnPhp {
             self::checkColumn($column);
 
             return
-                'default nextval(\''
-                . $this->makeSequenceName($column) . '\')';
+                'default nextval(\'"'
+                . (!is_null($column->getTable()->getSchema()) ? $column->getTable()->getSchema() . "\".\"" : null)
+                . $this->makeSequenceName($column) . '"\')';
         }
 
         /**
