@@ -31,7 +31,7 @@ namespace OnPhp {
             WEEKDAY_SUNDAY = 0; // because strftime('%w') is 0 on Sunday
 
         /**
-         * @var DateTime
+         * @var \DateTime
          */
         protected $dateTime = null;
 
@@ -252,7 +252,7 @@ namespace OnPhp {
         }
 
         /**
-         * @return DateTime|null
+         * @return \DateTime|null
          */
         public function getDateTime()
         {
