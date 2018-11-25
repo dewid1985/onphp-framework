@@ -19,18 +19,18 @@ namespace OnPhp {
      **/
     abstract class TransparentDaoWorker extends CommonDaoWorker
     {
-        public function getByLogic(LogicalObject $logic)
+        public function getByLogic(LogicalObject $logic,  $expires = Cache::EXPIRES_FOREVER)
         {
-            return parent::getByLogic($logic, Cache::EXPIRES_FOREVER);
+            return parent::getByLogic($logic, $expires);
         }
 
         /// single object getters
         //@{
 
-        public function getByQuery(SelectQuery $query)
+        public function getByQuery(SelectQuery $query, $expires = Cache::EXPIRES_FOREVER )
         {
             try {
-                return parent::getByQuery($query, Cache::EXPIRES_FOREVER);
+                return parent::getByQuery($query, $expires);
             } catch (CachedObjectNotFoundException $e) {
                 throw $e;
             } catch (ObjectNotFoundException $e) {
@@ -39,7 +39,7 @@ namespace OnPhp {
             }
         }
 
-        public function getCustom(SelectQuery $query)
+        public function getCustom(SelectQuery $query, $expires = Cache::EXPIRES_FOREVER )
         {
             try {
                 return parent::getCustom($query, Cache::EXPIRES_FOREVER);
@@ -51,7 +51,7 @@ namespace OnPhp {
             }
         }
 
-        public function getListByIds(array $ids)
+        public function getListByIds(array $ids, $expires = Cache::NOT_FOUND)
         {
             $list = [];
             $toFetch = [];
@@ -101,10 +101,10 @@ namespace OnPhp {
             return $list;
         }
 
-        public function getById($id)
+        public function getById($id, $expires = Cache::EXPIRES_FOREVER)
         {
             try {
-                return parent::getById($id, Cache::EXPIRES_FOREVER);
+                return parent::getById($id, $expires);
             } catch (CachedObjectNotFoundException $e) {
                 throw $e;
             } catch (ObjectNotFoundException $e) {
@@ -129,7 +129,7 @@ namespace OnPhp {
                     );
         }
 
-        public function getListByQuery(SelectQuery $query)
+        public function getListByQuery(SelectQuery $query, $expires = Cache::NOT_FOUND)
         {
             $list = $this->getCachedList($query);
 
@@ -165,21 +165,21 @@ namespace OnPhp {
         /// custom list getters
         //@{
 
-        public function getListByLogic(LogicalObject $logic)
+        public function getListByLogic(LogicalObject $logic, $expires = Cache::EXPIRES_FOREVER)
         {
-            return parent::getListByLogic($logic, Cache::EXPIRES_FOREVER);
+            return parent::getListByLogic($logic, $expires);
         }
 
-        public function getPlainList()
+        public function getPlainList($expires = Cache::EXPIRES_FOREVER )
         {
-            return parent::getPlainList(Cache::EXPIRES_FOREVER);
+            return parent::getPlainList($expires);
         }
         //@}
 
         /// query result getters
         //@{
 
-        public function getCustomList(SelectQuery $query)
+        public function getCustomList(SelectQuery $query, $expires = Cache::EXPIRES_FOREVER)
         {
             try {
                 return parent::getCustomList($query, Cache::EXPIRES_FOREVER);
@@ -195,10 +195,10 @@ namespace OnPhp {
         /// cachers
         //@{
 
-        public function getCustomRowList(SelectQuery $query)
+        public function getCustomRowList(SelectQuery $query, $expires = Cache::EXPIRES_FOREVER)
         {
             try {
-                return parent::getCustomRowList($query, Cache::EXPIRES_FOREVER);
+                return parent::getCustomRowList($query, $expires);
             } catch (CachedObjectNotFoundException $e) {
                 throw $e;
             } catch (ObjectNotFoundException $e) {
@@ -211,7 +211,7 @@ namespace OnPhp {
         /// internal helpers
         //@{
 
-        public function getQueryResult(SelectQuery $query)
+        public function getQueryResult(SelectQuery $query, $expires = Cache::EXPIRES_FOREVER)
         {
             return parent::getQueryResult($query, Cache::EXPIRES_FOREVER);
         }

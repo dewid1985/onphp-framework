@@ -11,6 +11,9 @@
  ***************************************************************************/
 /* $Id$ */
 namespace OnPhp {
+
+    use Ratchet\Wamp\Exception;
+
     /**
      * Date and time container and utilities.
      *
@@ -194,8 +197,8 @@ namespace OnPhp {
         {
             $defaultTimeZoneName = date_default_timezone_get();
             try {
-                return new DateTimeZone($defaultTimeZoneName);
-            } catch (Exception $e) {
+                return new \DateTimeZone($defaultTimeZoneName);
+            } catch (\Exception $e) {
                 throw new WrongStateException(
                     "strange default time zone given - '{$defaultTimeZoneName}'!" .
                     'Use date_default_timezone_set() for set valid default time zone.'

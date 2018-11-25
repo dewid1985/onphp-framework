@@ -25,7 +25,7 @@ namespace OnPhp {
         {
             Assert::isNotEmpty($this->sessionName, 'sessionName must not be empty');
 
-            $sessionName = session_name($this->sessionName);
+            $sessionName = session_id($this->sessionName);
             session_set_cookie_params(
                 $this->cookieTime,
                 $this->cookiePath,

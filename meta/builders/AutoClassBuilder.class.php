@@ -103,6 +103,7 @@ EOT;
                     $classType = $property->getType()->getClassName();
 
                     switch ($classType) {
+                        case "Timestamp":
                         case "TimestampTZ" :
                             if (!in_array("OnPhp\\" . $classType, $classes))
                                 $classes[] = "OnPhp\\" . $classType;

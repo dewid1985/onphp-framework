@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+
 namespace OnPhp;
 
 function help()
@@ -61,36 +62,36 @@ function init()
 
     Assert::isTrue(defined('PATH_CLASSES'), 'constant PATH_CLASSES must be defined');
 
-    if (!defined('ONPHP_META_DAO_DIR')) {
+    if (!defined('ONPHP_META_DAO_DIR'))
         define(
             'ONPHP_META_DAO_DIR',
             PATH_CLASSES . 'DAOs' . DIRECTORY_SEPARATOR
         );
-    }
 
-    if (!defined('ONPHP_META_BUSINESS_DIR')) {
+    if (!defined('ONPHP_META_BUSINESS_DIR'))
         define(
             'ONPHP_META_BUSINESS_DIR',
             PATH_CLASSES . 'Business' . DIRECTORY_SEPARATOR
         );
-    }
 
-    if (!defined('ONPHP_META_PROTO_DIR')) {
+    if (!defined('ONPHP_META_PROTO_DIR'))
         define(
             'ONPHP_META_PROTO_DIR',
             PATH_CLASSES . 'Proto' . DIRECTORY_SEPARATOR
         );
-    }
 
-    define('ONPHP_META_AUTO_DIR', PATH_CLASSES . 'Auto' . DIRECTORY_SEPARATOR);
+    if (!defined('ONPHP_META_AUTO_DIR'))
+        define(
+            'ONPHP_META_AUTO_DIR',
+            PATH_CLASSES . 'Auto' . DIRECTORY_SEPARATOR
+        );
 
-    if (!defined('ONPHP_META_AUTO_BUSINESS_DIR')) {
+    if (!defined('ONPHP_META_AUTO_BUSINESS_DIR'))
         define(
             'ONPHP_META_AUTO_BUSINESS_DIR',
             ONPHP_META_AUTO_DIR
             . 'Business' . DIRECTORY_SEPARATOR
         );
-    }
 
     define(
         'ONPHP_META_AUTO_PROTO_DIR',
@@ -98,13 +99,12 @@ function init()
         . 'Proto' . DIRECTORY_SEPARATOR
     );
 
-    if (!defined('ONPHP_META_AUTO_DAO_DIR')) {
+    if (!defined('ONPHP_META_AUTO_DAO_DIR'))
         define(
             'ONPHP_META_AUTO_DAO_DIR',
             ONPHP_META_AUTO_DIR
             . 'DAOs' . DIRECTORY_SEPARATOR
         );
-    }
 
     if (!is_dir(ONPHP_META_DAO_DIR)) {
         mkdir(ONPHP_META_DAO_DIR, 0755, true);

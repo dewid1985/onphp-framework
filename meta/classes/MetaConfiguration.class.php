@@ -12,7 +12,7 @@ namespace OnPhp {
     /**
      * @ingroup MetaBase
      **/
-    final class MetaConfiguration extends Singleton implements Instantiatable
+    class MetaConfiguration extends Singleton implements Instantiatable
     {
         private $out = null;
 
@@ -1178,22 +1178,22 @@ namespace OnPhp {
                     }
 
                     $out->warning('/');
-
-                    try {
-                        $object = $dao->getByQuery($query);
-                        $form = $object->proto()->makeForm();
-                        FormUtils::object2form($object, $form);
-
-                        if ($errors = $form->getErrors()) {
-                            $formErrors[$class->getName()] = $errors;
-
-                            $out->error('F', true);
-                        } else {
-                            $out->info('F', true);
-                        }
-                    } catch (ObjectNotFoundException $e) {
-                        $out->warning('F');
-                    }
+//
+//                    try {
+//                        $object = $dao->getByQuery($query);
+//                        $form = $object->proto()->makeForm();
+//                        FormUtils::object2form($object, $form);
+//
+//                        if ($errors = $form->getErrors()) {
+//                            $formErrors[$class->getName()] = $errors;
+//
+//                            $out->error('F', true);
+//                        } else {
+//                            $out->info('F', true);
+//                        }
+//                    } catch (ObjectNotFoundException $e) {
+//                        $out->warning('F');
+//                    }
 
                     $out->warning('/');
 

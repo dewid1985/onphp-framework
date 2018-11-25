@@ -137,6 +137,7 @@ namespace OnPhp {
             }
 
             if ($fileName = $this->getFileName($className)) {
+
                 try {
                     return $this->includeFile($fileName);
                 } catch (BaseException $e) {

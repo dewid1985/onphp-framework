@@ -12,7 +12,7 @@ namespace OnPhp {
     /**
      * @ingroup Builders
      **/
-    final class SchemaBuilder extends BaseBuilder
+    class SchemaBuilder extends BaseBuilder
     {
         public static function buildTable($tableName, array $propertyList)
         {

@@ -24,28 +24,31 @@ namespace OnPhp {
         //@{
         public function getById($id)
         {
-            return parent::getById($id, Cache::DO_NOT_CACHE);
+            return parent::getById($id, $expires = Cache::DO_NOT_CACHE);
         }
 
-        public function getByLogic(LogicalObject $logic)
+        public function getByLogic(LogicalObject $logic, $expires = Cache::DO_NOT_CACHE)
         {
             return parent::getByLogic($logic, Cache::DO_NOT_CACHE);
         }
 
-        public function getByQuery(SelectQuery $query)
+        public function getByQuery(SelectQuery $query, $expires = Cache::DO_NOT_CACHE)
         {
-            return parent::getByQuery($query, Cache::DO_NOT_CACHE);
+            return parent::getByQuery($query, $expires);
         }
 
-        public function getCustom(SelectQuery $query)
+        public function getCustom(SelectQuery $query, $expires = Cache::DO_NOT_CACHE)
         {
-            return parent::getCustom($query, Cache::DO_NOT_CACHE);
+            return parent::getCustom($query, $expires);
         }
         //@}
 
         /// object's list getters
         //@{
-        public function getListByIds(array $ids)
+        public function getListByIds(
+            array $ids,
+            $expires = Cache::EXPIRES_MEDIUM
+        )
         {
             try {
                 return
@@ -59,29 +62,30 @@ namespace OnPhp {
                         )
                     );
             } catch (ObjectNotFoundException $e) {
-                return array();
+                return [];
             }
         }
 
-        public function getListByLogic(LogicalObject $logic)
+
+        public function getListByLogic(LogicalObject $logic, $expires = Cache::DO_NOT_CACHE)
         {
-            return parent::getListByLogic($logic, Cache::DO_NOT_CACHE);
+            return parent::getListByLogic($logic, $expires);
         }
 
-        public function getListByQuery(SelectQuery $query)
+        public function getListByQuery(SelectQuery $query, $expires = Cache::DO_NOT_CACHE)
         {
-            return parent::getListByQuery($query, Cache::DO_NOT_CACHE);
+            return parent::getListByQuery($query, $expires);
         }
 
-        public function getPlainList()
+        public function getPlainList($expires = Cache::DO_NOT_CACHE)
         {
-            return parent::getPlainList(Cache::DO_NOT_CACHE);
+            return parent::getPlainList($expires);
         }
         //@}
 
         /// custom list getters
         //@{
-        public function getCustomList(SelectQuery $query)
+        public function getCustomList(SelectQuery $query, $expires = Cache::DO_NOT_CACHE)
         {
             return parent::getCustomList($query, Cache::DO_NOT_CACHE);
         }

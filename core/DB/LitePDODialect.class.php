@@ -9,6 +9,9 @@
  *                                                                         *
  ***************************************************************************/
 namespace OnPhp {
+
+    use Ratchet\Wamp\Exception;
+
     /**
      * SQLite dialect.
      *
@@ -42,7 +45,7 @@ namespace OnPhp {
         public function quoteBinary($data)
         {
             //here must be PDO::PARAM_LOB, but i couldn't get success result, so used base64_encode/decode
-            return $this->getLink()->quote(base64_encode($data), PDO::PARAM_STR);
+            return $this->getLink()->quote(base64_encode($data), \PDO::PARAM_STR);
         }
 
         /**
@@ -60,7 +63,7 @@ namespace OnPhp {
         }
 
         /**
-         * @return PDO
+         * @return \PDO
          */
         protected function getLink()
         {

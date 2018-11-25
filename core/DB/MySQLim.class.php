@@ -8,6 +8,7 @@
  *   License, or (at your option) any later version.                       *
  *                                                                         *
  ***************************************************************************/
+
 namespace OnPhp {
     /**n
      * MySQL DB connector.
@@ -47,10 +48,10 @@ namespace OnPhp {
         /**
          * @return bool
          */
-        public function isConnected() : bool
+        public function isConnected(): bool
         {
             return (parent::isConnected() || $this->link instanceof \mysqli)
-            && mysqli_ping($this->link);
+                && mysqli_ping($this->link);
         }
 
         /**
@@ -322,7 +323,7 @@ namespace OnPhp {
 
         /**
          * @param $queryString
-         * @return bool|mysqli_result
+         * @return bool|\mysqli_result
          */
         public function queryRaw($queryString)
         {
@@ -348,7 +349,7 @@ namespace OnPhp {
         /**
          * @return bool
          */
-        public function hasQueue()
+        public function hasQueue(): bool
         {
             return false;
         }

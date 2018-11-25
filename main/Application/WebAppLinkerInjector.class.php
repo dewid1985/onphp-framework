@@ -44,7 +44,7 @@ namespace OnPhp {
             /* @var $chain WebApplication */
             $serviceLocator = $chain->getServiceLocator();
             $linker = $serviceLocator->spawn('ToolkitLinkUtils');
-            /* @var $linker ToolkitLinkUtils */
+            /* @var $linker ToolkitLinkUtil */
             $linker->setLogClassName($this->logClassName)->setBaseUrl($this->baseUrl);
             $serviceLocator->set('linker', $linker);
 

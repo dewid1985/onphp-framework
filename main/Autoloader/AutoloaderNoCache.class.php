@@ -48,8 +48,9 @@ namespace OnPhp {
         }
 
         /**
-         * @param array $pathes
-         * @return AutoloaderWholeClassCache
+         * @param array $paths
+         * @param null $namespace
+         * @return $this
          */
         public function addPaths(array $paths, $namespace = null)
         {
