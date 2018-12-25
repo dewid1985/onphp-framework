@@ -1,10 +1,12 @@
 {
-    "name": "ladmin/onphp-framework",
+    "name": "dewid1985/onphp-framework",
+    "license": "GPL",
     "authors": [
         {
             "name": "dewid",
-            "email": "d.shane@webbankir.com"
+            "email": "dewid@dewid.com"
         }
     ],
+    "minimum-stability": "stable",
     "require": {}
 }
