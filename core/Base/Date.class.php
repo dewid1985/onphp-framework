@@ -52,7 +52,7 @@ namespace OnPhp {
         {
             try {
                 if (is_int($date) || is_numeric($date)) { // unix timestamp
-                    $this->dateTime = new \DateTime(date(static::getFormat(), $date));
+                    $this->dateTime = (new \DateTime())->setTimestamp($date);
 
                 } elseif ($date && is_string($date)) {
 
