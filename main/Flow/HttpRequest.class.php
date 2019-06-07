@@ -57,7 +57,8 @@ namespace OnPhp {
 
         /**
          * @return HttpRequest
-         **/
+         * @throws WrongArgumentException
+         */
         public static function createFromGlobals(): HttpRequest
         {
             $request =
@@ -76,6 +77,7 @@ namespace OnPhp {
             if (
                 $request->hasServerVar('CONTENT_TYPE')
                 && $request->getServerVar('CONTENT_TYPE') !== 'application/x-www-form-urlencoded'
+
             ) {
                 $request->setBody(file_get_contents('php://input'));
             }
@@ -419,5 +421,16 @@ namespace OnPhp {
             $this->body = $body;
             return $this;
         }
+
+        /**
+         * @param $string
+         * @return bool
+         */
+        function isJsonBody($string) : bool
+        {
+            $json = json_decode($string);
+            return (json_last_error() === JSON_ERROR_NONE);
+        }
+
     }
 }
