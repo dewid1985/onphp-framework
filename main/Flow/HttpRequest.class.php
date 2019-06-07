@@ -409,6 +409,9 @@ namespace OnPhp {
 
         public function getBody()
         {
+            if ($this->body && $this->isJsonBody())
+                $this->body = json_decode($this->body, true);
+
             return $this->body;
         }
 
@@ -426,11 +429,10 @@ namespace OnPhp {
          * @param $string
          * @return bool
          */
-        function isJsonBody($string) : bool
+        function isJsonBody(): bool
         {
-            $json = json_decode($string);
+            $json = json_decode($this->body);
             return (json_last_error() === JSON_ERROR_NONE);
         }
-
     }
 }
